@@ -208,6 +208,42 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
 .loading .meta{opacity:.6}
 .thumbs img:not([src]){background:var(--field)}
 .warn{margin:0;padding:10px 12px;border-radius:10px;background:var(--mark);color:var(--ink);font-size:13px}
+/* 일정/쇼핑리스트 전환 */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:var(--field);margin:0 0 12px}
+.seg button{border:0;background:transparent;padding:9px 8px;border-radius:9px;font-weight:700;cursor:pointer;color:var(--muted);font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.seg .cnt{display:inline-block;min-width:20px;margin-left:4px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:12px;line-height:20px}
+/* 쇼핑리스트 */
+.shopadd{display:flex;gap:8px;margin:0 0 14px}
+.shopadd input{flex:1;min-width:0}
+.shop{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.shopi{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.chk{width:30px;height:30px;border-radius:9px;border:2px solid var(--line);background:transparent;color:transparent;cursor:pointer;flex:none;font-weight:900;font-size:16px;display:grid;place-items:center}
+.chk[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.sb{flex:1;min-width:0;cursor:pointer}
+.sn{font-weight:600;overflow-wrap:anywhere}
+.sm{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.sm b{color:var(--accent);font-weight:700}
+.shopi.done .sn{text-decoration:line-through;color:var(--muted)}
+.shopdone{margin-top:18px}
+/* 맛집리스트 */
+.foodbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px}
+.foodbar p{margin:0;font-size:12px;color:var(--muted)}
+.fmap{height:min(30vh,260px);border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:var(--soft);z-index:1;margin-bottom:12px}
+.food{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.fi{padding:14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);display:grid;gap:6px}
+.fi.done{opacity:.72}
+.fi .ftop{display:flex;align-items:flex-start;gap:10px}
+[hidden]{display:none!important}
+.fi h3{flex:1;min-width:0;font-size:16px;margin:0;overflow-wrap:anywhere}
+.fi .fnum{flex:none;min-width:26px;height:26px;padding:0 6px;border-radius:999px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:12px;font-weight:800}
+.fi .fnum.off{background:var(--line);color:var(--muted)}
+.like{flex:none;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:700;font-size:13px;color:var(--muted)}
+.like[aria-pressed="true"]{border-color:#E0528A;color:#E0528A;background:color-mix(in srgb,#E0528A 10%,var(--surface))}
+.fi .fm{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.fi .fw{font-size:12px;color:var(--muted)}
+.pin.food span{background:#E0528A;color:#fff}
+.shopdone summary{cursor:pointer;color:var(--muted);font-weight:700;font-size:14px;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -402,6 +438,44 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
   </form>
 </dialog>
 
+<!-- 맛집 추가/수정 -->
+<dialog id="fd">
+  <form id="fdForm" method="dialog">
+    <h2 id="fdTitle">맛집 추가</h2>
+    <label for="fdName">가게 이름<input id="fdName" required placeholder="예: 이치란 라멘 시부야점" autocomplete="off"></label>
+    <label for="fdMemo">메모<textarea id="fdMemo" rows="2" style="min-height:64px" placeholder="예: 대표 메뉴, 웨이팅, 영업시간, 예산"></textarea></label>
+    <label for="fdLink">링크<input id="fdLink" inputmode="url" placeholder="인스타·블로그·구글지도 주소" autocomplete="off"></label>
+    <label for="fdAddr">주소 또는 검색
+      <div class="search"><input id="fdAddr" placeholder="주소나 가게 이름" autocomplete="off"><button type="button" class="btn" id="fdFind">위치 찾기</button></div>
+    </label>
+    <ul id="fdResults" class="results" hidden></ul>
+    <div id="fdMap" class="minimap"></div>
+    <p class="hint" id="fdLoc"></p>
+    <div class="dfoot">
+      <button type="button" class="btn danger" id="fdDel">삭제</button>
+      <span class="sp"></span>
+      <button type="button" class="btn" id="fdCancel">취소</button>
+      <button type="submit" class="btn primary">저장</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 쇼핑 항목 수정 -->
+<dialog id="sh">
+  <form id="shForm" method="dialog">
+    <h2>쇼핑 항목</h2>
+    <label for="shName">살 것<input id="shName" required placeholder="예: 곤약젤리" autocomplete="off"></label>
+    <label for="shMemo">메모<input id="shMemo" placeholder="예: 3개, 돈키호테, 1000엔 이하" autocomplete="off"></label>
+    <label for="shWho">누가 살까요<select id="shWho"></select></label>
+    <div class="dfoot">
+      <button type="button" class="btn danger" id="shDel">삭제</button>
+      <span class="sp"></span>
+      <button type="button" class="btn" id="shCancel">취소</button>
+      <button type="submit" class="btn primary">저장</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="cf">
   <form method="dialog" class="cfbox">
     <p id="cfMsg"></p>
@@ -495,7 +569,7 @@ const inviteUrl = code => location.origin + location.pathname + "?join=" + code;
 
 /* ---------- 상태 ---------- */
 const S = {
-  set: null, nick: "", codes: [], rooms: new Map(), items: new Map(), photos: new Map(),
+  set: null, nick: "", codes: [], rooms: new Map(), items: new Map(), shop: new Map(), food: new Map(), fmap: null, flayer: null, fmarkers: {}, photos: new Map(), mode: "plan",
   tripId: null, day: "all", map: null, layer: null, markers: {}, fromList: false, pendingTrip: null, legacy: null, ready: false
 };
 const trip = code => {
@@ -565,6 +639,44 @@ function watchItems(code) {
     refresh("items", code);
   }, e => toast(errMsg(e), 4500));
 }
+function watchShop(code) {
+  if (S.shopCode === code) return;
+  if (C.unsub.shop) C.unsub.shop();
+  S.shopCode = code;
+  C.unsub.shop = roomRef(code).collection("shop").onSnapshot(qs => {
+    S.shop.set(code, qs.docs.map(d => Object.assign({ id: d.id }, d.data())));
+    refresh("shop", code);
+  }, e => toast(errMsg(e), 4500));
+}
+function watchFood(code) {
+  if (S.foodCode === code) return;
+  if (C.unsub.food) C.unsub.food();
+  S.foodCode = code;
+  C.unsub.food = roomRef(code).collection("food").onSnapshot(qs => {
+    S.food.set(code, qs.docs.map(d => Object.assign({ id: d.id }, d.data())));
+    refresh("food", code);
+  }, e => toast(errMsg(e), 4500));
+}
+function setFood(code, it) {
+  const { id, ...data } = it; stamp(data);
+  const arr = S.food.get(code) || []; const i = arr.findIndex(x => x.id === id);
+  if (i >= 0) arr[i] = Object.assign({ id }, data); else arr.push(Object.assign({ id }, data)); S.food.set(code, arr);
+  return fire(roomRef(code).collection("food").doc(id).set(data));
+}
+function delFood(code, id) {
+  S.food.set(code, (S.food.get(code) || []).filter(x => x.id !== id));
+  return fire(roomRef(code).collection("food").doc(id).delete());
+}
+function setShop(code, it) {
+  const { id, ...data } = it; stamp(data);
+  const arr = S.shop.get(code) || []; const i = arr.findIndex(x => x.id === id);
+  if (i >= 0) arr[i] = Object.assign({ id }, data); else arr.push(Object.assign({ id }, data)); S.shop.set(code, arr);
+  return fire(roomRef(code).collection("shop").doc(id).set(data));
+}
+function delShop(code, id) {
+  S.shop.set(code, (S.shop.get(code) || []).filter(x => x.id !== id));
+  return fire(roomRef(code).collection("shop").doc(id).delete());
+}
 function stamp(o) { return Object.assign(o, { updatedAt: Date.now(), updatedBy: S.nick }); }
 function updateRoom(code, fields) {
   const r = S.rooms.get(code); if (r) { for (const [k, v] of Object.entries(fields)) { if (k.startsWith("days.")) { r.days = r.days || {}; r.days[k.slice(5)] = v; } else r[k] = v; } }
@@ -619,7 +731,7 @@ async function joinRoom(raw, nick) {
 }
 async function deleteRoom(code) {
   const ref = roomRef(code);
-  for (const sub of ["items", "photos"]) {
+  for (const sub of ["items", "photos", "shop", "food"]) {
     const qs = await ref.collection(sub).get();
     await Promise.all(qs.docs.map(d => ref.collection(sub).doc(d.id).delete()));
   }
@@ -741,7 +853,7 @@ function hist(fn) { if (!CAN_HIST) return false; try { fn(); return true; } catc
 function showTrip(id) {
   S.tripId = id; const t = trip(id), today = fd(new Date());
   S.day = today >= t.start && today <= t.end ? today : "all";
-  watchItems(id); renderTrip(); window.scrollTo(0, 0);
+  watchItems(id); watchShop(id); watchFood(id); renderTrip(); window.scrollTo(0, 0);
 }
 function showList() { S.tripId = null; renderList(); window.scrollTo(0, 0); }
 function openTripView(id, replace) {
@@ -817,6 +929,7 @@ function renderStatus(msg, bad) {
 /* ---------- 여행 목록 ---------- */
 function renderList() {
   if (S.map) { S.map.remove(); S.map = null; }
+  if (S.fmap) { S.fmap.remove(); S.fmap = null; S.flayer = null; }
   const loaded = S.codes.filter(c => S.rooms.has(c)).map(trip).sort((a, b) => b.start.localeCompare(a.start));
   const waiting = S.codes.filter(c => !S.rooms.has(c));
   const card = t => {
@@ -867,16 +980,64 @@ function itemHtml(it, n) {
 function renderTrip() {
   const t = trip(S.tripId); if (!t) { showList(); return; }
   if (S.map) { S.map.remove(); S.map = null; }
+  if (S.fmap) { S.fmap.remove(); S.fmap = null; S.flayer = null; }
   $("#app").innerHTML = `
     <header class="bar"><a class="icon" href="#" id="back" aria-label="여행 목록으로">←</a>
       <div class="bt"><h1 id="tTitle"></h1><p id="tRange"></p></div>
       <button class="icon" id="menu" aria-label="여행 메뉴">⋯</button></header>
     <div class="who" id="who"></div>
     <div id="notesBox"></div>
-    <nav class="tabs" role="tablist" id="tabs"></nav>
-    <div id="map" class="map"></div>
-    <div id="items"></div>
-    <button class="fab" id="add">+ 일정 추가</button>`;
+    <div class="seg" role="group" aria-label="보기 전환">
+      <button type="button" data-mode="plan" aria-pressed="true">일정</button>
+      <button type="button" data-mode="food" aria-pressed="false">맛집<span class="cnt" id="foodCnt" hidden></span></button>
+      <button type="button" data-mode="shop" aria-pressed="false">쇼핑<span class="cnt" id="shopCnt" hidden></span></button>
+    </div>
+    <div id="planView">
+      <nav class="tabs" role="tablist" id="tabs"></nav>
+      <div id="map" class="map"></div>
+      <p class="hint" id="mapHint" hidden style="margin:8px 2px 0"></p>
+      <div id="items"></div>
+      <button class="fab" id="add">+ 일정 추가</button>
+    </div>
+    <div id="foodView" hidden>
+      <div class="foodbar"><p>가고 싶은 곳에 ♥를 눌러 투표하고, 정한 곳은 ‘일정에 넣기’로 옮겨요.</p><button type="button" class="btn primary sm" id="foodAddBtn">+ 맛집 추가</button></div>
+      <div id="fmap" class="fmap"></div>
+      <ul class="food" id="foodList"></ul>
+      <details class="shopdone" id="foodDoneBox" hidden><summary id="foodDoneSum"></summary><ul class="food" id="foodDone"></ul></details>
+    </div>
+    <div id="shopView" hidden>
+      <form class="shopadd" id="shopAdd"><input id="shopIn" placeholder="살 것 입력 (예: 곤약젤리 3개)" autocomplete="off" aria-label="살 것"><button class="btn primary" type="submit">추가</button></form>
+      <ul class="shop" id="shopList"></ul>
+      <details class="shopdone" id="shopDoneBox" hidden><summary id="shopDoneSum"></summary><ul class="shop" id="shopDone"></ul></details>
+    </div>`;
+  document.querySelectorAll(".seg button").forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  $("#foodAddBtn").onclick = () => openFood(null);
+  $("#foodView").onclick = e => {
+    const list = S.food.get(S.tripId) || [], find = id => list.find(x => x.id === id);
+    const lk = e.target.closest("[data-like]");
+    if (lk) { const f = find(lk.dataset.like); if (!f) return; const likes = Object.assign({}, f.likes || {});
+      if (likes[C.uid]) delete likes[C.uid]; else likes[C.uid] = S.nick;
+      setFood(S.tripId, Object.assign({}, f, { likes })); renderFood(false); return; }
+    const vd = e.target.closest("[data-visit]");
+    if (vd) { const f = find(vd.dataset.visit); if (f) { setFood(S.tripId, Object.assign({}, f, { visited: !f.visited })); renderFood(false); } return; }
+    const pl = e.target.closest("[data-toplan]");
+    if (pl) { const f = find(pl.dataset.toplan); if (f) openItem(trip(S.tripId), null, { place: f.name, address: f.address, lat: f.lat, lng: f.lng, memo: [f.memo, f.link].filter(Boolean).join("\n") }); return; }
+    const fe = e.target.closest("[data-fedit]"); if (fe) { openFood(find(fe.dataset.fedit)); return; }
+    const fc = e.target.closest("[data-ffocus]");
+    if (fc && S.fmarkers[fc.dataset.ffocus] && S.fmap) { const mk = S.fmarkers[fc.dataset.ffocus]; S.fmap.setView(mk.getLatLng(), 16); mk.openPopup(); $("#fmap").scrollIntoView({ behavior: "smooth", block: "center" }); }
+  };
+  $("#shopAdd").onsubmit = e => {
+    e.preventDefault(); const v = $("#shopIn").value.trim(); if (!v) return;
+    setShop(S.tripId, { id: uid(), name: v, memo: "", who: "", done: false, created: Date.now(), addedBy: S.nick });
+    $("#shopIn").value = ""; renderShop();
+  };
+  $("#shopView").onclick = e => {
+    const c = e.target.closest("[data-chk]");
+    if (c) { const it = (S.shop.get(S.tripId) || []).find(x => x.id === c.dataset.chk); if (!it) return;
+      const done = !it.done; setShop(S.tripId, Object.assign({}, it, { done, doneBy: done ? S.nick : "" })); renderShop(); return; }
+    const ed = e.target.closest("[data-sedit]");
+    if (ed) openShopItem((S.shop.get(S.tripId) || []).find(x => x.id === ed.dataset.sedit));
+  };
   $("#back").onclick = goList;
   $("#menu").onclick = () => openDlg($("#md"));
   $("#add").onclick = () => openItem(trip(S.tripId), null);
@@ -897,9 +1058,147 @@ function renderTrip() {
   };
   initMap();
   updateTrip(true);
+  if (S.mode !== "plan") setMode(S.mode);
 }
+/* ---------- 쇼핑리스트 ---------- */
+function setMode(m) {
+  S.mode = m;
+  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === m)));
+  $("#planView").hidden = m !== "plan"; $("#shopView").hidden = m !== "shop"; $("#foodView").hidden = m !== "food";
+  if (m === "plan" && S.map) setTimeout(() => { try { S.map.invalidateSize(); } catch (e) {} }, 50);
+  if (m === "food") { if (!S.fmap) initFoodMap(); else setTimeout(() => { try { S.fmap.invalidateSize(); } catch (e) {} }, 50); renderFood(true); }
+  renderShop();
+}
+/* ---------- 맛집리스트 ---------- */
+function initFoodMap() {
+  if (!window.L || !$("#fmap")) { if ($("#fmap")) $("#fmap").innerHTML = '<p class="mapmsg">지도를 불러오지 못했어요.</p>'; return; }
+  S.fmap = L.map("fmap"); addTiles(S.fmap); S.flayer = L.layerGroup().addTo(S.fmap); S.fmap.setView([36.4, 127.9], 6);
+}
+const likeCount = f => Object.keys(f.likes || {}).length;
+function renderFood(fit) {
+  if (!$("#foodList")) return;
+  const all = S.food.get(S.tripId) || [];
+  const rank = (a, b) => likeCount(b) - likeCount(a) || (a.created || 0) - (b.created || 0);
+  const todo = all.filter(x => !x.visited).sort(rank), done = all.filter(x => x.visited).sort(rank);
+  const num = new Map(); [...todo, ...done].forEach((f, i) => num.set(f.id, i + 1));
+  const card = f => {
+    const n = likeCount(f), mine = !!(f.likes || {})[C.uid], has = f.lat != null;
+    const who = Object.values(f.likes || {});
+    return `<li class="fi${f.visited ? " done" : ""}">
+      <div class="ftop"><span class="fnum${has ? "" : " off"}" data-ffocus="${f.id}">${num.get(f.id)}</span><h3 data-ffocus="${f.id}">${esc(f.name)}</h3>
+        <button type="button" class="like" data-like="${f.id}" aria-pressed="${mine}" aria-label="가고 싶어요">♥ ${n}</button></div>
+      ${f.address ? `<div class="addr">${linkify(f.address)}</div>` : ""}
+      ${f.memo ? `<div class="fm">${linkify(f.memo)}</div>` : ""}
+      ${f.link ? `<div class="addr">${linkify(f.link)}</div>` : ""}
+      <div class="fw">${who.length ? `♥ ${who.map(esc).join(", ")} · ` : ""}${f.addedBy ? esc(f.addedBy) + " 추가" : ""}</div>
+      <div class="acts"><button type="button" data-toplan="${f.id}">일정에 넣기</button><button type="button" data-visit="${f.id}">${f.visited ? "안 갔어요" : "다녀왔어요"}</button><button type="button" data-fedit="${f.id}">수정</button>
+        ${has ? `<a href="https://map.kakao.com/link/to/${encodeURIComponent(f.name)},${f.lat},${f.lng}" target="_blank" rel="noopener">카카오맵</a><a href="https://www.google.com/maps/search/?api=1&query=${f.lat},${f.lng}" target="_blank" rel="noopener">구글 지도</a>` : ""}</div></li>`;
+  };
+  $("#foodList").innerHTML = todo.length ? todo.map(card).join("") : `<li class="none">${done.length ? "모두 다녀왔어요!" : "가고 싶은 맛집을 ‘+ 맛집 추가’로 모아 보세요. 같이 가는 사람 모두에게 보여요."}</li>`;
+  $("#foodDoneBox").hidden = !done.length; $("#foodDoneSum").textContent = `다녀온 곳 ${done.length}개`;
+  $("#foodDone").innerHTML = done.map(card).join("");
+  const cnt = $("#foodCnt"); if (cnt) { cnt.hidden = !all.length; cnt.textContent = all.length; }
+  S.fmarkers = {};
+  if (S.fmap && S.flayer) {
+    S.flayer.clearLayers(); const pts = [];
+    all.forEach(f => { if (f.lat == null) return;
+      S.fmarkers[f.id] = L.marker([f.lat, f.lng], { icon: pinIcon(num.get(f.id), "food") }).addTo(S.flayer).bindPopup(`<b>${esc(f.name)}</b><br>♥ ${likeCount(f)}`);
+      pts.push([f.lat, f.lng]); });
+    if (fit) { if (pts.length) S.fmap.fitBounds(pts, { padding: [30, 30], maxZoom: 15 }); }
+  }
+}
+let FE = null, foodMap = null, foodMarker = null;
+function openFood(f) {
+  FE = { f, lat: f ? f.lat : null, lng: f ? f.lng : null };
+  $("#fdTitle").textContent = f ? "맛집 수정" : "맛집 추가";
+  $("#fdName").value = f ? f.name : ""; $("#fdMemo").value = f ? f.memo || "" : ""; $("#fdLink").value = f ? f.link || "" : ""; $("#fdAddr").value = f ? f.address || "" : "";
+  $("#fdResults").hidden = true; $("#fdDel").hidden = !f;
+  openDlg($("#fd"));
+  if (foodMap) { foodMap.remove(); foodMap = null; foodMarker = null; }
+  if (window.L) {
+    foodMap = L.map("fdMap", { attributionControl: false }); addTiles(foodMap);
+    const others = (S.food.get(S.tripId) || []).concat(trip(S.tripId).items).filter(x => x.lat != null);
+    if (FE.lat != null) foodMap.setView([FE.lat, FE.lng], 15);
+    else if (others.length) foodMap.fitBounds(others.map(x => [x.lat, x.lng]), { padding: [24, 24], maxZoom: 13 });
+    else foodMap.setView([36.4, 127.9], 6);
+    foodMap.on("click", e => setFoodLoc(+e.latlng.lat.toFixed(6), +e.latlng.lng.toFixed(6), false));
+    setTimeout(() => foodMap && foodMap.invalidateSize(), 60);
+  }
+  setFoodLoc(FE.lat, FE.lng, false);
+}
+function setFoodLoc(lat, lng, fly = true) {
+  FE.lat = lat; FE.lng = lng;
+  $("#fdLoc").textContent = lat == null ? "위치는 없어도 돼요. 지도에 표시하려면 검색하거나 지도를 눌러 주세요." : "위치가 정해졌어요. 정확하지 않으면 지도에서 원하는 곳을 눌러 옮기세요.";
+  if (!foodMap) return;
+  if (lat == null) { if (foodMarker) { foodMarker.remove(); foodMarker = null; } return; }
+  if (!foodMarker) foodMarker = L.marker([lat, lng], { icon: pinIcon("●", "food") }).addTo(foodMap); else foodMarker.setLatLng([lat, lng]);
+  if (fly) foodMap.setView([lat, lng], Math.max(foodMap.getZoom(), 15));
+}
+$("#fdFind").onclick = async () => {
+  const q = $("#fdAddr").value.trim() || $("#fdName").value.trim(), box = $("#fdResults");
+  if (!q) { toast("가게 이름이나 주소를 먼저 입력해 주세요."); return; }
+  box.hidden = false; box.innerHTML = "<li><p>검색 중…</p></li>";
+  try {
+    const res = await geocode(q);
+    if (!res.length) { box.innerHTML = "<li><p>찾지 못했어요. 현지어 이름이나 주소로 다시 검색하거나, 지도를 직접 눌러 위치를 정하세요.</p></li>"; return; }
+    box.innerHTML = res.map((r, i) => `<li><button type="button" data-i="${i}"><b>${esc(r.name)}</b><small>${esc(r.addr)}</small></button></li>`).join("");
+    box.onclick = e => { const b = e.target.closest("[data-i]"); if (!b) return; const r = res[+b.dataset.i];
+      setFoodLoc(r.lat, r.lng); if (!$("#fdName").value.trim()) $("#fdName").value = r.name; if (!$("#fdAddr").value.trim()) $("#fdAddr").value = r.addr; box.hidden = true; };
+  } catch (err) { box.innerHTML = `<li><p>검색하지 못했어요. 인터넷 연결을 확인해 주세요.</p></li>`; }
+};
+$("#fdAddr").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("#fdFind").click(); } });
+$("#fdCancel").onclick = () => $("#fd").close();
+$("#fdForm").onsubmit = e => {
+  e.preventDefault(); const name = $("#fdName").value.trim(); if (!name) { $("#fdName").focus(); return; }
+  const data = { name, memo: $("#fdMemo").value.trim(), link: $("#fdLink").value.trim(), address: $("#fdAddr").value.trim(), lat: FE.lat, lng: FE.lng };
+  setFood(S.tripId, FE.f ? Object.assign({}, FE.f, data) : Object.assign({ id: uid(), created: Date.now(), addedBy: S.nick, likes: { [C.uid]: S.nick }, visited: false }, data));
+  $("#fd").close(); renderFood(!FE.f); toast("저장했어요.");
+};
+$("#fdDel").onclick = async () => {
+  if (!FE.f || !(await askConfirm(`‘${FE.f.name}’을(를) 맛집리스트에서 지울까요?`, "지우기"))) return;
+  delFood(S.tripId, FE.f.id); $("#fd").close(); renderFood(false);
+};
+function renderShop() {
+  if (!$("#shopList")) return;
+  const all = S.shop.get(S.tripId) || [];
+  const todo = all.filter(x => !x.done).sort((a, b) => (a.created || 0) - (b.created || 0));
+  const done = all.filter(x => x.done).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  const row = x => {
+    const info = [x.memo ? esc(x.memo) : "", x.who ? `<b>${esc(x.who)}</b> 담당` : "",
+      x.done ? `${esc(x.doneBy || x.updatedBy || "")} 구매` : (x.addedBy ? `${esc(x.addedBy)} 추가` : "")].filter(Boolean).join(" · ");
+    return `<li class="shopi${x.done ? " done" : ""}"><button type="button" class="chk" data-chk="${x.id}" aria-pressed="${!!x.done}" aria-label="${esc(x.name)} ${x.done ? "구매 취소" : "구매 완료"}">✓</button>
+      <div class="sb" data-sedit="${x.id}"><div class="sn">${esc(x.name)}</div>${info ? `<div class="sm">${info}</div>` : ""}</div></li>`;
+  };
+  $("#shopList").innerHTML = todo.length ? todo.map(row).join("") : `<li class="none">${done.length ? "다 샀어요!" : "아직 쇼핑리스트가 비어 있어요. 위 칸에 살 것을 적어 보세요. 같이 가는 사람 모두에게 보여요."}</li>`;
+  $("#shopDoneBox").hidden = !done.length;
+  $("#shopDoneSum").textContent = `구매 완료 ${done.length}개`;
+  $("#shopDone").innerHTML = done.map(row).join("");
+  const cnt = $("#shopCnt"); if (cnt) { cnt.hidden = !todo.length; cnt.textContent = todo.length; }
+}
+let SE = null;
+function openShopItem(it) {
+  if (!it) return; SE = it; const t = trip(S.tripId);
+  $("#shName").value = it.name; $("#shMemo").value = it.memo || "";
+  const names = memberList(t).map(m => m.nick);
+  if (it.who && !names.includes(it.who)) names.push(it.who);
+  $("#shWho").innerHTML = `<option value="">아무나</option>` + names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  $("#shWho").value = it.who || "";
+  openDlg($("#sh"));
+}
+$("#shCancel").onclick = () => $("#sh").close();
+$("#shForm").onsubmit = e => {
+  e.preventDefault(); const name = $("#shName").value.trim(); if (!name) return;
+  setShop(S.tripId, Object.assign({}, SE, { name, memo: $("#shMemo").value.trim(), who: $("#shWho").value }));
+  $("#sh").close(); renderShop();
+};
+$("#shDel").onclick = async () => {
+  if (!SE || !(await askConfirm(`‘${SE.name}’을(를) 쇼핑리스트에서 지울까요?`, "지우기"))) return;
+  delShop(S.tripId, SE.id); $("#sh").close(); renderShop();
+};
+
 function updateTrip(fit) {
   const t = trip(S.tripId); if (!t || !$("#tabs")) return;
+  setTimeout(() => { renderShop(); renderFood(false); }, 0);
   const days = tripDays(t);
   if (S.day !== "all" && !days.includes(S.day)) S.day = "all";
   $("#tTitle").textContent = t.title;
@@ -928,15 +1227,54 @@ function updateTrip(fit) {
   if (fit) { const sel = $(".tab[aria-selected=true]"); if (sel) sel.scrollIntoView({ inline: "center", block: "nearest" }); }
   drawMarkers(groups, fit);
 }
-function tileLayer() {
-  return L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/${S.darkBg ? "dark_all" : "voyager"}/{z}/{x}/{y}{r}.png`, {
-    maxZoom: 19, subdomains: "abcd", attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+/* 지도 그림(타일): CARTO가 안 되면 OpenStreetMap 기본 지도로 자동 전환 */
+const TILE_SOURCES = [
+  () => L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/${S.darkBg ? "dark_all" : "voyager"}/{z}/{x}/{y}{r}.png`, {
+    maxZoom: 19, subdomains: "abcd", attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' }),
+  () => L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' })
+];
+let tileIdx = ls.get("tn-tiles", 0) || 0;
+function addTiles(map) {
+  const make = i => {
+    const layer = TILE_SOURCES[i]().addTo(map); let ok = 0, bad = 0;
+    layer.on("tileload", () => { ok++; });
+    layer.on("tileerror", () => {
+      bad++;
+      if (!ok && bad >= 4 && i + 1 < TILE_SOURCES.length) { map.removeLayer(layer); tileIdx = i + 1; ls.set("tn-tiles", tileIdx); make(i + 1); }
+      else if (!ok && bad === 8 && i + 1 >= TILE_SOURCES.length) toast("지도 그림을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.", 4000);
+    });
+  };
+  make(Math.min(tileIdx, TILE_SOURCES.length - 1));
+  const fix = () => { try { map.invalidateSize(); } catch (e) {} };
+  [80, 400, 1200].forEach(t => setTimeout(fix, t));
+}
+window.addEventListener("resize", () => { if (S.map) try { S.map.invalidateSize(); } catch (e) {} });
+/* 지도 도구(Leaflet)를 못 불러왔으면 다른 곳에서 한 번 더 시도 */
+let leafletLoading = null;
+function ensureLeaflet() {
+  if (window.L) return Promise.resolve(true);
+  if (leafletLoading) return leafletLoading;
+  leafletLoading = new Promise(res => {
+    const css = document.createElement("link"); css.rel = "stylesheet"; css.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"; document.head.appendChild(css);
+    const js = document.createElement("script"); js.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    js.onload = () => res(!!window.L); js.onerror = () => res(false); document.head.appendChild(js);
   });
+  return leafletLoading;
 }
 const pinIcon = (label, cls = "") => L.divIcon({ className: "pin " + cls, html: `<span>${label}</span>`, iconSize: [30, 30], iconAnchor: [15, 15], popupAnchor: [0, -14] });
 function initMap() {
-  if (!window.L) { $("#map").innerHTML = '<p class="mapmsg">지도를 불러오지 못했어요. 인터넷 연결을 확인한 뒤 새로고침해 주세요.</p>'; return; }
-  S.map = L.map("map"); tileLayer().addTo(S.map); S.layer = L.layerGroup().addTo(S.map); S.map.setView([36.4, 127.9], 6);
+  if (!window.L) {
+    $("#map").innerHTML = '<p class="mapmsg">지도를 준비하는 중…</p>';
+    const id = S.tripId;
+    ensureLeaflet().then(ok => {
+      if (!$("#map") || S.tripId !== id) return;
+      if (!ok) { $("#map").innerHTML = '<p class="mapmsg">지도를 불러오지 못했어요. 인터넷 연결을 확인한 뒤 앱을 다시 열어 주세요.</p>'; return; }
+      $("#map").innerHTML = ""; initMap(); updateTrip(true);
+    });
+    return;
+  }
+  S.map = L.map("map"); addTiles(S.map); S.layer = L.layerGroup().addTo(S.map); S.map.setView([36.4, 127.9], 6);
 }
 function drawMarkers(groups, fit) {
   S.markers = {}; if (!S.map) return;
@@ -955,6 +1293,10 @@ function drawMarkers(groups, fit) {
     pts.push(...line);
   });
   if (fit) { if (pts.length) S.map.fitBounds(pts, { padding: [36, 36], maxZoom: 15 }); else S.map.setView([36.4, 127.9], 6); }
+  const total = groups.reduce((n, g) => n + g.items.length, 0), hint = $("#mapHint");
+  if (hint) { hint.hidden = !(total && pts.length < total);
+    hint.textContent = pts.length ? `위치가 없는 일정 ${total - pts.length}개는 지도에 안 보여요. 일정의 ‘수정 → 위치 찾기’로 위치를 정해 주세요.`
+      : "아직 지도에 표시된 일정이 없어요. 일정의 ‘수정 → 위치 찾기’로 위치를 정하면 핀이 나타나요."; }
 }
 function focusItem(id) {
   document.querySelectorAll(".item.on").forEach(e => e.classList.remove("on"));
@@ -1199,18 +1541,18 @@ $("#idForm").onsubmit = e => {
 
 /* ---------- 일정 추가/수정 ---------- */
 let E = null, miniMap = null, miniMarker = null;
-function openItem(t, it) {
-  E = { code: t.id, t, it, lat: it ? it.lat : null, lng: it ? it.lng : null, photos: it ? [...(it.photos || [])] : [], pend: new Map() };
+function openItem(t, it, pre) {
+  E = { code: t.id, t, it, lat: it ? it.lat : (pre && pre.lat != null ? pre.lat : null), lng: it ? it.lng : (pre && pre.lng != null ? pre.lng : null), photos: it ? [...(it.photos || [])] : [], pend: new Map() };
   $("#edTitle").textContent = it ? "일정 수정" : "일정 추가";
   const days = tripDays(t);
   $("#fDate").innerHTML = days.map((d, i) => `<option value="${d}">${i + 1}일차 · ${dlabel(d)}</option>`).join("");
   $("#fDate").value = it ? it.date : (S.day !== "all" ? S.day : days[0]);
   $("#fTime").value = it ? it.time || "" : "";
-  $("#fPlace").value = it ? it.place : "";
+  $("#fPlace").value = it ? it.place : (pre ? pre.place || "" : "");
   $("#fDur").value = it ? it.duration || "" : "";
   $("#fBook").value = it ? it.booking || "" : "";
-  $("#fAddr").value = it ? it.address || "" : "";
-  $("#fMemo").value = it ? it.memo || "" : "";
+  $("#fAddr").value = it ? it.address || "" : (pre ? pre.address || "" : "");
+  $("#fMemo").value = it ? it.memo || "" : (pre ? pre.memo || "" : "");
   $("#fResults").hidden = true; $("#fResults").innerHTML = "";
   $("#fDel").hidden = !it;
   renderEdPhotos();
@@ -1228,7 +1570,7 @@ function setLoc(lat, lng, fly = true) {
 function setupMiniMap() {
   if (miniMap) { miniMap.remove(); miniMap = null; miniMarker = null; }
   if (!window.L) { $("#fMap").innerHTML = '<p class="mapmsg">지도를 불러오지 못했어요.</p>'; setLoc(E.lat, E.lng); return; }
-  miniMap = L.map("fMap", { attributionControl: false }); tileLayer().addTo(miniMap);
+  miniMap = L.map("fMap", { attributionControl: false }); addTiles(miniMap);
   const others = E.t.items.filter(i => i.lat != null);
   if (E.lat != null) miniMap.setView([E.lat, E.lng], 15);
   else if (others.length) miniMap.fitBounds(others.map(i => [i.lat, i.lng]), { padding: [24, 24], maxZoom: 13 });
@@ -1308,6 +1650,7 @@ $("#edForm").onsubmit = e => {
     address: $("#fAddr").value.trim(), memo: $("#fMemo").value.trim(), lat: E.lat, lng: E.lng, photos: E.photos };
   setItem(code, E.it ? Object.assign({}, E.it, data) : Object.assign({ id: uid(), created: Date.now() }, data));
   const keepDay = S.day === "all" || S.day === data.date ? S.day : data.date;
+  if (S.mode !== "plan" && !E.it) setTimeout(() => setMode("plan"), 0);
   closeEditor(); S.day = keepDay; updateTrip(false); toast("저장했어요.");
 };
 $("#fDel").onclick = async () => {
