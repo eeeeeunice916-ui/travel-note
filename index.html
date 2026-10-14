@@ -498,6 +498,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
+const APP_VERSION = "1.4";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBXg7n77SOIygufhwaVg5WSiZgPyJMnjms",
   authDomain: "travel-note-44cdf.firebaseapp.com",
@@ -950,7 +951,8 @@ function renderList() {
     ${legacy}
     <div class="row" style="margin-bottom:14px"><button class="btn sm" id="joinBtn">코드로 입장</button>${S.nick ? `<span class="meta" style="align-self:center">내 닉네임: ${esc(S.nick)}</span>` : ""}</div>
     <section class="trips">${loaded.map(card).join("")}${waiting.map(wait).join("")}${loaded.length || waiting.length ? "" : '<div class="empty">아직 여행이 없어요.<br>‘새 여행’을 만들거나, 친구에게 받은 코드로 입장하세요.</div>'}</section>
-    ${loaded.length ? '<p class="lphint">여행을 3초 동안 누르고 있으면 삭제하거나 방에서 나갈 수 있어요.</p>' : ""}`;
+    ${loaded.length ? '<p class="lphint">여행을 3초 동안 누르고 있으면 삭제하거나 방에서 나갈 수 있어요.</p>' : ""}
+    <p class="lphint">앱 버전 ${APP_VERSION}</p>`;
   $("#newTrip").onclick = () => openTrip(null);
   $("#openSet").onclick = () => openSettings();
   $("#joinBtn").onclick = () => openJoin("");
@@ -1728,6 +1730,23 @@ async function importBackup(file) {
 $("#exp").onclick = exportBackup;
 $("#imp").onchange = e => { importBackup(e.target.files[0]); e.target.value = ""; };
 
+/* ---------- 새 버전 확인 ----------
+   올린 앱이 바뀌었는데 폰이 옛 버전을 기억하고 있으면, 새로 받을 수 있게 알려 줌 */
+async function checkUpdate() {
+  if (!/^https?:$/.test(location.protocol)) return;
+  try {
+    const r = await fetch(location.pathname + "?check=" + Date.now(), { cache: "no-store" });
+    const m = (await r.text()).match(/const APP_VERSION = "([^"]+)"/);
+    if (m && m[1] !== APP_VERSION && !document.querySelector(".upd")) {
+      const bar = document.createElement("div"); bar.className = "toast upd";
+      bar.innerHTML = `새 버전(${esc(m[1])})이 있어요 <button class="btn sm primary" type="button" style="margin-left:8px">새로 받기</button>`;
+      bar.querySelector("button").onclick = () => location.replace(location.pathname + "?v=" + Date.now());
+      document.body.appendChild(bar);
+    }
+  } catch (e) {}
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkUpdate(); });
+
 /* ---------- 시작 ---------- */
 async function boot() {
   S.set = loadSettings(); applySettings();
@@ -1745,6 +1764,7 @@ async function boot() {
   showList();
   if (m && S.codes.includes(m[1])) { if (S.rooms.has(m[1])) openTripView(m[1]); else S.pendingTrip = m[1]; }
   if (join) handleJoinLink(join);
+  checkUpdate();
   readLegacy().then(l => { S.legacy = l; if (!S.tripId && l && l.trips.length) renderList(); });
 }
 boot();
