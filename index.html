@@ -89,9 +89,37 @@ a{color:var(--accent);overflow-wrap:anywhere}
 .bar .bt{flex:1;min-width:0}
 .bar h1{font-size:18px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar p{margin:0;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
-.notes{margin:4px 0 14px;padding:14px 16px;border-radius:var(--r);background:var(--mark);color:var(--ink);border-left:4px solid var(--mark-ink)}
-.notes h2{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;color:var(--mark-ink);margin-bottom:6px}
+.notes{margin:4px 0 14px;padding:14px 16px;border-radius:var(--r);background:var(--memo,var(--mark));color:var(--ink);border-left:4px solid var(--memo-ink,var(--mark-ink))}
+.notes.custom{color:#17212A}
+.notes.custom a{color:#0B5E4D}
+.notes h2{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;color:var(--memo-ink,var(--mark-ink));margin-bottom:6px}
+.notes.custom .link{color:var(--memo-ink)}
 .notes .txt{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+/* 꾸민 메모 보기 */
+.notes .txt.rich,.rich{white-space:normal;overflow-wrap:anywhere}
+.rich div,.rich p{margin:0;min-height:1.2em}
+.rich span[style*="background"]{color:#17212A;border-radius:3px;padding:0 1px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.memo-rich{margin-top:8px;font-size:14px}
+/* 메모 편집기 */
+.rte{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--field)}
+.rtbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:6px;border-bottom:1px solid var(--line);background:var(--surface)}
+.rtbar button{min-width:36px;height:34px;padding:0 6px;border-radius:8px;border:1px solid transparent;background:transparent;cursor:pointer;font-size:16px;color:var(--ink);font-family:Georgia,serif}
+.rtbar button[aria-pressed="true"]{background:var(--soft);border-color:var(--accent)}
+.rtbar button.hl{min-width:26px;width:26px;height:26px;padding:0;border-radius:50%;border:1px solid rgba(0,0,0,.18)}
+.rtbar button.hlx{font-family:var(--font);font-size:12px;color:var(--muted)}
+.rtbar select{width:auto;min-height:34px;padding:4px 8px;font-size:14px;border-radius:8px}
+.rtsep{width:1px;height:22px;background:var(--line);margin:0 2px}
+.rtlab{font-size:12px;color:var(--muted);margin:0 2px}
+.rtbox{min-height:130px;max-height:42vh;overflow:auto;padding:10px 12px;font-size:16px;line-height:1.55;outline:none;color:var(--ink);-webkit-user-select:text;user-select:text;white-space:normal;overflow-wrap:anywhere}
+.rtbox.custom{color:#17212A}
+.rtbox:empty::before{content:attr(data-ph);color:var(--muted);white-space:pre-line}
+.rtbox div,.rtbox p{margin:0}
+.rtbox span[style*="background"]{color:#17212A}
+.sw.small{gap:8px}
+.sw.small button{width:34px;height:34px}
+.fontlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.fontlist button{min-height:48px;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:16px;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fontlist button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--soft)}
 .notes-add{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
 .tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
@@ -268,7 +296,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
     <ul id="fResults" class="results" hidden></ul>
     <div id="fMap" class="minimap"></div>
     <p class="hint" id="fLoc"></p>
-    <label for="fMemo">세부 메모<textarea id="fMemo" rows="4" placeholder="한 줄에 하나씩 적으면 목록으로 보여요.&#10;링크와 전화번호는 눌러서 열 수 있어요."></textarea></label>
+    <div><span class="lab">세부 메모</span><div class="rte" data-rte="fMemoRich" data-ph="예약 번호, 먹을 것, 주의할 점 등&#10;링크와 전화번호는 눌러서 열 수 있어요."></div></div>
     <div>
       <span class="lab">사진·캡처</span>
       <div id="fPhotos" class="pgrid"></div>
@@ -317,7 +345,8 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
   <form id="ndForm" method="dialog">
     <h2>여행 준비 메모</h2>
     <p class="desc">비짓재팬 웹, 결정사항, 꼭 챙길 것처럼 여행 전체에 해당하는 내용을 적어 두세요.</p>
-    <label for="nText" class="lab">메모<textarea id="nText" rows="8"></textarea></label>
+    <div><span class="lab">메모</span><div class="rte" data-rte="nRich" data-ph="예: 비짓재팬 웹 꼭 등록하기&#10;결정사항, 챙길 것"></div></div>
+    <div class="set"><span class="lab">메모장 색</span><div class="sw small" id="nColors"></div></div>
     <div class="dfoot"><span class="sp"></span>
       <button type="button" class="btn" id="nCancel">취소</button>
       <button type="submit" class="btn primary">저장</button></div>
@@ -399,6 +428,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
     <h2>설정</h2>
     <section class="set"><h3>내 닉네임</h3>
       <div class="search"><input id="sNick" maxlength="12" placeholder="닉네임" autocomplete="off" aria-label="내 닉네임"><button type="button" class="btn" id="sNickSave">바꾸기</button></div></section>
+    <section class="set"><h3>글씨체</h3><div class="fontlist" id="fontList"></div></section>
     <section class="set"><h3>배경색</h3><div class="sw" id="swBg"></div></section>
     <section class="set"><h3>날짜 탭 색</h3><p class="desc">선택한 일차 탭의 색이에요.</p><div class="sw" id="swTab"></div></section>
     <section class="set"><h3>포인트 색</h3><p class="desc">시간, 버튼, 지도 경로의 색이에요.</p><div class="sw" id="swAcc"></div></section>
@@ -498,7 +528,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.4";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.5";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBXg7n77SOIygufhwaVg5WSiZgPyJMnjms",
   authDomain: "travel-note-44cdf.firebaseapp.com",
@@ -560,6 +590,121 @@ const ls = {
   get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 };
+
+/* ---------- 꾸민 메모 (굵게·기울임·밑줄·형광펜·크기) ---------- */
+const RICH_KEEP = new Set(["B", "STRONG", "I", "EM", "U", "SPAN", "FONT", "MARK", "BR", "DIV", "P"]);
+const FONT_SIZE = { 1: "x-small", 2: "small", 3: "medium", 4: "large", 5: "x-large", 6: "xx-large", 7: "xxx-large" };
+const SIZE_OK = /^(x-small|small|medium|large|x-large|xx-large|xxx-large|\d{1,2}(\.\d+)?(px|em|rem|%))$/;
+const COLOR_OK = /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|[a-z]{3,20})$/i;
+function cleanRich(src, doc) {
+  const frag = doc.createDocumentFragment();
+  src.childNodes.forEach(n => {
+    if (n.nodeType === 3) { frag.appendChild(doc.createTextNode(n.nodeValue)); return; }
+    if (n.nodeType !== 1) return;
+    const tag = n.tagName;
+    if (!RICH_KEEP.has(tag)) {           // 모르는 태그는 글자만 남김 (줄 단위 태그는 줄로)
+      const inner = cleanRich(n, doc);
+      if (/^(LI|H\d|TR|BLOCKQUOTE|PRE|UL|OL|TABLE|SECTION|ARTICLE)$/.test(tag)) { const d = doc.createElement("div"); d.appendChild(inner); frag.appendChild(d); }
+      else frag.appendChild(inner);
+      return;
+    }
+    if (tag === "BR") { frag.appendChild(doc.createElement("br")); return; }
+    const st = [], cs = n.style || {};
+    const fw = cs.fontWeight; if (fw && (fw === "bold" || +fw >= 600)) st.push("font-weight:bold");
+    if (cs.fontStyle === "italic") st.push("font-style:italic");
+    const td = (cs.textDecorationLine || cs.textDecoration || ""); if (/underline/.test(td)) st.push("text-decoration:underline");
+    const bg = cs.backgroundColor; if (bg && COLOR_OK.test(bg.replace(/\s/g, ""))) st.push("background-color:" + bg);
+    let fs = cs.fontSize; if (tag === "FONT" && n.getAttribute("size")) fs = FONT_SIZE[+n.getAttribute("size")] || fs;
+    if (fs && SIZE_OK.test(fs)) st.push("font-size:" + fs);
+    if (tag === "MARK" && !bg) st.push("background-color:#FFF176");
+    let el;
+    if (tag === "B" || tag === "STRONG") el = doc.createElement("b");
+    else if (tag === "I" || tag === "EM") el = doc.createElement("i");
+    else if (tag === "U") el = doc.createElement("u");
+    else if (tag === "DIV" || tag === "P") el = doc.createElement("div");
+    else if (st.length) el = doc.createElement("span");
+    else { frag.appendChild(cleanRich(n, doc)); return; }
+    if (st.length) el.setAttribute("style", st.join(";"));
+    el.appendChild(cleanRich(n, doc));
+    frag.appendChild(el);
+  });
+  return frag;
+}
+function sanitizeRich(html) {
+  const tpl = document.createElement("template"); tpl.innerHTML = String(html || "");
+  const out = document.createElement("div"); out.appendChild(cleanRich(tpl.content, document));
+  return out.innerHTML;
+}
+function richHtml(html) {          // 보여줄 때: 정리하고 링크·전화번호를 누를 수 있게
+  const box = document.createElement("div"); box.innerHTML = sanitizeRich(html);
+  const walk = document.createTreeWalker(box, NodeFilter.SHOW_TEXT), texts = [];
+  while (walk.nextNode()) texts.push(walk.currentNode);
+  texts.forEach(tn => {
+    const linked = linkify(tn.nodeValue);
+    if (linked === esc(tn.nodeValue)) return;
+    const tpl = document.createElement("template"); tpl.innerHTML = linked; tn.replaceWith(tpl.content);
+  });
+  return box.innerHTML;
+}
+const plainToHtml = s => String(s || "").split("\n").map(l => `<div>${l ? esc(l) : "<br>"}</div>`).join("");
+function setRich(box, html) { box.innerHTML = sanitizeRich(html || ""); if (!box.textContent.trim()) box.innerHTML = ""; }
+function richOut(box) {
+  const text = (box.innerText || box.textContent || "").replace(/\u00a0/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+  return { text, html: text ? sanitizeRich(box.innerHTML) : "" };
+}
+function rteBar() {
+  const hl = [["#FFF176", "노랑"], ["#B9F6CA", "연두"], ["#B3E5FC", "하늘"], ["#F8BBD0", "분홍"], ["#FFCC80", "주황"]];
+  return `<div class="rtbar">
+    <select class="rtsize" aria-label="글씨 크기"><option value="">크기</option><option value="2">작게</option><option value="3">보통</option><option value="5">크게</option><option value="6">아주 크게</option></select>
+    <button type="button" data-cmd="bold" aria-label="굵게" aria-pressed="false"><b>B</b></button>
+    <button type="button" data-cmd="italic" aria-label="기울이기" aria-pressed="false"><i>I</i></button>
+    <button type="button" data-cmd="underline" aria-label="밑줄" aria-pressed="false"><u>U</u></button>
+    <span class="rtsep"></span><span class="rtlab">형광펜</span>
+    ${hl.map(([c, n]) => `<button type="button" class="hl" data-hl="${c}" aria-label="형광펜 ${n}" style="background:${c}"></button>`).join("")}
+    <button type="button" class="hlx" data-hl="transparent" aria-label="형광펜 지우기">지우기</button>
+  </div>`;
+}
+document.querySelectorAll(".rte[data-rte]").forEach(el => {
+  el.innerHTML = rteBar() + `<div class="rtbox" id="${el.dataset.rte}" contenteditable="true" role="textbox" aria-multiline="true" data-ph="${esc(el.dataset.ph || "")}"></div>`;
+});
+let rteRange = null, rteBox = null;
+function rteState(box) {
+  const bar = box.closest(".rte").querySelector(".rtbar");
+  bar.querySelectorAll("[data-cmd]").forEach(b => { let on = false; try { on = document.queryCommandState(b.dataset.cmd); } catch (e) {} b.setAttribute("aria-pressed", String(!!on)); });
+}
+document.addEventListener("selectionchange", () => {
+  const sel = getSelection(); if (!sel || !sel.rangeCount) return;
+  const r = sel.getRangeAt(0); let n = r.commonAncestorContainer; if (n.nodeType !== 1) n = n.parentNode;
+  const box = n && n.closest ? n.closest(".rtbox") : null;
+  if (box) { rteRange = r.cloneRange(); rteBox = box; rteState(box); }
+});
+function rteRun(box, fn) {
+  box.focus();
+  if (rteRange && rteBox === box) { const sel = getSelection(); sel.removeAllRanges(); sel.addRange(rteRange); }
+  try { fn(); } catch (e) {}
+  rteState(box);
+}
+["pointerdown", "mousedown"].forEach(t => document.addEventListener(t, e => { if (e.target.closest(".rtbar button")) e.preventDefault(); }));
+document.addEventListener("click", e => {
+  const b = e.target.closest(".rtbar button"); if (!b) return;
+  const box = b.closest(".rte").querySelector(".rtbox");
+  if (b.dataset.cmd) rteRun(box, () => { document.execCommand("styleWithCSS", false, false); document.execCommand(b.dataset.cmd, false, null); });
+  else if (b.dataset.hl) rteRun(box, () => {
+    document.execCommand("styleWithCSS", false, true);
+    if (!document.execCommand("hiliteColor", false, b.dataset.hl)) document.execCommand("backColor", false, b.dataset.hl);
+    document.execCommand("styleWithCSS", false, false);
+  });
+});
+document.addEventListener("change", e => {
+  const s = e.target.closest(".rtsize"); if (!s || !s.value) return;
+  const box = s.closest(".rte").querySelector(".rtbox"), v = s.value; s.value = "";
+  rteRun(box, () => { document.execCommand("styleWithCSS", false, false); document.execCommand("fontSize", false, v); });
+});
+document.addEventListener("paste", e => {    // 다른 앱 글을 붙일 때는 글자만 (서식이 꼬이지 않게)
+  const box = e.target.closest && e.target.closest(".rtbox"); if (!box) return;
+  e.preventDefault(); const t = (e.clipboardData || window.clipboardData).getData("text/plain");
+  document.execCommand("insertText", false, t);
+});
 
 /* ---------- 방 코드 ---------- */
 const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";   // 헷갈리는 0/O, 1/I/L 제외
@@ -713,7 +858,7 @@ function hydrate(root, code) {
 }
 function createRoom(t) {
   const code = newCode(), now = Date.now();
-  const doc = { title: t.title, start: t.start, end: t.end, notes: t.notes || "", days: t.days || {}, owner: C.uid,
+  const doc = { title: t.title, start: t.start, end: t.end, notes: t.notes || "", notesHtml: t.notesHtml || "", notesColor: t.notesColor || "", days: t.days || {}, owner: C.uid,
     members: { [C.uid]: { nick: S.nick, joinedAt: now } }, createdAt: now, updatedAt: now, updatedBy: S.nick };
   S.rooms.set(code, doc); addCode(code);
   const p = fire(roomRef(code).set(doc));
@@ -754,7 +899,44 @@ function refresh(kind, code) {
 }
 
 /* ---------- 설정: 배경색·탭 색·포인트 색 ---------- */
-const DEF_SET = { bg: "#FFFFFF", tab: "#17212A", accent: "#0E7C66", pw: "" };
+const DEF_SET = { bg: "#FFFFFF", tab: "#17212A", accent: "#0E7C66", pw: "", font: "pretendard" };
+const FONT_BASE = '"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif';
+const FONTS = [
+  ["pretendard", "기본 (프리텐다드)", '"Pretendard"', ""],
+  ["system", "아이폰 기본", '-apple-system,"Apple SD Gothic Neo"', ""],
+  ["noto", "노토 산스", '"Noto Sans KR"', "Noto+Sans+KR:wght@400;700;800"],
+  ["nanumgothic", "나눔고딕", '"Nanum Gothic"', "Nanum+Gothic:wght@400;700;800"],
+  ["nanummyeongjo", "나눔명조", '"Nanum Myeongjo"', "Nanum+Myeongjo:wght@400;700;800"],
+  ["gowundodum", "고운돋움", '"Gowun Dodum"', "Gowun+Dodum"],
+  ["gowunbatang", "고운바탕", '"Gowun Batang"', "Gowun+Batang:wght@400;700"],
+  ["jua", "주아", '"Jua"', "Jua"],
+  ["dohyeon", "도현", '"Do Hyeon"', "Do+Hyeon"],
+  ["gaegu", "개구", '"Gaegu"', "Gaegu:wght@400;700"],
+  ["penscript", "나눔손글씨 펜", '"Nanum Pen Script"', "Nanum+Pen+Script"],
+  ["himelody", "하이멜로디", '"Hi Melody"', "Hi+Melody"]
+];
+const fontLoaded = new Set();
+function loadFonts(list) {
+  const need = list.filter(f => f[3] && !fontLoaded.has(f[0])); if (!need.length) return;
+  need.forEach(f => fontLoaded.add(f[0]));
+  const l = document.createElement("link"); l.rel = "stylesheet";
+  l.href = "https://fonts.googleapis.com/css2?" + need.map(f => "family=" + f[3]).join("&") + "&display=swap";
+  document.head.appendChild(l);
+}
+function applyFont() {
+  const f = FONTS.find(x => x[0] === S.set.font) || FONTS[0];
+  loadFonts([f]);
+  document.documentElement.style.setProperty("--font", f[2] + "," + FONT_BASE);
+}
+function renderFonts() {
+  loadFonts(FONTS);
+  $("#fontList").innerHTML = FONTS.map(([id, name, css]) =>
+    `<button type="button" data-font="${id}" aria-pressed="${S.set.font === id}" style="font-family:${esc(css)},${esc(FONT_BASE)}">${name}</button>`).join("");
+}
+$("#fontList").addEventListener("click", e => {
+  const b = e.target.closest("[data-font]"); if (!b) return;
+  S.set.font = b.dataset.font; applyFont(); saveSettings(); renderFonts();
+});
 const PRESETS = {
   bg: [["#FFFFFF","흰색"],["#FBF8F1","아이보리"],["#EEF5FB","하늘"],["#FCF1F3","분홍"],["#EEF7F3","민트"],["#F3F1FA","라벤더"],["#15191C","다크"],["#000000","블랙"]],
   tab: [["#17212A","먹색"],["#0E7C66","초록"],["#2563EB","파랑"],["#D9364C","빨강"],["#7C3AED","보라"],["#EA7A1A","주황"],["#E0528A","핑크"],["#8A6A3F","갈색"]],
@@ -770,6 +952,7 @@ function saveSettings() { ls.set("tn-settings", S.set); }
 function applySettings() {
   const { bg, tab, accent } = S.set, r = document.documentElement.style, dark = lum(bg) < .2;
   S.darkBg = dark;
+  applyFont();
   const v = dark
     ? { "--ink": "#ECF1F0", "--muted": "#A2AEAC", "--line": mix(bg, "#FFFFFF", .16), "--surface": mix(bg, "#FFFFFF", .06), "--field": mix(bg, "#FFFFFF", .1),
         "--mark": mix(bg, "#F5CF6B", .2), "--mark-ink": "#F5CF6B", "--soft": mix(bg, accent, .28), "--danger": "#F07A63" }
@@ -789,6 +972,7 @@ function swatches(key) {
 }
 function renderSettings() {
   $("#sNick").value = S.nick;
+  renderFonts();
   $("#pwState").textContent = S.set.pw ? "정해져 있어요. 여행을 삭제할 때 이 비밀번호를 물어봐요." : "아직 없어요. 처음 여행을 삭제할 때 정하거나 여기서 미리 정할 수 있어요.";
   $("#pwSet").textContent = S.set.pw ? "비밀번호 바꾸기" : "비밀번호 정하기";
   $("#swBg").innerHTML = swatches("bg"); $("#swTab").innerHTML = swatches("tab"); $("#swAcc").innerHTML = swatches("accent");
@@ -798,7 +982,7 @@ function openSettings(from) { renderSettings(); openDlg($("#sd"), from); }
 $("#sd").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (b) setSetting(b.dataset.k, b.dataset.v); });
 $("#sd").addEventListener("input", e => { const i = e.target.closest("input[data-k]"); if (i) { S.set[i.dataset.k] = i.value.toUpperCase(); applySettings(); } });
 $("#sd").addEventListener("change", e => { const i = e.target.closest("input[data-k]"); if (i) setSetting(i.dataset.k, i.value); });
-$("#sReset").onclick = () => { S.set = Object.assign({}, DEF_SET, { pw: S.set.pw }); applySettings(); saveSettings(); renderSettings(); };
+$("#sReset").onclick = () => { S.set = Object.assign({}, DEF_SET, { pw: S.set.pw, font: S.set.font }); applySettings(); saveSettings(); renderSettings(); };
 $("#sdForm").onsubmit = e => { e.preventDefault(); $("#sd").close(); };
 $("#sd").addEventListener("close", () => { if (!S.ready) return; if (S.tripId) renderTrip(); else renderList(); });
 $("#sNickSave").onclick = () => {
@@ -967,7 +1151,7 @@ function itemHtml(it, n) {
   const thumbs = (it.photos || []).map(id => `<img data-pid="${id}" data-photo="${id}" alt="${esc(it.place)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`).join("");
   const chips = lines(it.booking).map(l => { const code = codeOf(l); const label = l.replace(code, "").trim();
     return `<button type="button" class="chip" data-copy="${esc(code)}">${label ? esc(label) + " " : ""}<b>${esc(code)}</b><small>복사</small></button>`; }).join("");
-  const memo = lines(it.memo).map(l => /^(→|->|=>)/.test(l) ? `<li class="arrow">${linkify(l.replace(/^(->|=>)/, "→"))}</li>` : `<li>${linkify(l)}</li>`).join("");
+  const memo = it.memoHtml ? "" : lines(it.memo).map(l => /^(→|->|=>)/.test(l) ? `<li class="arrow">${linkify(l.replace(/^(->|=>)/, "→"))}</li>` : `<li>${linkify(l)}</li>`).join("");
   const nav = has ? `<a href="https://map.kakao.com/link/to/${encodeURIComponent(it.place || "목적지")},${it.lat},${it.lng}" target="_blank" rel="noopener">카카오맵 길찾기</a>
     <a href="https://www.google.com/maps/dir/?api=1&destination=${it.lat},${it.lng}" target="_blank" rel="noopener">구글 길찾기</a>` : "";
   const edited = it.updatedBy ? `<span class="edited">${esc(it.updatedBy)} · ${ago(it.updatedAt)}</span>` : "";
@@ -975,7 +1159,7 @@ function itemHtml(it, n) {
     <div class="head">${it.time ? `<span class="time">${esc(it.time)}</span>` : ""}<h3 class="place">${esc(it.place)}</h3>${it.duration ? `<span class="dur">${esc(it.duration)}</span>` : ""}</div>
     ${it.address ? `<div class="addr">${linkify(it.address)}</div>` : ""}
     ${chips ? `<div class="chips">${chips}</div>` : ""}
-    ${memo ? `<ul class="sub">${memo}</ul>` : ""}
+    ${it.memoHtml ? `<div class="memo-rich rich">${richHtml(it.memoHtml)}</div>` : memo ? `<ul class="sub">${memo}</ul>` : ""}
     ${thumbs ? `<div class="thumbs">${thumbs}</div>` : ""}
     <div class="acts"><button type="button" data-edit="${it.id}">수정</button>${nav}${has ? "" : '<span class="none" style="padding:0">지도 위치 없음</span>'}${edited}</div></div></article>`;
 }
@@ -1208,8 +1392,10 @@ function updateTrip(fit) {
   $("#who").innerHTML = `<span class="lab">함께</span>` + memberList(t).map(m =>
     `<span class="mem-chip"><span class="av">${esc(m.nick.slice(0, 1))}</span>${esc(m.nick)}${m.me ? "<small>(나)</small>" : ""}${m.owner ? "<small>방장</small>" : ""}</span>`).join("")
     + `<button type="button" class="invite-btn" id="inviteBtn">+ 초대</button>`;
+  const nc = /^#[0-9A-F]{6}$/i.test(t.notesColor || "") ? t.notesColor : "";
+  const ncStyle = nc ? ` style="--memo:${nc};--memo-ink:${mix(nc, "#000000", .55)}"` : "";
   $("#notesBox").innerHTML = t.notes
-    ? `<section class="notes"><h2>여행 준비 메모<button type="button" class="link" id="notesEdit">수정</button></h2><div class="txt">${linkify(t.notes)}</div></section>`
+    ? `<section class="notes${nc ? " custom" : ""}"${ncStyle}><h2>여행 준비 메모<button type="button" class="link" id="notesEdit">수정</button></h2>${t.notesHtml ? `<div class="txt rich">${richHtml(t.notesHtml)}</div>` : `<div class="txt">${linkify(t.notes)}</div>`}</section>`
     : `<div class="notes-add"><button type="button" class="btn sm" id="notesEdit">+ 여행 준비 메모</button>${t.items.length ? "" : '<button type="button" class="btn sm" id="quickImport">메모장에서 가져오기</button>'}</div>`;
   const tab = (key, top, sub) => `<button class="tab" role="tab" data-day="${key}" aria-selected="${S.day === key}">${top}${sub ? `<small>${sub}</small>` : ""}</button>`;
   $("#tabs").innerHTML = tab("all", "전체", "") + days.map((d, i) => tab(d, `${i + 1}일차`, dlabel(d))).join("");
@@ -1480,9 +1666,25 @@ $("#ddForm").onsubmit = e => {
 
 /* ---------- 준비 메모 ---------- */
 let NE = null;
-function openNotes(t, from) { NE = t.id; $("#nText").value = t.notes || ""; openDlg($("#nd"), from); }
+const MEMO_COLORS = [["", "기본 노랑"], ["#FDE2E4", "분홍"], ["#FFE5CC", "주황"], ["#E2F5E1", "연두"], ["#DCEEFF", "하늘"], ["#ECE4FB", "보라"], ["#EEEEEE", "회색"], ["#FFFFFF", "흰색"]];
+let NC = "";
+function paintNotesColor() {
+  $("#nColors").innerHTML = MEMO_COLORS.map(([c, n]) =>
+    `<div class="swi"><button type="button" data-nc="${c}" aria-pressed="${NC === c}" aria-label="${n}" style="background:${c || "var(--mark)"}"></button><small>${n}</small></div>`).join("");
+  const box = $("#nRich");
+  box.style.background = NC || "var(--mark)"; box.classList.toggle("custom", !!NC);
+}
+$("#nColors").addEventListener("click", e => { const b = e.target.closest("[data-nc]"); if (!b) return; NC = b.dataset.nc; paintNotesColor(); });
+function openNotes(t, from) {
+  NE = t.id; NC = /^#[0-9A-F]{6}$/i.test(t.notesColor || "") ? t.notesColor : "";
+  setRich($("#nRich"), t.notesHtml || plainToHtml(t.notes || ""));
+  paintNotesColor(); openDlg($("#nd"), from);
+}
 $("#nCancel").onclick = () => $("#nd").close();
-$("#ndForm").onsubmit = e => { e.preventDefault(); updateRoom(NE, { notes: $("#nText").value.trim() }); $("#nd").close(); updateTrip(false); };
+$("#ndForm").onsubmit = e => {
+  e.preventDefault(); const r = richOut($("#nRich"));
+  updateRoom(NE, { notes: r.text, notesHtml: r.html, notesColor: NC }); $("#nd").close(); updateTrip(false);
+};
 
 /* ---------- 메모장에서 가져오기 ---------- */
 function parseNotes(text) {
@@ -1532,7 +1734,10 @@ $("#idForm").onsubmit = e => {
   const needEnd = addDays(t.start, maxDay - 1); if (needEnd > t.end) fields.end = needEnd;
   Object.entries(p.days).forEach(([n, v]) => { const key = dk(addDays(t.start, +n - 1)); const old = t.days[key] || {};
     fields["days." + key] = { title: v.title || old.title || "", todo: v.todo || old.todo || "" }; });
-  if (p.notes.length) fields.notes = (t.notes ? t.notes + "\n" : "") + p.notes.join("\n");
+  if (p.notes.length) {
+    fields.notes = (t.notes ? t.notes + "\n" : "") + p.notes.join("\n");
+    if (t.notesHtml) fields.notesHtml = t.notesHtml + plainToHtml(p.notes.join("\n"));
+  }
   if (Object.keys(fields).length) updateRoom(t.id, fields);
   const c = Date.now();
   p.items.forEach((x, k) => setItem(t.id, { id: uid(), created: c + k, date: addDays(t.start, x.day - 1), time: x.time, place: x.place,
@@ -1554,7 +1759,7 @@ function openItem(t, it, pre) {
   $("#fDur").value = it ? it.duration || "" : "";
   $("#fBook").value = it ? it.booking || "" : "";
   $("#fAddr").value = it ? it.address || "" : (pre ? pre.address || "" : "");
-  $("#fMemo").value = it ? it.memo || "" : (pre ? pre.memo || "" : "");
+  setRich($("#fMemoRich"), it ? (it.memoHtml || plainToHtml(it.memo || "")) : plainToHtml(pre ? pre.memo || "" : ""));
   $("#fResults").hidden = true; $("#fResults").innerHTML = "";
   $("#fDel").hidden = !it;
   renderEdPhotos();
@@ -1649,7 +1854,7 @@ $("#edForm").onsubmit = e => {
   for (const id of E.photos) if (E.pend.has(id)) putPhoto(code, id, E.pend.get(id));
   if (E.it) for (const id of (E.it.photos || [])) if (!E.photos.includes(id)) delPhoto(code, id);
   const data = { date: $("#fDate").value, time: normTime($("#fTime").value), place, duration: $("#fDur").value.trim(), booking: $("#fBook").value.trim(),
-    address: $("#fAddr").value.trim(), memo: $("#fMemo").value.trim(), lat: E.lat, lng: E.lng, photos: E.photos };
+    address: $("#fAddr").value.trim(), memo: richOut($("#fMemoRich")).text, memoHtml: richOut($("#fMemoRich")).html, lat: E.lat, lng: E.lng, photos: E.photos };
   setItem(code, E.it ? Object.assign({}, E.it, data) : Object.assign({ id: uid(), created: Date.now() }, data));
   const keepDay = S.day === "all" || S.day === data.date ? S.day : data.date;
   if (S.mode !== "plan" && !E.it) setTimeout(() => setMode("plan"), 0);
@@ -1667,12 +1872,12 @@ $("#lb").onclick = () => $("#lb").close();
 function uploadTrip(t, photoMap) {
   const days = {};
   Object.entries(t.days || {}).forEach(([k, v]) => { days[/^\d{4}-\d{2}-\d{2}$/.test(k) ? dk(k) : k] = v; });
-  const { code } = createRoom({ title: t.title, start: t.start, end: t.end, notes: t.notes || "", days });
+  const { code } = createRoom({ title: t.title, start: t.start, end: t.end, notes: t.notes || "", notesHtml: t.notesHtml || "", notesColor: t.notesColor || "", days });
   (t.items || []).forEach((it, k) => {
     const photos = [];
     (it.photos || []).forEach(pid => { const data = photoMap.get(pid); if (data) { const nid = uid(); photos.push(nid); putPhoto(code, nid, data); } });
     setItem(code, { id: uid(), created: it.created || Date.now() + k, date: it.date, time: it.time || "", place: it.place || "일정", duration: it.duration || "",
-      booking: it.booking || "", address: it.address || "", memo: it.memo || "", lat: it.lat ?? null, lng: it.lng ?? null, photos });
+      booking: it.booking || "", address: it.address || "", memo: it.memo || "", memoHtml: it.memoHtml || "", lat: it.lat ?? null, lng: it.lng ?? null, photos });
   });
   return code;
 }
@@ -1709,7 +1914,7 @@ async function exportBackup() {
     if (!items) { const qs = await roomRef(code).collection("items").get(); items = qs.docs.map(d => Object.assign({ id: d.id }, d.data())); }
     for (const it of items) for (const pid of (it.photos || [])) { const d = await loadPhoto(code, pid); if (d) photos.push({ id: pid, data: d }); }
     const days = {}; Object.entries(t.days).forEach(([k, v]) => { days[k.slice(1, 5) + "-" + k.slice(5, 7) + "-" + k.slice(7, 9)] = v; });
-    trips.push({ id: code, title: t.title, start: t.start, end: t.end, notes: t.notes, days, items });
+    trips.push({ id: code, title: t.title, start: t.start, end: t.end, notes: t.notes, notesHtml: t.notesHtml || "", notesColor: t.notesColor || "", days, items });
   }
   const blob = new Blob([JSON.stringify({ app: "travel-note", version: 3, exportedAt: new Date().toISOString(), trips, photos })], { type: "application/json" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
