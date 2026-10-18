@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#1E2B45">
 <meta name="color-scheme" content="light only">
 <title>여행 노트</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
@@ -12,8 +12,9 @@
 /* 레이아웃: 한 열짜리 모바일 우선 앱. 준비 메모 → 날짜 탭 → 지도 → 일차별 일정 카드, 오른쪽 아래 추가 버튼 */
 :root{
   color-scheme:light;
-  --bg:#FFFFFF; --surface:#FFFFFF; --field:#F4F6F6; --ink:#17212A; --muted:#5D6B72; --line:#D9E1DF;
-  --accent:#0E7C66; --accent-ink:#FFFFFF; --soft:#E3F1ED; --danger:#C2412D; --mark:#FFF1C9; --mark-ink:#7A5200; --tab:#17212A; --tab-ink:#FFFFFF;
+  --bg:#F3F4F7; --surface:#FFFFFF; --field:#ECEEF2; --ink:#1A2233; --muted:#66708A; --line:#E1E4EB;
+  --accent:#2C4A7A; --accent-ink:#FFFFFF; --soft:#E4E9F1; --danger:#B4443A; --mark:#F2E8D5; --mark-ink:#8B6B33; --tab:#1E2B45; --tab-ink:#FFFFFF;
+  --rose:#B5506E; --brass:#B8935A; --shadow:0 1px 2px rgba(20,28,45,.05),0 4px 14px rgba(20,28,45,.05);
   --font:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
   --r:14px;
 }
@@ -68,6 +69,7 @@ a{color:var(--accent);overflow-wrap:anywhere}
 .lphint{margin:14px 2px 0;font-size:12px;color:var(--muted)}
 .sheet-title{margin:4px 4px 6px;font-weight:700;font-size:16px}
 .err{margin:-6px 0 0;color:var(--danger);font-size:13px;font-weight:600}
+.trip,.item,.shopi,.fi,.notes{box-shadow:var(--shadow)}
 .trip{display:grid;grid-template-columns:76px 1fr;gap:14px;align-items:center;padding:12px;border-radius:var(--r);
   background:var(--surface);border:1px solid var(--line);text-decoration:none;color:inherit}
 .trip:hover{border-color:var(--accent)}
@@ -238,6 +240,33 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
 .status p{margin:0;max-width:40ch}
 .loading .meta{opacity:.6}
 .thumbs img:not([src]){background:var(--field)}
+/* 시작 화면 */
+#splash{position:fixed;inset:0;z-index:2000;display:grid;place-items:center;background:radial-gradient(120% 90% at 50% 0%,#2A3B5E 0%,#1A2540 55%,#131B2F 100%);color:#F3EBDD;
+  padding:env(safe-area-inset-top,0px) max(24px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(24px,env(safe-area-inset-left,0px));transition:opacity .45s ease,visibility .45s}
+#splash.gone{opacity:0;visibility:hidden}
+.sp-in{display:grid;justify-items:center;gap:18px;text-align:center}
+.sp-art{width:200px;height:120px;overflow:visible}
+.sp-route{fill:none;stroke:#C9A86A;stroke-width:2.2;stroke-linecap:round;stroke-dasharray:4 7;stroke-dashoffset:0;animation:sp-dash 1.6s linear infinite}
+.sp-pin{fill:#C9A86A}
+.sp-pin2{fill:none;stroke:#C9A86A;stroke-width:2}
+.sp-plane{fill:#F3EBDD}
+@keyframes sp-dash{to{stroke-dashoffset:-22}}
+.sp-eyebrow{font-size:11px;letter-spacing:.42em;color:#C9A86A;font-weight:700;margin:0 0 -8px;padding-left:.42em}
+.sp-title{font-size:34px;font-weight:800;letter-spacing:-.02em;margin:0;color:#F7F1E6}
+.sp-msg{margin:0;font-size:14px;color:rgba(243,235,221,.72);min-height:1.4em;max-width:30ch}
+.sp-dots span{display:inline-block;width:5px;height:5px;margin:0 3px;border-radius:50%;background:#C9A86A;animation:sp-dot 1.2s ease-in-out infinite}
+.sp-dots span:nth-child(2){animation-delay:.15s}.sp-dots span:nth-child(3){animation-delay:.3s}
+@keyframes sp-dot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}
+#splash.bad .sp-dots{display:none}
+#splash .btn{background:#C9A86A;border-color:#C9A86A;color:#1A2540}
+@media (prefers-reduced-motion:reduce){.sp-route,.sp-dots span{animation:none}.sp-plane{display:none}}
+/* 테마 고르기 */
+.themes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.theme{display:grid;gap:8px;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;text-align:left;font-weight:700;font-size:13px}
+.theme[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.theme .tsw{display:flex;height:26px;border-radius:7px;overflow:hidden;border:1px solid rgba(0,0,0,.08)}
+.theme .tsw i{flex:1}
+@media (max-width:380px){.themes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .warn{margin:0;padding:10px 12px;border-radius:10px;background:var(--mark);color:var(--ink);font-size:13px}
 /* 일정/쇼핑리스트 전환 */
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:var(--field);margin:0 0 12px}
@@ -282,14 +311,31 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
 .fi .fnum{flex:none;min-width:26px;height:26px;padding:0 6px;border-radius:999px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:12px;font-weight:800}
 .fi .fnum.off{background:var(--line);color:var(--muted)}
 .like{flex:none;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:700;font-size:13px;color:var(--muted)}
-.like[aria-pressed="true"]{border-color:#E0528A;color:#E0528A;background:color-mix(in srgb,#E0528A 10%,var(--surface))}
+.like[aria-pressed="true"]{border-color:var(--rose);color:var(--rose);background:color-mix(in srgb,var(--rose) 10%,var(--surface))}
 .fi .fm{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
 .fi .fw{font-size:12px;color:var(--muted)}
-.pin.food span{background:#E0528A;color:#fff}
+.pin.food span{background:var(--rose);color:#fff}
 .shopdone summary{cursor:pointer;color:var(--muted);font-weight:700;font-size:14px;margin-bottom:10px}
 </style>
 </head>
 <body>
+<div id="splash" role="status" aria-live="polite">
+  <div class="sp-in">
+    <svg class="sp-art" viewBox="0 0 200 120" aria-hidden="true">
+      <path id="spPath" class="sp-route" d="M28 92 C 60 20, 140 20, 172 70"/>
+      <circle class="sp-pin2" cx="28" cy="92" r="6"/>
+      <path class="sp-pin" d="M172 52c-7 0-12 5-12 11.5 0 8.5 12 21.5 12 21.5s12-13 12-21.5C184 57 179 52 172 52zm0 15.5a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
+      <path class="sp-plane" d="M0-5 L13 0 L0 5 L3 0 Z">
+        <animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#spPath"/></animateMotion>
+      </path>
+    </svg>
+    <p class="sp-eyebrow">TRAVEL NOTE</p>
+    <h1 class="sp-title">여행 노트</h1>
+    <p class="sp-msg" id="spMsg">여행을 불러오는 중</p>
+    <div class="sp-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+    <button class="btn" id="retry" type="button" hidden>다시 시도</button>
+  </div>
+</div>
 <div id="app"></div>
 
 <!-- 일정 추가/수정 -->
@@ -443,6 +489,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
     <h2>설정</h2>
     <section class="set"><h3>내 닉네임</h3>
       <div class="search"><input id="sNick" maxlength="12" placeholder="닉네임" autocomplete="off" aria-label="내 닉네임"><button type="button" class="btn" id="sNickSave">바꾸기</button></div></section>
+    <section class="set"><h3>테마</h3><p class="desc">한 번에 어울리는 색으로 바꿔요. 아래에서 색을 하나씩 바꿀 수도 있어요.</p><div class="themes" id="themeList"></div></section>
     <section class="set"><h3>글씨체</h3><div class="fontlist" id="fontList"></div></section>
     <section class="set"><h3>배경색</h3><div class="sw" id="swBg"></div></section>
     <section class="set"><h3>날짜 탭 색</h3><p class="desc">선택한 일차 탭의 색이에요.</p><div class="sw" id="swTab"></div></section>
@@ -455,7 +502,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
     <section class="set"><h3>백업</h3><p class="desc">내 여행 전체를 파일로 저장하거나, 저장해 둔 파일에서 여행을 다시 만들 수 있어요.</p>
       <div class="row"><button type="button" class="btn sm" id="exp">백업 파일 저장</button>
       <label class="btn sm" for="imp">백업 파일 가져오기<input type="file" id="imp" accept=".json,application/json" hidden></label></div></section>
-    <div class="dfoot"><button type="button" class="btn ghost" id="sReset">색 기본값으로</button><span class="sp"></span>
+    <div class="dfoot"><button type="button" class="btn ghost" id="sReset">기본 테마로</button><span class="sp"></span>
       <button type="submit" class="btn primary">완료</button></div>
   </form>
 </dialog>
@@ -551,7 +598,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.11";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "2.0";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -924,7 +971,7 @@ function refresh(kind, code) {
 }
 
 /* ---------- 설정: 배경색·탭 색·포인트 색 ---------- */
-const DEF_SET = { bg: "#FFFFFF", tab: "#17212A", accent: "#0E7C66", pw: "", font: "pretendard" };
+const DEF_SET = { theme: "midnight", bg: "#F3F4F7", tab: "#1E2B45", accent: "#2C4A7A", mark: "#F2E8D5", markInk: "#8B6B33", pw: "", font: "pretendard" };
 const FONT_BASE = '"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif';
 const FONTS = [
   ["pretendard", "기본 (프리텐다드)", '"Pretendard"', ""],
@@ -962,6 +1009,22 @@ $("#fontList").addEventListener("click", e => {
   const b = e.target.closest("[data-font]"); if (!b) return;
   S.set.font = b.dataset.font; applyFont(); saveSettings(); renderFonts();
 });
+const THEMES = [
+  ["midnight", "미드나잇", { bg: "#F3F4F7", tab: "#1E2B45", accent: "#2C4A7A", mark: "#F2E8D5", markInk: "#8B6B33" }],
+  ["sage", "세이지", { bg: "#F1F3EF", tab: "#2F463B", accent: "#46705C", mark: "#E9EEDD", markInk: "#5C6B3A" }],
+  ["mocha", "모카", { bg: "#F4F1EE", tab: "#3B2F29", accent: "#8A5E45", mark: "#F0E4D6", markInk: "#7B5734" }],
+  ["burgundy", "버건디", { bg: "#F5F2F3", tab: "#4E1F2C", accent: "#8C3048", mark: "#F3E3E6", markInk: "#8C3048" }],
+  ["night", "나이트", { bg: "#12161E", tab: "#C9A86A", accent: "#C9A86A", mark: "", markInk: "" }],
+  ["classic", "클래식", { bg: "#FFFFFF", tab: "#17212A", accent: "#0E7C66", mark: "#FFF1C9", markInk: "#7A5200" }]
+];
+function renderThemes() {
+  $("#themeList").innerHTML = THEMES.map(([id, name, c]) =>
+    `<button type="button" class="theme" data-theme="${id}" aria-pressed="${S.set.theme === id}"><span class="tsw"><i style="background:${c.bg}"></i><i style="background:${c.tab}"></i><i style="background:${c.accent}"></i><i style="background:${c.mark || "#C9A86A"}"></i></span>${name}</button>`).join("");
+}
+function setTheme(id) {
+  const t = THEMES.find(x => x[0] === id); if (!t) return;
+  Object.assign(S.set, t[2], { theme: id }); applySettings(); saveSettings(); renderSettings();
+}
 const PRESETS = {
   bg: [["#FFFFFF","흰색"],["#FBF8F1","아이보리"],["#EEF5FB","하늘"],["#FCF1F3","분홍"],["#EEF7F3","민트"],["#F3F1FA","라벤더"],["#15191C","다크"],["#000000","블랙"]],
   tab: [["#17212A","먹색"],["#0E7C66","초록"],["#2563EB","파랑"],["#D9364C","빨강"],["#7C3AED","보라"],["#EA7A1A","주황"],["#E0528A","핑크"],["#8A6A3F","갈색"]],
@@ -972,22 +1035,34 @@ const rgbHex = a => "#" + a.map(v => Math.round(Math.max(0, Math.min(255, v))).t
 const mix = (a, b, t) => { const x = hexRgb(a), y = hexRgb(b); return rgbHex(x.map((v, i) => v + (y[i] - v) * t)); };
 const lum = h => { const c = hexRgb(h).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
 const onColor = h => lum(h) > .45 ? "#17212A" : "#FFFFFF";
-function loadSettings() { return Object.assign({}, DEF_SET, ls.get("tn-settings", {}) || {}); }
+function loadSettings() {
+  const v = ls.get("tn-settings", {}) || {};
+  // 예전 기본색(흰 배경·초록)을 그대로 쓰던 사람은 새 기본 테마로
+  if (!v.theme) {
+    const old = !v.bg || (String(v.bg).toUpperCase() === "#FFFFFF" && String(v.tab).toUpperCase() === "#17212A" && String(v.accent).toUpperCase() === "#0E7C66");
+    if (old) { delete v.bg; delete v.tab; delete v.accent; v.theme = "midnight"; } else v.theme = "custom";
+  }
+  return Object.assign({}, DEF_SET, v);
+}
 function saveSettings() { ls.set("tn-settings", S.set); }
 function applySettings() {
   const { bg, tab, accent } = S.set, r = document.documentElement.style, dark = lum(bg) < .2;
+  const mk = /^#[0-9A-F]{6}$/i.test(S.set.mark || "") ? S.set.mark : "#F2E8D5", mki = /^#[0-9A-F]{6}$/i.test(S.set.markInk || "") ? S.set.markInk : "#8B6B33";
   S.darkBg = dark;
   applyFont();
   const v = dark
     ? { "--ink": "#ECF1F0", "--muted": "#A2AEAC", "--line": mix(bg, "#FFFFFF", .16), "--surface": mix(bg, "#FFFFFF", .06), "--field": mix(bg, "#FFFFFF", .1),
-        "--mark": mix(bg, "#F5CF6B", .2), "--mark-ink": "#F5CF6B", "--soft": mix(bg, accent, .28), "--danger": "#F07A63" }
-    : { "--ink": "#17212A", "--muted": "#5D6B72", "--line": mix(bg, "#17212A", .13), "--surface": bg.toUpperCase() === "#FFFFFF" ? "#FFFFFF" : mix(bg, "#FFFFFF", .7),
-        "--field": mix(bg, "#17212A", .045), "--mark": "#FFF1C9", "--mark-ink": "#7A5200", "--soft": mix(bg, accent, .12), "--danger": "#C2412D" };
+        "--mark": mix(bg, "#C9A86A", .16), "--mark-ink": "#D8BC86", "--soft": mix(bg, accent, .22), "--danger": "#F07A63",
+        "--rose": "#E58AA4", "--shadow": "none" }
+    : { "--ink": mix("#1A2233", tab, .25), "--muted": mix("#66708A", tab, .2), "--line": mix(bg, "#1A2233", .09), "--surface": "#FFFFFF",
+        "--field": mix(bg, "#1A2233", .035), "--mark": mk, "--mark-ink": mki, "--soft": mix(bg, accent, .1), "--danger": "#B4443A",
+        "--rose": "#B5506E", "--shadow": "0 1px 2px rgba(20,28,45,.05),0 4px 14px rgba(20,28,45,.05)" };
   v["--bg"] = bg; v["--tab"] = tab; v["--tab-ink"] = onColor(tab);
   v["--accent"] = dark && lum(accent) < .12 ? mix(accent, "#FFFFFF", .45) : accent; v["--accent-ink"] = onColor(v["--accent"]);
   Object.entries(v).forEach(([k, x]) => r.setProperty(k, x));
   r.setProperty("color-scheme", dark ? "dark" : "light");
   const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = bg;
+  const sp = $("#splash"); if (sp && !dark) sp.style.background = `radial-gradient(120% 90% at 50% 0%, ${mix(tab, "#FFFFFF", .12)} 0%, ${tab} 55%, ${mix(tab, "#000000", .25)} 100%)`;
   const cs = document.querySelector('meta[name="color-scheme"]'); if (cs) cs.content = dark ? "dark only" : "light only";
 }
 function swatches(key) {
@@ -996,18 +1071,20 @@ function swatches(key) {
     + `<div class="swi"><label aria-label="직접 고르기" ${inPreset ? "" : `style="background:${cur};box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink)"`}>+<input type="color" data-k="${key}" value="${cur.toLowerCase()}"></label><small>직접</small></div>`;
 }
 function renderSettings() {
+  renderThemes();
   $("#sNick").value = S.nick;
   renderFonts();
   $("#pwState").textContent = S.set.pw ? "정해져 있어요. 여행을 삭제할 때 이 비밀번호를 물어봐요." : "아직 없어요. 처음 여행을 삭제할 때 정하거나 여기서 미리 정할 수 있어요.";
   $("#pwSet").textContent = S.set.pw ? "비밀번호 바꾸기" : "비밀번호 정하기";
   $("#swBg").innerHTML = swatches("bg"); $("#swTab").innerHTML = swatches("tab"); $("#swAcc").innerHTML = swatches("accent");
 }
-function setSetting(k, v) { S.set[k] = v.toUpperCase(); applySettings(); saveSettings(); renderSettings(); }
+function setSetting(k, v) { S.set[k] = v.toUpperCase(); S.set.theme = "custom"; applySettings(); saveSettings(); renderSettings(); }
 function openSettings(from) { renderSettings(); openDlg($("#sd"), from); }
 $("#sd").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (b) setSetting(b.dataset.k, b.dataset.v); });
 $("#sd").addEventListener("input", e => { const i = e.target.closest("input[data-k]"); if (i) { S.set[i.dataset.k] = i.value.toUpperCase(); applySettings(); } });
 $("#sd").addEventListener("change", e => { const i = e.target.closest("input[data-k]"); if (i) setSetting(i.dataset.k, i.value); });
-$("#sReset").onclick = () => { S.set = Object.assign({}, DEF_SET, { pw: S.set.pw, font: S.set.font }); applySettings(); saveSettings(); renderSettings(); };
+$("#sReset").onclick = () => setTheme("midnight");
+$("#themeList").addEventListener("click", e => { const b = e.target.closest("[data-theme]"); if (b) setTheme(b.dataset.theme); });
 $("#sdForm").onsubmit = e => { e.preventDefault(); $("#sd").close(); };
 $("#sd").addEventListener("close", () => { if (!S.ready) return; if (S.tripId) renderTrip(); else renderList(); });
 $("#sNickSave").onclick = () => {
@@ -1137,9 +1214,16 @@ function askNick() {
 }
 
 /* ---------- 상태 화면 ---------- */
+const BOOT_AT = Date.now();
 function renderStatus(msg, bad) {
-  $("#app").innerHTML = `<div class="status${bad ? " bad" : ""}"><p>${esc(msg)}</p>${bad ? '<button class="btn" id="retry">다시 시도</button>' : ""}</div>`;
-  const r = $("#retry"); if (r) r.onclick = () => location.reload();
+  const sp = $("#splash"); if (!sp) return;
+  sp.classList.remove("gone"); sp.classList.toggle("bad", !!bad);
+  $("#spMsg").textContent = msg;
+  const r = $("#retry"); r.hidden = !bad; r.onclick = () => location.reload();
+}
+function hideSplash() {
+  const sp = $("#splash"); if (!sp) return;
+  setTimeout(() => { sp.classList.add("gone"); setTimeout(() => sp.remove(), 600); }, Math.max(0, 700 - (Date.now() - BOOT_AT)));
 }
 
 /* ---------- 여행 목록 ---------- */
@@ -1587,7 +1671,7 @@ function makeMap(el, opt = {}) {
   if (GM.state === "ready" && window.google && google.maps) { try { return gmapAdapter(el, opt); } catch (e) {} }
   return window.L ? leafletAdapter(el, opt) : null;
 }
-const pinColors = kind => ({ plan: [cssVar("--ink"), cssVar("--bg")], food: ["#E0528A", "#FFFFFF"], edit: [cssVar("--accent"), cssVar("--accent-ink")] })[kind || "plan"];
+const pinColors = kind => ({ plan: [cssVar("--ink"), cssVar("--bg")], food: [cssVar("--rose"), "#FFFFFF"], edit: [cssVar("--accent"), cssVar("--accent-ink")] })[kind || "plan"];
 function gmapAdapter(el, opt) {
   const g = google.maps;
   const map = new g.Map(el, { center: { lat: 36.4, lng: 127.9 }, zoom: 6, disableDefaultUI: true, zoomControl: true, fullscreenControl: !opt.mini,
@@ -1864,7 +1948,7 @@ $("#ddForm").onsubmit = e => {
 
 /* ---------- 준비 메모 ---------- */
 let NE = null;
-const MEMO_COLORS = [["", "기본 노랑"], ["#FDE2E4", "분홍"], ["#FFE5CC", "주황"], ["#E2F5E1", "연두"], ["#DCEEFF", "하늘"], ["#ECE4FB", "보라"], ["#EEEEEE", "회색"], ["#FFFFFF", "흰색"]];
+const MEMO_COLORS = [["", "기본"], ["#FDE2E4", "분홍"], ["#FFE5CC", "주황"], ["#E2F5E1", "연두"], ["#DCEEFF", "하늘"], ["#ECE4FB", "보라"], ["#EEEEEE", "회색"], ["#FFFFFF", "흰색"]];
 let NC = "";
 function paintNotesColor() {
   $("#nColors").innerHTML = MEMO_COLORS.map(([c, n]) =>
@@ -2183,7 +2267,7 @@ async function boot() {
   S.set = loadSettings(); applySettings();
   S.nick = ls.get("tn-nick", "") || "";
   S.codes = ls.get("tn-rooms", []) || [];
-  renderStatus("서버에 연결하는 중…");
+  renderStatus("여행을 불러오는 중");
   const gmWait = loadGoogleMaps();
   try { await cloudInit(); await Promise.race([gmWait, new Promise(r => setTimeout(r, 4000))]); }
   catch (e) { renderStatus(errMsg(e), true); return; }
@@ -2193,7 +2277,7 @@ async function boot() {
   const join = params.get("join");
   const m = location.hash.match(/^#trip\/([A-Z0-9]+)$/);
   hist(() => history.replaceState(null, "", location.pathname));
-  showList();
+  showList(); hideSplash();
   if (m && S.codes.includes(m[1])) { if (S.rooms.has(m[1])) openTripView(m[1]); else S.pendingTrip = m[1]; }
   if (join) handleJoinLink(join);
   checkUpdate();
