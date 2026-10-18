@@ -254,6 +254,18 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
 .sm b{color:var(--accent);font-weight:700}
 .shopi.done .sn{text-decoration:line-through;color:var(--muted)}
 .shopdone{margin-top:18px}
+/* 맛집 종류 */
+.cats{display:flex;flex-wrap:wrap;gap:6px}
+.cat{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.cat[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.cat small{opacity:.7;margin-left:3px;font-weight:500}
+.catbar{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}
+.catbar::-webkit-scrollbar{display:none}
+.catbar .cat{flex:none}
+.fcat{display:inline-block;margin-right:6px;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--accent);font-size:12px;font-weight:700;vertical-align:2px}
+/* 쇼핑 사진 */
+.sthumb{width:52px;height:52px;flex:none;border-radius:8px;object-fit:cover;border:1px solid var(--line);cursor:zoom-in;background:var(--field)}
+.sphotos{font-size:11px;color:var(--muted);margin-left:4px}
 /* 맛집리스트 */
 .foodbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px}
 .foodbar p{margin:0;font-size:12px;color:var(--muted)}
@@ -473,6 +485,8 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
   <form id="fdForm" method="dialog">
     <h2 id="fdTitle">맛집 추가</h2>
     <label for="fdName">가게 이름<input id="fdName" required placeholder="예: 이치란 라멘 시부야점" autocomplete="off"></label>
+    <div><span class="lab">종류</span><div class="cats" id="fdCats" style="margin-top:6px"></div>
+      <input id="fdCatIn" placeholder="직접 입력 (예: 장어덮밥, 이자카야)" autocomplete="off" aria-label="종류 직접 입력" style="margin-top:8px"></div>
     <label for="fdMemo">메모<textarea id="fdMemo" rows="2" style="min-height:64px" placeholder="예: 대표 메뉴, 웨이팅, 영업시간, 예산"></textarea></label>
     <label for="fdLink">링크<input id="fdLink" inputmode="url" placeholder="인스타·블로그·구글지도 주소" autocomplete="off"></label>
     <label for="fdAddr">주소 또는 검색
@@ -497,6 +511,9 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
     <label for="shName">살 것<input id="shName" required placeholder="예: 곤약젤리" autocomplete="off"></label>
     <label for="shMemo">메모<input id="shMemo" placeholder="예: 3개, 돈키호테, 1000엔 이하" autocomplete="off"></label>
     <label for="shWho">누가 살까요<select id="shWho"></select></label>
+    <div><span class="lab">사진 예시</span><p class="hint" style="margin:2px 0 0">찾아야 할 상품 사진이나 캡처를 넣어 두면 가게에서 보여 주기 좋아요.</p>
+      <div id="shPhotos" class="pgrid"></div>
+      <label class="btn ghost" for="shFile">사진 추가<input type="file" id="shFile" accept="image/*" multiple hidden></label></div>
     <div class="dfoot">
       <button type="button" class="btn danger" id="shDel">삭제</button>
       <span class="sp"></span>
@@ -528,7 +545,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.8";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.9";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -717,7 +734,7 @@ const inviteUrl = code => location.origin + location.pathname + "?join=" + code;
 
 /* ---------- 상태 ---------- */
 const S = {
-  set: null, nick: "", codes: [], rooms: new Map(), items: new Map(), shop: new Map(), food: new Map(), fmap: null, flayer: null, fmarkers: {}, photos: new Map(), mode: "plan",
+  set: null, nick: "", codes: [], rooms: new Map(), items: new Map(), shop: new Map(), food: new Map(), fmap: null, flayer: null, fmarkers: {}, photos: new Map(), mode: "plan", foodCat: "all",
   tripId: null, day: "all", map: null, layer: null, markers: {}, fromList: false, pendingTrip: null, legacy: null, ready: false
 };
 const trip = code => {
@@ -1190,6 +1207,7 @@ function renderTrip() {
     <div id="foodView" hidden>
       <div class="foodbar"><p>가고 싶은 곳에 ♥를 눌러 투표하고, 정한 곳은 ‘일정에 넣기’로 옮겨요.</p><button type="button" class="btn primary sm" id="foodAddBtn">+ 맛집 추가</button></div>
       <div id="fmap" class="fmap"></div>
+      <div class="catbar" id="foodCats" hidden></div>
       <ul class="food" id="foodList"></ul>
       <details class="shopdone" id="foodDoneBox" hidden><summary id="foodDoneSum"></summary><ul class="food" id="foodDone"></ul></details>
     </div>
@@ -1219,7 +1237,10 @@ function renderTrip() {
     setShop(S.tripId, { id: uid(), name: v, memo: "", who: "", done: false, created: Date.now(), addedBy: S.nick });
     $("#shopIn").value = ""; renderShop();
   };
+  $("#foodCats").onclick = e => { const b = e.target.closest("[data-fcat]"); if (!b) return; S.foodCat = b.dataset.fcat; renderFood(true); };
   $("#shopView").onclick = e => {
+    const ph = e.target.closest("[data-sphoto]");
+    if (ph) { if (ph.getAttribute("src")) { $("#lbImg").src = ph.src; openDlg($("#lb")); } return; }
     const c = e.target.closest("[data-chk]");
     if (c) { const it = (S.shop.get(S.tripId) || []).find(x => x.id === c.dataset.chk); if (!it) return;
       const done = !it.done; setShop(S.tripId, Object.assign({}, it, { done, doneBy: done ? S.nick : "" })); renderShop(); return; }
@@ -1266,7 +1287,13 @@ function initFoodMap() {
 const likeCount = f => Object.keys(f.likes || {}).length;
 function renderFood(fit) {
   if (!$("#foodList")) return;
-  const all = S.food.get(S.tripId) || [];
+  const everything = S.food.get(S.tripId) || [];
+  const used = [...new Set(everything.map(f => f.cat || "").filter(Boolean))];
+  if (S.foodCat !== "all" && !used.includes(S.foodCat)) S.foodCat = "all";
+  const cb = $("#foodCats"); cb.hidden = !used.length;
+  cb.innerHTML = `<button type="button" class="cat" data-fcat="all" aria-pressed="${S.foodCat === "all"}">전체<small>${everything.length}</small></button>`
+    + used.map(c => `<button type="button" class="cat" data-fcat="${esc(c)}" aria-pressed="${S.foodCat === c}">${esc(catLabel(c))}<small>${everything.filter(f => f.cat === c).length}</small></button>`).join("");
+  const all = S.foodCat === "all" ? everything : everything.filter(f => f.cat === S.foodCat);
   const rank = (a, b) => likeCount(b) - likeCount(a) || (a.created || 0) - (b.created || 0);
   const todo = all.filter(x => !x.visited).sort(rank), done = all.filter(x => x.visited).sort(rank);
   const num = new Map(); [...todo, ...done].forEach((f, i) => num.set(f.id, i + 1));
@@ -1274,7 +1301,7 @@ function renderFood(fit) {
     const n = likeCount(f), mine = !!(f.likes || {})[C.uid], has = f.lat != null;
     const who = Object.values(f.likes || {});
     return `<li class="fi${f.visited ? " done" : ""}">
-      <div class="ftop"><span class="fnum${has ? "" : " off"}" data-ffocus="${f.id}">${num.get(f.id)}</span><h3 data-ffocus="${f.id}">${esc(f.name)}</h3>
+      <div class="ftop"><span class="fnum${has ? "" : " off"}" data-ffocus="${f.id}">${num.get(f.id)}</span><h3 data-ffocus="${f.id}">${f.cat ? `<span class="fcat">${esc(catLabel(f.cat))}</span>` : ""}${esc(f.name)}</h3>
         <button type="button" class="like" data-like="${f.id}" aria-pressed="${mine}" aria-label="가고 싶어요">♥ ${n}</button></div>
       ${f.address ? `<div class="addr">${linkify(f.address)}</div>` : ""}
       ${f.memo ? `<div class="fm">${linkify(f.memo)}</div>` : ""}
@@ -1283,10 +1310,10 @@ function renderFood(fit) {
       <div class="acts"><button type="button" data-toplan="${f.id}">일정에 넣기</button><button type="button" data-visit="${f.id}">${f.visited ? "안 갔어요" : "다녀왔어요"}</button><button type="button" data-fedit="${f.id}">수정</button>
         ${has ? `<a href="https://map.kakao.com/link/to/${encodeURIComponent(f.name)},${f.lat},${f.lng}" target="_blank" rel="noopener">카카오맵</a><a href="https://www.google.com/maps/search/?api=1&query=${f.lat},${f.lng}" target="_blank" rel="noopener">구글 지도</a>` : ""}</div></li>`;
   };
-  $("#foodList").innerHTML = todo.length ? todo.map(card).join("") : `<li class="none">${done.length ? "모두 다녀왔어요!" : "가고 싶은 맛집을 ‘+ 맛집 추가’로 모아 보세요. 같이 가는 사람 모두에게 보여요."}</li>`;
+  $("#foodList").innerHTML = todo.length ? todo.map(card).join("") : `<li class="none">${done.length ? "모두 다녀왔어요!" : S.foodCat !== "all" ? "이 종류의 맛집이 없어요." : "가고 싶은 맛집을 ‘+ 맛집 추가’로 모아 보세요. 같이 가는 사람 모두에게 보여요."}</li>`;
   $("#foodDoneBox").hidden = !done.length; $("#foodDoneSum").textContent = `다녀온 곳 ${done.length}개`;
   $("#foodDone").innerHTML = done.map(card).join("");
-  const cnt = $("#foodCnt"); if (cnt) { cnt.hidden = !all.length; cnt.textContent = all.length; }
+  const cnt = $("#foodCnt"); if (cnt) { cnt.hidden = !everything.length; cnt.textContent = everything.length; }
   S.fmarkers = {};
   if (S.fmap) {
     S.fmap.clear(); const pts = [];
@@ -1296,9 +1323,22 @@ function renderFood(fit) {
     if (fit && pts.length) S.fmap.fit(pts, 15, 30);
   }
 }
+const FOOD_CATS = [["식사", "🍽"], ["디저트", "🍰"], ["카페", "☕"], ["파스타", "🍝"], ["피자", "🍕"], ["라멘", "🍜"], ["스시", "🍣"], ["고기", "🥩"], ["술집", "🍺"], ["간식", "🍡"]];
+const catLabel = c => { const p = FOOD_CATS.find(x => x[0] === c); return p ? p[1] + " " + c : c; };
+function renderFdCats() {
+  const used = (S.food.get(S.tripId) || []).map(f => f.cat).filter(c => c && !FOOD_CATS.some(x => x[0] === c));
+  const list = [...FOOD_CATS.map(x => x[0]), ...new Set(used)];
+  $("#fdCats").innerHTML = list.map(c => `<button type="button" class="cat" data-cat="${esc(c)}" aria-pressed="${FE.cat === c}">${esc(catLabel(c))}</button>`).join("");
+}
+$("#fdCats").addEventListener("click", e => {
+  const b = e.target.closest("[data-cat]"); if (!b) return;
+  FE.cat = FE.cat === b.dataset.cat ? "" : b.dataset.cat; $("#fdCatIn").value = ""; renderFdCats();
+});
+$("#fdCatIn").addEventListener("input", e => { FE.cat = e.target.value.trim().slice(0, 12); renderFdCats(); });
 let FE = null, foodMap = null, foodMarker = null;
 function openFood(f) {
-  FE = { f, lat: f ? f.lat : null, lng: f ? f.lng : null };
+  FE = { f, lat: f ? f.lat : null, lng: f ? f.lng : null, cat: f ? f.cat || "" : (S.foodCat !== "all" ? S.foodCat : "") };
+  $("#fdCatIn").value = FE.cat && !FOOD_CATS.some(x => x[0] === FE.cat) ? FE.cat : ""; renderFdCats();
   $("#fdTitle").textContent = f ? "맛집 수정" : "맛집 추가";
   $("#fdName").value = f ? f.name : ""; $("#fdMemo").value = f ? f.memo || "" : ""; $("#fdLink").value = f ? f.link || "" : ""; $("#fdAddr").value = f ? f.address || "" : "";
   $("#fdResults").hidden = true; $("#fdDel").hidden = !f;
@@ -1342,7 +1382,7 @@ $("#fdAddr").addEventListener("keydown", e => { if (e.key === "Enter") { e.preve
 $("#fdCancel").onclick = () => $("#fd").close();
 $("#fdForm").onsubmit = e => {
   e.preventDefault(); const name = $("#fdName").value.trim(); if (!name) { $("#fdName").focus(); return; }
-  const data = { name, memo: $("#fdMemo").value.trim(), link: $("#fdLink").value.trim(), address: $("#fdAddr").value.trim(), lat: FE.lat, lng: FE.lng };
+  const data = { name, cat: FE.cat || "", memo: $("#fdMemo").value.trim(), link: $("#fdLink").value.trim(), address: $("#fdAddr").value.trim(), lat: FE.lat, lng: FE.lng };
   setFood(S.tripId, FE.f ? Object.assign({}, FE.f, data) : Object.assign({ id: uid(), created: Date.now(), addedBy: S.nick, likes: { [C.uid]: S.nick }, visited: false }, data));
   $("#fd").close(); renderFood(!FE.f); toast("저장했어요.");
 };
@@ -1359,13 +1399,15 @@ function renderShop() {
     const info = [x.memo ? esc(x.memo) : "", x.who ? `<b>${esc(x.who)}</b> 담당` : "",
       x.done ? `${esc(x.doneBy || x.updatedBy || "")} 구매` : (x.addedBy ? `${esc(x.addedBy)} 추가` : "")].filter(Boolean).join(" · ");
     return `<li class="shopi${x.done ? " done" : ""}"><button type="button" class="chk" data-chk="${x.id}" aria-pressed="${!!x.done}" aria-label="${esc(x.name)} ${x.done ? "구매 취소" : "구매 완료"}">✓</button>
-      <div class="sb" data-sedit="${x.id}"><div class="sn">${esc(x.name)}</div>${info ? `<div class="sm">${info}</div>` : ""}</div></li>`;
+      <div class="sb" data-sedit="${x.id}"><div class="sn">${esc(x.name)}${(x.photos || []).length > 1 ? `<span class="sphotos">사진 ${x.photos.length}장</span>` : ""}</div>${info ? `<div class="sm">${info}</div>` : ""}</div>
+      ${(x.photos || []).length ? `<img class="sthumb" data-pid="${x.photos[0]}" data-sphoto="${x.photos[0]}" alt="${esc(x.name)} 사진"${S.photos.has(x.photos[0]) ? ` src="${S.photos.get(x.photos[0])}"` : ""}>` : ""}</li>`;
   };
   $("#shopList").innerHTML = todo.length ? todo.map(row).join("") : `<li class="none">${done.length ? "다 샀어요!" : "아직 쇼핑리스트가 비어 있어요. 위 칸에 살 것을 적어 보세요. 같이 가는 사람 모두에게 보여요."}</li>`;
   $("#shopDoneBox").hidden = !done.length;
   $("#shopDoneSum").textContent = `구매 완료 ${done.length}개`;
   $("#shopDone").innerHTML = done.map(row).join("");
   const cnt = $("#shopCnt"); if (cnt) { cnt.hidden = !todo.length; cnt.textContent = todo.length; }
+  hydrate($("#shopView"), S.tripId);
 }
 let SE = null;
 function openShopItem(it) {
@@ -1375,16 +1417,32 @@ function openShopItem(it) {
   if (it.who && !names.includes(it.who)) names.push(it.who);
   $("#shWho").innerHTML = `<option value="">아무나</option>` + names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
   $("#shWho").value = it.who || "";
+  SP = { photos: [...(it.photos || [])], pend: new Map() }; renderShPhotos();
   openDlg($("#sh"));
 }
+let SP = { photos: [], pend: new Map() };
+function renderShPhotos() {
+  $("#shPhotos").innerHTML = SP.photos.map(id => { const src = SP.pend.get(id) || S.photos.get(id);
+    return `<div><img data-pid="${id}" alt=""${src ? ` src="${src}"` : ""}><button type="button" data-srm="${id}" aria-label="사진 빼기">✕</button></div>`; }).join("");
+  hydrate($("#shPhotos"), S.tripId);
+}
+$("#shPhotos").onclick = e => { const b = e.target.closest("[data-srm]"); if (!b) return; SP.photos = SP.photos.filter(x => x !== b.dataset.srm); SP.pend.delete(b.dataset.srm); renderShPhotos(); };
+$("#shFile").onchange = async e => {
+  const files = [...e.target.files]; e.target.value = "";
+  for (const f of files) { try { const d = await photoData(f), id = uid(); SP.pend.set(id, d); SP.photos.push(id); } catch (x) { toast(x.message || "사진을 추가하지 못했어요."); } }
+  renderShPhotos();
+};
 $("#shCancel").onclick = () => $("#sh").close();
 $("#shForm").onsubmit = e => {
   e.preventDefault(); const name = $("#shName").value.trim(); if (!name) return;
-  setShop(S.tripId, Object.assign({}, SE, { name, memo: $("#shMemo").value.trim(), who: $("#shWho").value }));
+  for (const id of SP.photos) if (SP.pend.has(id)) putPhoto(S.tripId, id, SP.pend.get(id));
+  for (const id of (SE.photos || [])) if (!SP.photos.includes(id)) delPhoto(S.tripId, id);
+  setShop(S.tripId, Object.assign({}, SE, { name, memo: $("#shMemo").value.trim(), who: $("#shWho").value, photos: SP.photos }));
   $("#sh").close(); renderShop();
 };
 $("#shDel").onclick = async () => {
   if (!SE || !(await askConfirm(`‘${SE.name}’을(를) 쇼핑리스트에서 지울까요?`, "지우기"))) return;
+  for (const id of (SE.photos || [])) delPhoto(S.tripId, id);
   delShop(S.tripId, SE.id); $("#sh").close(); renderShop();
 };
 
