@@ -528,7 +528,9 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.5";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.6";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+/* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
+const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBXg7n77SOIygufhwaVg5WSiZgPyJMnjms",
   authDomain: "travel-note-44cdf.firebaseapp.com",
@@ -1325,7 +1327,7 @@ $("#fdFind").onclick = async () => {
   if (!q) { toast("가게 이름이나 주소를 먼저 입력해 주세요."); return; }
   box.hidden = false; box.innerHTML = "<li><p>검색 중…</p></li>";
   try {
-    const res = await geocode(q);
+    const res = await geocode(q, nearCenter((S.food.get(S.tripId) || []).concat(trip(S.tripId).items)));
     if (!res.length) { box.innerHTML = "<li><p>찾지 못했어요. 현지어 이름이나 주소로 다시 검색하거나, 지도를 직접 눌러 위치를 정하세요.</p></li>"; return; }
     box.innerHTML = res.map((r, i) => `<li><button type="button" data-i="${i}"><b>${esc(r.name)}</b><small>${esc(r.addr)}</small></button></li>`).join("");
     box.onclick = e => { const b = e.target.closest("[data-i]"); if (!b) return; const r = res[+b.dataset.i];
@@ -1786,7 +1788,35 @@ function setupMiniMap() {
   setLoc(E.lat, E.lng, false);
   setTimeout(() => miniMap && miniMap.invalidateSize(), 60);
 }
-async function geocode(q) {
+/* 위치 찾기: 구글 장소 검색 → 안 되면 무료 검색(OpenStreetMap)으로 */
+function nearCenter(list) {
+  const pts = (list || []).filter(x => x && x.lat != null);
+  if (!pts.length) return null;
+  return { lat: pts.reduce((a, x) => a + x.lat, 0) / pts.length, lng: pts.reduce((a, x) => a + x.lng, 0) / pts.length };
+}
+let googleOff = false;
+async function googleSearch(q, center) {
+  const body = { textQuery: q, languageCode: "ko", pageSize: 6 };
+  if (center) body.locationBias = { circle: { center: { latitude: center.lat, longitude: center.lng }, radius: 50000 } };
+  const r = await fetch("https://places.googleapis.com/v1/places:searchText", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Goog-Api-Key": GOOGLE_KEY, "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.location" },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) { if (r.status === 403 || r.status === 400) googleOff = true; throw new Error("google " + r.status); }
+  const j = await r.json();
+  return (j.places || []).filter(x => x.location).map(x => ({
+    name: (x.displayName && x.displayName.text) || q, addr: x.formattedAddress || "",
+    lat: +x.location.latitude.toFixed(6), lng: +x.location.longitude.toFixed(6), src: "구글"
+  }));
+}
+async function geocode(q, center) {
+  if (GOOGLE_KEY && !googleOff && /^https?:$/.test(location.protocol)) {
+    try { const g = await googleSearch(q, center); if (g.length) return g; } catch (e) {}
+  }
+  return osmSearch(q);
+}
+async function osmSearch(q) {
   const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&accept-language=ko&q=" + encodeURIComponent(q);
   const r = await fetch(url, { headers: { Accept: "application/json" } });
   if (!r.ok) throw new Error("검색 서버가 응답하지 않아요 (" + r.status + ")");
@@ -1798,7 +1828,7 @@ $("#fFind").onclick = async () => {
   if (!q) { toast("주소나 장소 이름을 먼저 입력해 주세요."); return; }
   box.hidden = false; box.innerHTML = "<li><p>검색 중…</p></li>";
   try {
-    const res = await geocode(q);
+    const res = await geocode(q, nearCenter(E.t.items));
     if (!res.length) { box.innerHTML = "<li><p>찾지 못했어요. 영문이나 현지어 이름, 더 짧은 주소로 다시 검색하거나 지도를 직접 눌러 위치를 정하세요.</p></li>"; return; }
     box.innerHTML = res.map((r, i) => `<li><button type="button" data-i="${i}"><b>${esc(r.name)}</b><small>${esc(r.addr)}</small></button></li>`).join("");
     box.onclick = e => {
