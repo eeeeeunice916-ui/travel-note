@@ -494,6 +494,8 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
     <section class="set"><h3>배경색</h3><div class="sw" id="swBg"></div></section>
     <section class="set"><h3>날짜 탭 색</h3><p class="desc">선택한 일차 탭의 색이에요.</p><div class="sw" id="swTab"></div></section>
     <section class="set"><h3>포인트 색</h3><p class="desc">시간, 버튼, 지도 경로의 색이에요.</p><div class="sw" id="swAcc"></div></section>
+    <section class="set"><h3>구글 지도 사용량</h3><p class="desc" id="useState"></p>
+      <p class="desc">한도에 닿으면 그날(또는 그달)은 기본 지도와 기본 검색으로 자동으로 바뀌어서 요금이 나오지 않아요. 입력 창 안의 작은 지도는 늘 기본 지도를 써요.</p></section>
     <section class="set"><h3>삭제 비밀번호</h3><p class="desc" id="pwState"></p>
       <div class="row"><button type="button" class="btn sm" id="pwSet">비밀번호 정하기</button></div></section>
     <section class="set"><h3>미리보기</h3>
@@ -598,7 +600,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "2.0";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "2.3";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -1071,7 +1073,7 @@ function swatches(key) {
     + `<div class="swi"><label aria-label="직접 고르기" ${inPreset ? "" : `style="background:${cur};box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink)"`}>+<input type="color" data-k="${key}" value="${cur.toLowerCase()}"></label><small>직접</small></div>`;
 }
 function renderSettings() {
-  renderThemes();
+  renderThemes(); renderUsage(); loadUsage(true).then(renderUsage);
   $("#sNick").value = S.nick;
   renderFonts();
   $("#pwState").textContent = S.set.pw ? "정해져 있어요. 여행을 삭제할 때 이 비밀번호를 물어봐요." : "아직 없어요. 처음 여행을 삭제할 때 정하거나 여기서 미리 정할 수 있어요.";
@@ -1086,7 +1088,7 @@ $("#sd").addEventListener("change", e => { const i = e.target.closest("input[dat
 $("#sReset").onclick = () => setTheme("midnight");
 $("#themeList").addEventListener("click", e => { const b = e.target.closest("[data-theme]"); if (b) setTheme(b.dataset.theme); });
 $("#sdForm").onsubmit = e => { e.preventDefault(); $("#sd").close(); };
-$("#sd").addEventListener("close", () => { if (!S.ready) return; if (S.tripId) renderTrip(); else renderList(); });
+$("#sd").addEventListener("close", () => { if (!S.ready) return; if (S.tripId) { updateTrip(false); renderFood(false); } else renderList(); });
 $("#sNickSave").onclick = () => {
   const n = $("#sNick").value.trim(); if (!n) { toast("닉네임을 입력해 주세요."); return; }
   if (n === S.nick) return;
@@ -1139,6 +1141,7 @@ const CAN_HIST = (() => { try { return window.top === window.self && !!history.p
 function hist(fn) { if (!CAN_HIST) return false; try { fn(); return true; } catch (e) { return false; } }
 function showTrip(id) {
   S.tripId = id; const t = trip(id), today = fd(new Date());
+  loadUsage();
   S.day = today >= t.start && today <= t.end ? today : "all";
   watchItems(id); watchShop(id); watchFood(id); renderTrip(); window.scrollTo(0, 0);
 }
@@ -1377,7 +1380,7 @@ function setMode(m) {
 /* ---------- 맛집리스트 ---------- */
 function initFoodMap() {
   const el = $("#fmap"); if (!el) return;
-  S.fmap = makeMap(el);
+  S.fmap = makeMap(el, { pool: "food" });
   if (!S.fmap) el.innerHTML = '<p class="mapmsg">지도를 불러오지 못했어요.</p>';
 }
 const likeCount = f => Object.keys(f.likes || {}).length;
@@ -1658,6 +1661,7 @@ function loadGoogleMaps() {
 window.gm_authFailure = () => {          // 구글이 키를 거절하면 무료 지도로 바꿔 다시 그림
   if (GM.state === "failed") return;
   GM.state = "failed"; ls.set("tn-gm-off", Date.now() + 10 * 60e3);
+  Object.keys(MAP_POOL).forEach(k => delete MAP_POOL[k]);
   toast("구글 지도를 쓸 수 없어서 기본 지도로 보여 드려요. (키 설정 확인 필요)", 4500);
   rebuildMaps();
 };
@@ -1666,15 +1670,62 @@ function rebuildMaps() {
   if ($("#ed").open && E) setupMiniMap();
   if ($("#fd").open && FE) setupFoodMiniMap();
 }
+/* ---------- 구글 무료 사용량 지키기 ----------
+   모두가 쓴 양을 서버에 하루·한 달 단위로 세고, 한도에 닿으면 무료 지도·무료 검색으로 바꿈.
+   (구글 무료: 지도 열기 월 1만 회, 장소 검색 월 5천 회 → 여유를 두고 아래 숫자로 제한) */
+const QUOTA = { mapsDay: 280, mapsMonth: 9000, searchDay: 140, searchMonth: 4500, mapsDevice: 120, searchDevice: 60 };
+const U = { ok: false, day: {}, month: {}, at: 0, warned: false };
+const dayKey = () => fd(new Date()), monthKey = () => fd(new Date()).slice(0, 7);
+async function loadUsage(force) {
+  if (!C.db || (!force && Date.now() - U.at < 5 * 60e3)) return;
+  U.at = Date.now();
+  try {
+    const [d, m] = await Promise.all([C.db.collection("usage").doc("d-" + dayKey()).get(), C.db.collection("usage").doc("m-" + monthKey()).get()]);
+    U.day = d.exists ? d.data() : {}; U.month = m.exists ? m.data() : {}; U.ok = true;
+  } catch (e) { U.ok = false; }
+}
+function usageOf(kind) {
+  const dev = (ls.get("tn-use-" + dayKey(), {}) || {})[kind] || 0;
+  return { dev, day: U.ok ? (U.day[kind] || 0) : null, month: U.ok ? (U.month[kind] || 0) : null };
+}
+function canUse(kind) {
+  const u = usageOf(kind);
+  // 모두의 사용량을 셀 수 없을 때는 기기마다 더 낮게 (지도 하루 40, 검색 하루 20)
+  const devCap = U.ok ? QUOTA[kind + "Device"] : (kind === "maps" ? 40 : 20);
+  const ok = u.dev < devCap && (!U.ok || (u.day < QUOTA[kind + "Day"] && u.month < QUOTA[kind + "Month"]));
+  if (!ok && !U.warned) { U.warned = true; toast("구글 무료 사용량을 넘지 않도록 오늘은 기본 지도·검색으로 보여 드려요.", 4500); }
+  return ok;
+}
+function countUse(kind) {
+  const k = "tn-use-" + dayKey(), loc = ls.get(k, {}) || {}; loc[kind] = (loc[kind] || 0) + 1; ls.set(k, loc);
+  if (!U.ok || !C.db) return;
+  U.day[kind] = (U.day[kind] || 0) + 1; U.month[kind] = (U.month[kind] || 0) + 1;
+  const inc = { [kind]: firebase.firestore.FieldValue.increment(1) };
+  C.db.collection("usage").doc("d-" + dayKey()).set(inc, { merge: true }).catch(() => {});
+  C.db.collection("usage").doc("m-" + monthKey()).set(inc, { merge: true }).catch(() => {});
+}
+function renderUsage() {
+  const el = $("#useState"); if (!el) return;
+  const m = usageOf("maps"), q = usageOf("search"), n = x => x == null ? "–" : x.toLocaleString();
+  el.innerHTML = U.ok
+    ? `지도 열기: 오늘 <b>${n(m.day)}</b> / ${QUOTA.mapsDay} · 이번 달 <b>${n(m.month)}</b> / ${QUOTA.mapsMonth.toLocaleString()}<br>장소 검색: 오늘 <b>${n(q.day)}</b> / ${QUOTA.searchDay} · 이번 달 <b>${n(q.month)}</b> / ${QUOTA.searchMonth.toLocaleString()}`
+    : `이 기기 오늘 사용: 지도 ${m.dev} / 40 · 검색 ${q.dev} / 20<br>함께 쓰는 사람 전체 사용량을 세려면 Firebase 규칙을 새로 넣어 주세요.`;
+}
+const MAP_POOL = {};   // 여행 지도·맛집 지도: 앱을 켜 둔 동안 한 번만 만들고 계속 다시 씀
 function makeMap(el, opt = {}) {
   el.innerHTML = "";
-  if (GM.state === "ready" && window.google && google.maps) { try { return gmapAdapter(el, opt); } catch (e) {} }
+  if (opt.pool && MAP_POOL[opt.pool] && GM.state === "ready") { MAP_POOL[opt.pool].attach(el); return MAP_POOL[opt.pool]; }
+  // 입력 창 안의 작은 지도는 항상 무료 지도 (구글 사용량 아끼기)
+  if (!opt.mini && GM.state === "ready" && window.google && google.maps && canUse("maps")) {
+    try { const a = gmapAdapter(el, opt); countUse("maps"); if (opt.pool) MAP_POOL[opt.pool] = a; return a; } catch (e) {}
+  }
   return window.L ? leafletAdapter(el, opt) : null;
 }
 const pinColors = kind => ({ plan: [cssVar("--ink"), cssVar("--bg")], food: [cssVar("--rose"), "#FFFFFF"], edit: [cssVar("--accent"), cssVar("--accent-ink")] })[kind || "plan"];
 function gmapAdapter(el, opt) {
   const g = google.maps;
-  const map = new g.Map(el, { center: { lat: 36.4, lng: 127.9 }, zoom: 6, disableDefaultUI: true, zoomControl: true, fullscreenControl: !opt.mini,
+  const node = document.createElement("div"); node.style.cssText = "width:100%;height:100%"; el.appendChild(node);
+  const map = new g.Map(node, { center: { lat: 36.4, lng: 127.9 }, zoom: 6, disableDefaultUI: true, zoomControl: true, fullscreenControl: !opt.mini,
     clickableIcons: false, gestureHandling: "cooperative", keyboardShortcuts: false });
   const info = new g.InfoWindow(); let objs = [];
   const A = {
@@ -1708,7 +1759,8 @@ function gmapAdapter(el, opt) {
     clear() { objs.forEach(x => x.setMap(null)); objs = []; info.close(); },
     onClick(fn) { map.addListener("click", e => fn(+e.latLng.lat().toFixed(6), +e.latLng.lng().toFixed(6))); },
     refresh() {},
-    remove() { A.clear(); el.innerHTML = ""; }
+    remove() { A.clear(); if (opt.pool) node.remove(); else el.innerHTML = ""; },
+    attach(target) { A.clear(); target.innerHTML = ""; target.appendChild(node); g.event.trigger(map, "resize"); }
   };
   return A;
 }
@@ -1736,7 +1788,7 @@ function leafletAdapter(el, opt) {
 const pinIcon = (label, cls = "") => L.divIcon({ className: "pin " + cls, html: `<span>${label}</span>`, iconSize: [30, 30], iconAnchor: [15, 15], popupAnchor: [0, -14] });
 function initMap() {
   const el = $("#map"); if (!el) return;
-  S.map = makeMap(el);
+  S.map = makeMap(el, { pool: "main" });
   if (!S.map) {
     el.innerHTML = '<p class="mapmsg">지도를 준비하는 중…</p>';
     const id = S.tripId;
@@ -2092,7 +2144,7 @@ async function googleSearch(q, center) {
 }
 async function geocode(q, center) {
   if (GOOGLE_KEY && !googleOff && /^https?:$/.test(location.protocol)) {
-    try { const g = await googleSearch(q, center); if (g.length) return g; } catch (e) {}
+    if (canUse("search")) { try { countUse("search"); const g = await googleSearch(q, center); if (g.length) return g; } catch (e) {} }
   }
   return osmSearch(q);
 }
@@ -2271,6 +2323,7 @@ async function boot() {
   const gmWait = loadGoogleMaps();
   try { await cloudInit(); await Promise.race([gmWait, new Promise(r => setTimeout(r, 4000))]); }
   catch (e) { renderStatus(errMsg(e), true); return; }
+  await loadUsage(true);
   S.codes.forEach(watchRoom);
   S.ready = true;
   const params = new URLSearchParams(location.search);
