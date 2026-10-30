@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#FFFBF7">
 <meta name="color-scheme" content="light only">
 <title>여행 노트</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
@@ -103,6 +103,24 @@ a{color:var(--accent);overflow-wrap:anywhere}
 .notes h2{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;color:var(--memo-ink,var(--mark-ink));margin-bottom:6px}
 .notes.custom .link{color:var(--memo-ink)}
 .notes .txt{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+/* 메모지 꾸미기 */
+.notes{position:relative}
+.notes.has-tape{margin-top:18px}
+.notes .tape{position:absolute;left:50%;top:-10px;width:92px;height:22px;transform:translateX(-50%) rotate(-3deg);border-radius:2px;opacity:.85;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.notes .deco{position:absolute;right:10px;bottom:6px;font-size:34px;line-height:1;transform:rotate(8deg);pointer-events:none}
+.notes .deco svg{width:46px;height:46px}
+.notes.has-deco{padding-bottom:34px}
+.paper-line .txt,.rtbox.paper-line{background-image:linear-gradient(transparent calc(1.7em - 1px),rgba(120,100,90,.16) calc(1.7em - 1px));background-size:100% 1.7em;line-height:1.7em}
+.notes.paper-grid,.rtbox.paper-grid{background-image:linear-gradient(rgba(120,110,100,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(120,110,100,.10) 1px,transparent 1px);background-size:18px 18px}
+.notes.paper-dot,.rtbox.paper-dot{background-image:radial-gradient(rgba(120,110,100,.28) 1.2px,transparent 1.4px);background-size:16px 16px}
+.decoopts{display:flex;flex-wrap:wrap;gap:6px}
+.decoopts button{min-height:40px;min-width:44px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:14px;font-weight:600}
+.decoopts button[aria-pressed="true"]{border-color:var(--tabon);box-shadow:0 0 0 1px var(--tabon)}
+.decoopts .tp{width:44px;padding:0}
+.decoopts .tp i{display:block;width:30px;height:12px;margin:auto;border-radius:2px;transform:rotate(-4deg)}
+.decoopts .ds{font-size:22px;padding:0 6px}
+.decoopts .ds svg{width:28px;height:28px;vertical-align:middle}
+.decoopts .paperbtn{width:58px;height:44px;padding:0;font-size:12px}
 /* 꾸민 메모 보기 */
 .notes .txt.rich,.rich{white-space:normal;overflow-wrap:anywhere}
 .rich div,.rich p{margin:0;min-height:1.2em}
@@ -117,6 +135,19 @@ a{color:var(--accent);overflow-wrap:anywhere}
 .rtbar button.hlx{font-family:var(--font);font-size:12px;color:var(--muted)}
 .rtbar select{width:auto;min-height:34px;padding:4px 8px;font-size:14px;border-radius:8px}
 .rtsep{width:1px;height:22px;background:var(--line);margin:0 2px}
+.rtbar{display:grid;gap:6px}
+.rttabs{display:flex;gap:4px}
+.rttabs button{font-family:var(--round)!important;font-size:13px!important;border-radius:999px!important;padding:0 12px!important;background:var(--field)!important;border:0!important}
+.rttabs button[aria-pressed="true"]{background:var(--tabon)!important;color:var(--tabon-ink)!important}
+.rtp{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.rtbreak{flex-basis:100%;height:0}
+.rtbar button.fc{border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
+.rtp.stk{display:grid;gap:2px}
+.rtp.stk[hidden]{display:none}
+.stkrow{display:flex;flex-wrap:wrap;align-items:center;gap:0}
+.stkrow .rtlab{width:30px}
+.rtbar .stkrow button{min-width:32px;height:34px;padding:0;font-size:21px;font-family:var(--font)}
+.rtfont{max-width:110px}
 .rtlab{font-size:12px;color:var(--muted);margin:0 2px}
 .rtbox{min-height:130px;max-height:42vh;overflow:auto;padding:10px 12px;font-size:16px;line-height:1.55;outline:none;color:var(--ink);-webkit-user-select:text;user-select:text;white-space:normal;overflow-wrap:anywhere}
 .rtbox.custom{color:#17212A}
@@ -247,7 +278,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
 .loading .meta{opacity:.6}
 .thumbs img:not([src]){background:var(--field)}
 /* 시작 화면 */
-#splash{position:fixed;inset:0;z-index:2000;display:grid;place-items:center;background:radial-gradient(circle at 50% 42%,#EAF7FF 0%,#FFFFFF 62%);color:#1C2547;
+#splash{position:fixed;inset:0;z-index:2000;display:grid;place-items:center;background:radial-gradient(circle at 50% 42%,var(--sky-l) 0%,var(--bg) 62%);color:var(--ink);
   padding:env(safe-area-inset-top,0px) max(24px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(24px,env(safe-area-inset-left,0px));transition:opacity .45s ease,visibility .45s}
 #splash.gone{opacity:0;visibility:hidden}
 .sp-in{display:grid;justify-items:center;gap:10px;text-align:center}
@@ -255,14 +286,14 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
 .sp-z{animation:sp-z 2.4s ease-in-out infinite}
 @keyframes sp-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes sp-z{0%,100%{opacity:.25}50%{opacity:1}}
-.sp-title{font:400 32px var(--round);margin:4px 0 0;color:#1C2547;letter-spacing:-.01em}
-.sp-msg{margin:0;font-size:14px;color:#717895;min-height:1.4em;max-width:30ch}
-.sp-dots span{display:inline-block;width:7px;height:7px;margin:6px 3px 0;border-radius:50%;background:#4EBEFA;animation:sp-dot 1.2s ease-in-out infinite}
+.sp-title{font:400 32px var(--round);margin:4px 0 0;color:var(--ink);letter-spacing:-.01em}
+.sp-msg{margin:0;font-size:14px;color:var(--muted);min-height:1.4em;max-width:30ch}
+.sp-dots span{display:inline-block;width:7px;height:7px;margin:6px 3px 0;border-radius:50%;background:var(--sky);animation:sp-dot 1.2s ease-in-out infinite}
 .sp-dots span:nth-child(2){animation-delay:.15s}.sp-dots span:nth-child(3){animation-delay:.3s}
 @keyframes sp-dot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}
 #splash.bad .sp-dots,#splash.bad .sp-z{display:none}
 #splash.bad .sp-bird{animation:none}
-#splash .btn{background:#1C2547;border-color:#1C2547;color:#fff;margin-top:6px}
+#splash .btn{background:var(--btn);border-color:var(--btn);color:var(--btn-ink);margin-top:6px}
 @media (prefers-reduced-motion:reduce){.sp-bird,.sp-z,.sp-dots span{animation:none}}
 /* 테마 고르기 */
 .themes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -338,7 +369,7 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
 .day .none{padding:10px 8px;font-size:12px}
 .tabs{padding-top:8px}
 /* D-day 카드 */
-.dd{position:relative;overflow:hidden;display:block;margin:0 0 14px;padding:16px 96px 16px 18px;border-radius:22px;background:linear-gradient(135deg,var(--sky-l),var(--lime-l));color:var(--ink);text-decoration:none;min-height:116px}
+.dd{position:relative;overflow:hidden;display:block;margin:0 0 14px;padding:16px 96px 16px 18px;border-radius:22px;background:var(--dd);color:var(--ink);text-decoration:none;min-height:116px}
 .dd .k{font-size:13px;font-weight:700;color:var(--muted)}
 .dd .v{font-size:36px;line-height:1.1;margin-top:2px}
 .dd .m{font-size:13px;font-weight:600;margin-top:4px}
@@ -346,17 +377,16 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
 .dd .st{position:absolute;right:20px;top:14px;width:12px;height:12px;background:var(--star);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
 /* 여행 화면 */
 .bar{border-bottom:0}
-.notes{border-left:0;border-radius:18px;background:var(--memo,var(--soft2,#F6F8FC));box-shadow:none}
-.notes:not(.custom){background:var(--memo,#F6F8FC)}
+.notes{border-left:0;border-radius:18px;background:var(--memo,var(--mark));box-shadow:none}
 .notes h2{color:var(--memo-ink,var(--ink));font-family:var(--round);font-weight:400;font-size:15px}
 .notes:not(.custom) h2 .link{color:var(--sky-d)}
-.seg{border-radius:999px;background:#F2F4F9}
+.seg{border-radius:999px;background:var(--field)}
 .seg button{border-radius:999px;font-family:var(--round);font-weight:400;font-size:15px}
 .seg button[aria-pressed="true"]{box-shadow:0 1px 4px rgba(28,37,71,.12)}
 .seg .cnt{background:var(--pink);color:#fff;font-family:var(--font);font-weight:800}
 .tab{border-radius:16px;padding:7px 14px;border-color:var(--line);position:relative}
 .tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
-.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.tab[aria-selected="true"]{background:var(--tabon);border-color:var(--tabon);color:var(--tabon-ink)}
 .tab[aria-selected="true"]::after{content:"";position:absolute;right:-3px;top:-4px;width:12px;height:12px;background:var(--star);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
 .map,.fmap{border-radius:20px;border-color:var(--line)}
 .dayh h3{font-size:21px}
@@ -367,51 +397,45 @@ textarea{resize:vertical;min-height:96px;line-height:1.5}
 .item{position:relative;overflow:hidden;border-radius:18px;padding-left:16px}
 .item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--dc,var(--sky))}
 .item.on{border-color:var(--sky);box-shadow:0 0 0 1px var(--sky)}
-.num{background:var(--ink);color:#fff}
+.num{background:var(--tabon);color:var(--tabon-ink)}
 .time{color:var(--sky-d)}
-.dur{border:0;background:#F2F4F9}
+.dur{border:0;background:var(--field)}
 .chip{background:var(--star-l);border-radius:10px}
-.chip b{color:#7C6000}
+.chip b{color:var(--chip-ink)}
 .acts a,.acts button{color:var(--sky-d)}
 .fab{background:var(--btn);color:var(--btn-ink);font-family:var(--round);font-weight:400;font-size:16px;box-shadow:0 10px 26px rgba(28,37,71,.28);display:inline-flex;align-items:center;gap:8px}
-.fab .st{width:13px;height:13px;background:var(--star);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.fab .st{width:13px;height:13px;background:var(--fab-star);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
 .none{display:grid;justify-items:center;gap:6px;text-align:center;padding:18px 8px}
 .none.plain{display:block;text-align:left;padding:6px 2px}
 .invite-btn{border-color:var(--sky);color:var(--sky-d)}
 .av{background:var(--sky);color:#fff}
+.trip .cover{color:var(--sky-d)}
 /* 맛집 */
 .fi{border-radius:18px}
-.fi .fnum.top1{background:var(--star);color:var(--ink);position:relative}
+.fi .fnum.top1{background:var(--star);color:var(--tabon-ink);position:relative}
 .fi .fnum.top1::after{content:"";position:absolute;right:-5px;top:-6px;width:12px;height:12px;background:var(--star);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);border:0}
-.like[aria-pressed="true"]{border-color:var(--pink);color:#E0438C;background:var(--pink-l)}
+.like[aria-pressed="true"]{border-color:var(--pink);color:var(--heart);background:var(--pink-l)}
 .cat{border-radius:999px}
-.cat[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.cat[aria-pressed="true"]{background:var(--tabon);border-color:var(--tabon);color:var(--tabon-ink)}
 .fcat{background:var(--sky-l);color:var(--sky-d)}
 /* 쇼핑 */
 .shopi{border-radius:18px}
-.chk{border-radius:10px;border-color:#D6DBE7}
+.chk{border-radius:10px;border-color:var(--line)}
 .chk[aria-pressed="true"]{background:var(--lime);border-color:var(--lime);color:#fff}
 .sm b{color:var(--sky-d)}
 .sprog{display:flex;align-items:center;gap:10px;margin:-2px 2px 12px;font-size:12px;font-weight:700;color:var(--muted)}
-.sprog .bar2{flex:1;height:8px;border-radius:99px;background:#F2F4F9;overflow:hidden}
+.sprog .bar2{flex:1;height:8px;border-radius:99px;background:var(--field);overflow:hidden}
 .sprog .bar2 i{display:block;height:100%;border-radius:99px;background:var(--lime)}
 /* 대화상자 */
 dialog{border-radius:24px;border-color:transparent;box-shadow:0 20px 60px rgba(28,37,71,.25)}
 dialog::backdrop{background:rgba(28,37,71,.38)}
-input:not([type=file]),select,textarea{border-radius:12px;border-color:transparent;background:#F2F4F9}
+.trip,.item,.shopi,.fi{box-shadow:var(--shadow)}
+input:not([type=file]),select,textarea{border-radius:12px;border-color:transparent;background:var(--field)}
 .code{background:var(--star-l);font-family:var(--round);font-weight:400;border-radius:16px}
 .toast{border-radius:14px}
-.pin span{background:var(--ink);color:#fff}
+.pin span{background:var(--tabon);color:var(--tabon-ink)}
 .pin.food span{background:var(--pink)}
 .pin.edit span{background:var(--sky-d);color:#fff}
-/* 어두운 테마에서는 위시 색을 조금 눌러서 */
-html.dk .dd{background:linear-gradient(135deg,#1E2A3A,#25321F)}
-html.dk .tab[aria-selected="true"]{background:var(--tab);color:var(--tab-ink);border-color:var(--tab)}
-html.dk .notes:not(.custom){background:var(--mark)}
-html.dk .seg{background:var(--field)}
-html.dk .dur,html.dk .sprog .bar2{background:var(--field)}
-html.dk input:not([type=file]),html.dk select,html.dk textarea{background:var(--field)}
-html.dk .num{background:var(--accent);color:var(--accent-ink)}
 </style>
 </head>
 <body>
@@ -419,11 +443,11 @@ html.dk .num{background:var(--accent);color:var(--accent-ink)}
   <div class="sp-in">
     <svg class="sp-bird" viewBox="0 0 100 100" aria-hidden="true">
       <path class="sp-z" d="M70 14 h8 l-8 8 h8" fill="none" stroke="#A9B2C8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M18 62 C18 40 34 26 52 26 C68 26 80 38 80 52 C80 68 66 78 50 78 L30 78 C24 78 18 72 18 62 Z" fill="#fff" stroke="#1C2547" stroke-width="3.2" stroke-linejoin="round"/>
-      <path d="M80 48 L92 52 L80 56" fill="none" stroke="#1C2547" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-      <path d="M36 56 C44 50 54 52 58 60" fill="none" stroke="#4EBEFA" stroke-width="3.2" stroke-linecap="round"/>
-      <path d="M61 45 q5 3 10 0" fill="none" stroke="#1C2547" stroke-width="3" stroke-linecap="round"/>
-      <path d="M40 78 v8 M54 78 v8" stroke="#1C2547" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M18 62 C18 40 34 26 52 26 C68 26 80 38 80 52 C80 68 66 78 50 78 L30 78 C24 78 18 72 18 62 Z" style="fill:var(--bird-fill,#fff);stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linejoin="round"/>
+      <path d="M80 48 L92 52 L80 56" fill="none" style="stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M36 56 C44 50 54 52 58 60" fill="none" style="stroke:var(--wing,#4EBEFA)" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M61 45 q5 3 10 0" fill="none" style="stroke:var(--bird,#1C2547)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M40 78 v8 M54 78 v8" style="stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linecap="round"/>
     </svg>
     <h1 class="sp-title">여행 노트</h1>
     <p class="sp-msg" id="spMsg">새가 날아갈 준비 중…</p>
@@ -433,27 +457,27 @@ html.dk .num{background:var(--accent);color:var(--accent-ink)}
 </div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <symbol id="bird" viewBox="0 0 100 100">
-    <path d="M18 62 C18 40 34 26 52 26 C68 26 80 38 80 52 C80 68 66 78 50 78 L30 78 C24 78 18 72 18 62 Z" fill="#fff" stroke="#1C2547" stroke-width="3.2" stroke-linejoin="round"/>
-    <path d="M80 48 L92 52 L80 56" fill="none" stroke="#1C2547" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-    <path d="M36 56 C44 50 54 52 58 60" fill="none" stroke="#4EBEFA" stroke-width="3.2" stroke-linecap="round"/>
-    <circle cx="66" cy="44" r="3" fill="#1C2547"/>
-    <path d="M40 78 v8 M54 78 v8" stroke="#1C2547" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M18 62 C18 40 34 26 52 26 C68 26 80 38 80 52 C80 68 66 78 50 78 L30 78 C24 78 18 72 18 62 Z" style="fill:var(--bird-fill,#fff);stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linejoin="round"/>
+    <path d="M80 48 L92 52 L80 56" fill="none" style="stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M36 56 C44 50 54 52 58 60" fill="none" style="stroke:var(--wing,#4EBEFA)" stroke-width="3.2" stroke-linecap="round"/>
+    <circle cx="66" cy="44" r="3" style="fill:var(--bird,#1C2547)"/>
+    <path d="M40 78 v8 M54 78 v8" style="stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linecap="round"/>
   </symbol>
   <symbol id="bird-happy" viewBox="0 0 100 100">
-    <path d="M18 62 C18 40 34 26 52 26 C68 26 80 38 80 52 C80 68 66 78 50 78 L30 78 C24 78 18 72 18 62 Z" fill="#fff" stroke="#1C2547" stroke-width="3.2" stroke-linejoin="round"/>
-    <path d="M80 48 L92 52 L80 56" fill="none" stroke="#1C2547" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-    <path d="M34 52 C40 36 54 34 60 44" fill="none" stroke="#4EBEFA" stroke-width="3.2" stroke-linecap="round"/>
-    <path d="M61 46 q5 -5 10 0" fill="none" stroke="#1C2547" stroke-width="3" stroke-linecap="round"/>
-    <path d="M40 78 v8 M54 78 v8" stroke="#1C2547" stroke-width="3.2" stroke-linecap="round"/>
-    <path d="M86 14 l2.4 5 5.4 .8 -3.9 3.8 .9 5.4 -4.8 -2.6 -4.8 2.6 .9 -5.4 -3.9 -3.8 5.4 -.8z" fill="#FFCF33"/>
+    <path d="M18 62 C18 40 34 26 52 26 C68 26 80 38 80 52 C80 68 66 78 50 78 L30 78 C24 78 18 72 18 62 Z" style="fill:var(--bird-fill,#fff);stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linejoin="round"/>
+    <path d="M80 48 L92 52 L80 56" fill="none" style="stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M34 52 C40 36 54 34 60 44" fill="none" style="stroke:var(--wing,#4EBEFA)" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M61 46 q5 -5 10 0" fill="none" style="stroke:var(--bird,#1C2547)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M40 78 v8 M54 78 v8" style="stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M86 14 l2.4 5 5.4 .8 -3.9 3.8 .9 5.4 -4.8 -2.6 -4.8 2.6 .9 -5.4 -3.9 -3.8 5.4 -.8z" style="fill:var(--star,#FFCF33)"/>
   </symbol>
   <symbol id="bird-sleep" viewBox="0 0 100 100">
     <path d="M70 14 h8 l-8 8 h8" fill="none" stroke="#A9B2C8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M18 62 C18 40 34 26 52 26 C68 26 80 38 80 52 C80 68 66 78 50 78 L30 78 C24 78 18 72 18 62 Z" fill="#fff" stroke="#1C2547" stroke-width="3.2" stroke-linejoin="round"/>
-    <path d="M80 48 L92 52 L80 56" fill="none" stroke="#1C2547" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-    <path d="M36 56 C44 50 54 52 58 60" fill="none" stroke="#4EBEFA" stroke-width="3.2" stroke-linecap="round"/>
-    <path d="M61 45 q5 3 10 0" fill="none" stroke="#1C2547" stroke-width="3" stroke-linecap="round"/>
-    <path d="M40 78 v8 M54 78 v8" stroke="#1C2547" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M18 62 C18 40 34 26 52 26 C68 26 80 38 80 52 C80 68 66 78 50 78 L30 78 C24 78 18 72 18 62 Z" style="fill:var(--bird-fill,#fff);stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linejoin="round"/>
+    <path d="M80 48 L92 52 L80 56" fill="none" style="stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M36 56 C44 50 54 52 58 60" fill="none" style="stroke:var(--wing,#4EBEFA)" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M61 45 q5 3 10 0" fill="none" style="stroke:var(--bird,#1C2547)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M40 78 v8 M54 78 v8" style="stroke:var(--bird,#1C2547)" stroke-width="3.2" stroke-linecap="round"/>
   </symbol>
 </defs></svg>
 <div id="app"></div>
@@ -528,6 +552,10 @@ html.dk .num{background:var(--accent);color:var(--accent-ink)}
     <p class="desc">비짓재팬 웹, 결정사항, 꼭 챙길 것처럼 여행 전체에 해당하는 내용을 적어 두세요.</p>
     <div><span class="lab">메모</span><div class="rte" data-rte="nRich" data-ph="예: 비짓재팬 웹 꼭 등록하기&#10;결정사항, 챙길 것"></div></div>
     <div class="set"><span class="lab">메모장 색</span><div class="sw small" id="nColors"></div></div>
+    <div class="set"><span class="lab">메모지 무늬</span><div class="decoopts" id="nPaper"></div></div>
+    <div class="set"><span class="lab">기본 글씨체</span><div class="decoopts" id="nFont"></div></div>
+    <div class="set"><span class="lab">마스킹테이프</span><div class="decoopts" id="nTape"></div></div>
+    <div class="set"><span class="lab">모서리 스티커</span><div class="decoopts" id="nDeco"></div></div>
     <div class="dfoot"><span class="sp"></span>
       <button type="button" class="btn" id="nCancel">취소</button>
       <button type="submit" class="btn primary">저장</button></div>
@@ -609,11 +637,11 @@ html.dk .num{background:var(--accent);color:var(--accent-ink)}
     <h2>설정</h2>
     <section class="set"><h3>내 닉네임</h3>
       <div class="search"><input id="sNick" maxlength="12" placeholder="닉네임" autocomplete="off" aria-label="내 닉네임"><button type="button" class="btn" id="sNickSave">바꾸기</button></div></section>
-    <section class="set"><h3>테마</h3><p class="desc">한 번에 어울리는 색으로 바꿔요. 아래에서 색을 하나씩 바꿀 수도 있어요.</p><div class="themes" id="themeList"></div></section>
+    <section class="set"><h3>테마</h3><p class="desc">어울리는 색 조합으로 한 번에 바꿔요. 아래에서 배경·버튼·포인트 색만 따로 바꿀 수도 있어요.</p><div class="themes" id="themeList"></div></section>
     <section class="set"><h3>글씨체</h3><div class="fontlist" id="fontList"></div></section>
     <section class="set"><h3>배경색</h3><div class="sw" id="swBg"></div></section>
-    <section class="set"><h3>날짜 탭 색</h3><p class="desc">선택한 일차 탭의 색이에요.</p><div class="sw" id="swTab"></div></section>
-    <section class="set"><h3>포인트 색</h3><p class="desc">시간, 버튼, 지도 경로의 색이에요.</p><div class="sw" id="swAcc"></div></section>
+    <section class="set"><h3>버튼·탭 색</h3><p class="desc">버튼과 선택한 일차 탭의 색이에요.</p><div class="sw" id="swTab"></div></section>
+    <section class="set"><h3>포인트 색</h3><p class="desc">시간, 링크, 지도 경로의 색이에요.</p><div class="sw" id="swAcc"></div></section>
     <section class="set"><h3>구글 지도 사용량</h3><p class="desc" id="useState"></p>
       <p class="desc">한도에 닿으면 그날(또는 그달)은 기본 지도와 기본 검색으로 자동으로 바뀌어서 요금이 나오지 않아요. 입력 창 안의 작은 지도는 늘 기본 지도를 써요.</p></section>
     <section class="set"><h3>삭제 비밀번호</h3><p class="desc" id="pwState"></p>
@@ -720,7 +748,7 @@ html.dk .num{background:var(--accent);color:var(--accent-ink)}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "3.0";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "3.1";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -743,8 +771,7 @@ const addDays = (s, n) => { const d = pd(s); return fd(new Date(d.getFullYear(),
 const dk = date => "d" + date.replace(/-/g, "");            // 일차 정보 저장용 키 (예: d20261230)
 function tripDays(t) { const a = []; let s = t.start; while (s <= t.end && a.length < 60) { a.push(s); s = addDays(s, 1); } return a; }
 function dlabel(s) { const d = pd(s); return `${d.getMonth() + 1}/${d.getDate()} (${WD[d.getDay()]})`; }
-const DAY_COLORS = ["#4EBEFA", "#A6E33A", "#FF7EB6", "#A994FF", "#FFCF33"];
-const dayColor = i => DAY_COLORS[i % DAY_COLORS.length];
+const dayColor = i => { const c = S.dayColors || ["#FF9A76", "#FFC857", "#B8D98A", "#C9A3E6", "#8EC5E8"]; return c[i % c.length]; };
 const birdSvg = (k = "bird") => `<svg aria-hidden="true"><use href="#${k}"/></svg>`;
 function ddayCard(list) {
   const today = fd(new Date());
@@ -804,6 +831,9 @@ const ls = {
 const RICH_KEEP = new Set(["B", "STRONG", "I", "EM", "U", "SPAN", "FONT", "MARK", "BR", "DIV", "P"]);
 const FONT_SIZE = { 1: "x-small", 2: "small", 3: "medium", 4: "large", 5: "x-large", 6: "xx-large", 7: "xxx-large" };
 const SIZE_OK = /^(x-small|small|medium|large|x-large|xx-large|xxx-large|\d{1,2}(\.\d+)?(px|em|rem|%))$/;
+const MEMO_FALLBACK = "'Pretendard',sans-serif";
+const MEMO_FONT_IDS = ["jua", "gaegu", "penscript", "himelody", "gowunbatang", "dohyeon", "nanummyeongjo"];
+let MEMO_FONTS = [];   // FONTS가 정해진 뒤 채움
 const COLOR_OK = /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|[a-z]{3,20})$/i;
 function cleanRich(src, doc) {
   const frag = doc.createDocumentFragment();
@@ -826,6 +856,11 @@ function cleanRich(src, doc) {
     let fs = cs.fontSize; if (tag === "FONT" && n.getAttribute("size")) fs = FONT_SIZE[+n.getAttribute("size")] || fs;
     if (fs && SIZE_OK.test(fs)) st.push("font-size:" + fs);
     if (tag === "MARK" && !bg) st.push("background-color:#FFF176");
+    let co = cs.color; if (tag === "FONT" && n.getAttribute("color")) co = n.getAttribute("color");
+    if (co && COLOR_OK.test(co.replace(/\s/g, ""))) st.push("color:" + co.replace(/\s/g, ""));
+    let ff = cs.fontFamily || ""; if (tag === "FONT" && n.getAttribute("face")) ff = n.getAttribute("face");
+    const mf = ff && MEMO_FONTS.find(f => ff.includes(f[2].replace(/"/g, "").split(",")[0]));
+    if (mf) st.push("font-family:" + mf[2].replace(/"/g, "'") + "," + MEMO_FALLBACK);
     let el;
     if (tag === "B" || tag === "STRONG") el = doc.createElement("b");
     else if (tag === "I" || tag === "EM") el = doc.createElement("i");
@@ -845,6 +880,7 @@ function sanitizeRich(html) {
   return out.innerHTML;
 }
 function richHtml(html) {          // 보여줄 때: 정리하고 링크·전화번호를 누를 수 있게
+  if (/font-family/.test(html || "")) loadFonts(MEMO_FONTS);
   const box = document.createElement("div"); box.innerHTML = sanitizeRich(html);
   const walk = document.createTreeWalker(box, NodeFilter.SHOW_TEXT), texts = [];
   while (walk.nextNode()) texts.push(walk.currentNode);
@@ -856,21 +892,39 @@ function richHtml(html) {          // 보여줄 때: 정리하고 링크·전화
   return box.innerHTML;
 }
 const plainToHtml = s => String(s || "").split("\n").map(l => `<div>${l ? esc(l) : "<br>"}</div>`).join("");
-function setRich(box, html) { box.innerHTML = sanitizeRich(html || ""); if (!box.textContent.trim()) box.innerHTML = ""; }
+function setRich(box, html) { if (/font-family/.test(html || "")) loadFonts(MEMO_FONTS); box.innerHTML = sanitizeRich(html || ""); if (!box.textContent.trim()) box.innerHTML = ""; }
 function richOut(box) {
   const text = (box.innerText || box.textContent || "").replace(/\u00a0/g, " ").replace(/\n{3,}/g, "\n\n").trim();
   return { text, html: text ? sanitizeRich(box.innerHTML) : "" };
 }
+const STICKERS = [
+  ["여행", "✈️ 🧳 🗺️ 📍 🏨 🚄 🚌 🎫 📸 🗼 ⛩️ 🏖️"],
+  ["먹기", "🍜 🍣 🍱 🍙 🍡 🍰 🍦 ☕ 🍺 🍓 🥐 🍽️"],
+  ["기분", "💗 ⭐ ✨ 🌸 🍀 🌈 ☀️ 🌙 🎀 🫧 🥰 🤍"],
+  ["체크", "✅ ❗ ⚠️ 💡 📌 🔖 💰 🛍️ ⏰ 🎁 ❤️‍🔥 💯"]
+];
 function rteBar() {
-  const hl = [["#FFF176", "노랑"], ["#B9F6CA", "연두"], ["#B3E5FC", "하늘"], ["#F8BBD0", "분홍"], ["#FFCC80", "주황"]];
+  const hl = [["#FFF176", "노랑"], ["#B9F6CA", "연두"], ["#B3E5FC", "하늘"], ["#F8BBD0", "분홍"], ["#FFCC80", "주황"], ["#E1D5FF", "보라"]];
+  const fc = [["#1C2547", "검정"], ["#E5484D", "빨강"], ["#F27B21", "주황"], ["#2F9E44", "초록"], ["#1E7FD8", "파랑"], ["#8B5CF6", "보라"], ["#E0438C", "분홍"], ["#8A8FA3", "회색"]];
   return `<div class="rtbar">
-    <select class="rtsize" aria-label="글씨 크기"><option value="">크기</option><option value="2">작게</option><option value="3">보통</option><option value="5">크게</option><option value="6">아주 크게</option></select>
-    <button type="button" data-cmd="bold" aria-label="굵게" aria-pressed="false"><b>B</b></button>
-    <button type="button" data-cmd="italic" aria-label="기울이기" aria-pressed="false"><i>I</i></button>
-    <button type="button" data-cmd="underline" aria-label="밑줄" aria-pressed="false"><u>U</u></button>
-    <span class="rtsep"></span><span class="rtlab">형광펜</span>
-    ${hl.map(([c, n]) => `<button type="button" class="hl" data-hl="${c}" aria-label="형광펜 ${n}" style="background:${c}"></button>`).join("")}
-    <button type="button" class="hlx" data-hl="transparent" aria-label="형광펜 지우기">지우기</button>
+    <div class="rttabs"><button type="button" data-rtp="text" aria-pressed="true">Aa 글자</button><button type="button" data-rtp="color" aria-pressed="false">🎨 색</button><button type="button" data-rtp="stk" aria-pressed="false">💗 스티커</button></div>
+    <div class="rtp" data-p="text">
+      <select class="rtsize" aria-label="글씨 크기"><option value="">크기</option><option value="2">작게</option><option value="3">보통</option><option value="5">크게</option><option value="6">아주 크게</option></select>
+      <select class="rtfont" aria-label="글씨체"><option value="">글씨체</option><option value="__base">기본</option></select>
+      <button type="button" data-cmd="bold" aria-label="굵게" aria-pressed="false"><b>B</b></button>
+      <button type="button" data-cmd="italic" aria-label="기울이기" aria-pressed="false"><i>I</i></button>
+      <button type="button" data-cmd="underline" aria-label="밑줄" aria-pressed="false"><u>U</u></button>
+      <button type="button" data-cmd="strikeThrough" aria-label="가운데 줄" aria-pressed="false"><s>S</s></button>
+    </div>
+    <div class="rtp" data-p="color" hidden>
+      <span class="rtlab">글자색</span>${fc.map(([c, n]) => `<button type="button" class="hl fc" data-fc="${c}" aria-label="글자색 ${n}" style="background:${c}"></button>`).join("")}
+      <span class="rtbreak"></span>
+      <span class="rtlab">형광펜</span>${hl.map(([c, n]) => `<button type="button" class="hl" data-hl="${c}" aria-label="형광펜 ${n}" style="background:${c}"></button>`).join("")}
+      <button type="button" class="hlx" data-hl="transparent" aria-label="형광펜 지우기">지우기</button>
+    </div>
+    <div class="rtp stk" data-p="stk" hidden>
+      ${STICKERS.map(([n, list]) => `<div class="stkrow"><span class="rtlab">${n}</span>${list.split(" ").map(x => `<button type="button" data-stk="${x}" aria-label="스티커 ${x}">${x}</button>`).join("")}</div>`).join("")}
+    </div>
   </div>`;
 }
 document.querySelectorAll(".rte[data-rte]").forEach(el => {
@@ -897,7 +951,15 @@ function rteRun(box, fn) {
 document.addEventListener("click", e => {
   const b = e.target.closest(".rtbar button"); if (!b) return;
   const box = b.closest(".rte").querySelector(".rtbox");
+  if (b.dataset.rtp) {
+    const bar = b.closest(".rtbar");
+    bar.querySelectorAll("[data-rtp]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    bar.querySelectorAll(".rtp").forEach(x => x.hidden = x.dataset.p !== b.dataset.rtp);
+    return;
+  }
   if (b.dataset.cmd) rteRun(box, () => { document.execCommand("styleWithCSS", false, false); document.execCommand(b.dataset.cmd, false, null); });
+  else if (b.dataset.fc) rteRun(box, () => { document.execCommand("styleWithCSS", false, true); document.execCommand("foreColor", false, b.dataset.fc); document.execCommand("styleWithCSS", false, false); });
+  else if (b.dataset.stk) rteRun(box, () => { document.execCommand("insertHTML", false, `<span style="font-size:1.35em">${b.dataset.stk}</span>&nbsp;`); });
   else if (b.dataset.hl) rteRun(box, () => {
     document.execCommand("styleWithCSS", false, true);
     if (!document.execCommand("hiliteColor", false, b.dataset.hl)) document.execCommand("backColor", false, b.dataset.hl);
@@ -905,6 +967,14 @@ document.addEventListener("click", e => {
   });
 });
 document.addEventListener("change", e => {
+  const ff = e.target.closest(".rtfont");
+  if (ff && ff.value) {
+    const box = ff.closest(".rte").querySelector(".rtbox"), v = ff.value; ff.value = "";
+    const f = MEMO_FONTS.find(x => x[0] === v); if (f) loadFonts([f]);
+    const fam = f ? f[2].replace(/"/g, "") : getComputedStyle(box).fontFamily.split(",")[0].replace(/"/g, "");
+    rteRun(box, () => { document.execCommand("styleWithCSS", false, true); document.execCommand("fontName", false, v === "__base" ? "Pretendard" : fam); document.execCommand("styleWithCSS", false, false); });
+    return;
+  }
   const s = e.target.closest(".rtsize"); if (!s || !s.value) return;
   const box = s.closest(".rte").querySelector(".rtbox"), v = s.value; s.value = "";
   rteRun(box, () => { document.execCommand("styleWithCSS", false, false); document.execCommand("fontSize", false, v); });
@@ -1108,7 +1178,7 @@ function refresh(kind, code) {
 }
 
 /* ---------- 설정: 배경색·탭 색·포인트 색 ---------- */
-const DEF_SET = { theme: "wish", bg: "#FFFFFF", tab: "#1C2547", accent: "#1E9BE0", mark: "#F6F8FC", markInk: "#1C2547", pw: "", font: "pretendard" };
+const DEF_SET = { theme: "peach", ov: {}, pw: "", font: "pretendard" };
 const FONT_BASE = '"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif';
 const FONTS = [
   ["pretendard", "기본 (프리텐다드)", '"Pretendard"', ""],
@@ -1125,6 +1195,8 @@ const FONTS = [
   ["himelody", "하이멜로디", '"Hi Melody"', "Hi+Melody"]
 ];
 const fontLoaded = new Set();
+MEMO_FONTS = FONTS.filter(f => MEMO_FONT_IDS.includes(f[0]));
+document.querySelectorAll(".rtfont").forEach(sel => sel.insertAdjacentHTML("beforeend", MEMO_FONTS.map(f => `<option value="${f[0]}">${f[1]}</option>`).join("")));
 function loadFonts(list) {
   const need = list.filter(f => f[3] && !fontLoaded.has(f[0])); if (!need.length) return;
   need.forEach(f => fontLoaded.add(f[0]));
@@ -1146,22 +1218,28 @@ $("#fontList").addEventListener("click", e => {
   const b = e.target.closest("[data-font]"); if (!b) return;
   S.set.font = b.dataset.font; applyFont(); saveSettings(); renderFonts();
 });
-const THEMES = [
-  ["wish", "위시 라이트", { bg: "#FFFFFF", tab: "#1C2547", accent: "#1E9BE0", mark: "#F6F8FC", markInk: "#1C2547" }],
-  ["midnight", "미드나잇", { bg: "#F3F4F7", tab: "#1E2B45", accent: "#2C4A7A", mark: "#F2E8D5", markInk: "#8B6B33" }],
-  ["sage", "세이지", { bg: "#F1F3EF", tab: "#2F463B", accent: "#46705C", mark: "#E9EEDD", markInk: "#5C6B3A" }],
-  ["mocha", "모카", { bg: "#F4F1EE", tab: "#3B2F29", accent: "#8A5E45", mark: "#F0E4D6", markInk: "#7B5734" }],
-  ["burgundy", "버건디", { bg: "#F5F2F3", tab: "#4E1F2C", accent: "#8C3048", mark: "#F3E3E6", markInk: "#8C3048" }],
-  ["night", "나이트", { bg: "#12161E", tab: "#C9A86A", accent: "#C9A86A", mark: "", markInk: "" }],
-  ["classic", "클래식", { bg: "#FFFFFF", tab: "#17212A", accent: "#0E7C66", mark: "#FFF1C9", markInk: "#7A5200" }]
-];
+const PAL = {
+  wish:      { name: "위시 라이트", bg: "#FFFFFF", surface: "#FFFFFF", field: "#F2F4F9", ink: "#1C2547", muted: "#717895", line: "#EDF0F6", btn: "#1C2547", main: "#4EBEFA", text: "#1E9BE0", tint: "#EAF7FF", prog: "#A6E33A", progL: "#F3FBE3", progD: "#5E8F12", pink: "#FF7EB6", heart: "#E0438C", heartL: "#FFF0F6", star: "#FFCF33", chip: "#FFF8DB", chipInk: "#7C6000", dd: "linear-gradient(135deg,#EAF7FF,#F3FBE3)", memo: "#F6F8FC", days: ["#4EBEFA", "#A6E33A", "#FF7EB6", "#A994FF", "#FFCF33"] },
+  mint:      { name: "민트 소다", bg: "#FFFFFF", surface: "#FFFFFF", field: "#EEF6F4", ink: "#173A3A", muted: "#6A8584", line: "#E6F1EF", btn: "#173A3A", main: "#2EC4B6", text: "#0FA38F", tint: "#E2F8F3", prog: "#2EC4B6", progL: "#E2F8F3", progD: "#0B6E61", pink: "#FF8FA3", heart: "#E8546E", heartL: "#FFEFF2", star: "#FFD23F", chip: "#FFF7D6", chipInk: "#7A6000", dd: "linear-gradient(135deg,#DDF7F1,#FFF7D6)", memo: "#F3FAF8", days: ["#2EC4B6", "#FFD23F", "#FF8FA3", "#7DB9FF", "#B79CFF"] },
+  peach:     { name: "피치 크림", bg: "#FFFBF7", surface: "#FFFFFF", field: "#F8EEE7", ink: "#3E2C27", muted: "#8F7A72", line: "#F3E8E1", btn: "#3E2C27", main: "#FF9A76", text: "#E8704A", tint: "#FFEBDD", prog: "#FF9A76", progL: "#FFEBDD", progD: "#A04A24", pink: "#FF8BA0", heart: "#E2566F", heartL: "#FFEEF0", star: "#FFB347", chip: "#FFEBDD", chipInk: "#A04A24", dd: "linear-gradient(135deg,#FFE4D6,#FFF3D9)", memo: "#FFF4EC", days: ["#FF9A76", "#FFC857", "#B8D98A", "#C9A3E6", "#8EC5E8"] },
+  lavender:  { name: "라벤더 밀크", bg: "#FFFFFF", surface: "#FFFFFF", field: "#F3F1FB", ink: "#2D2850", muted: "#7B7799", line: "#EEECF8", btn: "#2D2850", main: "#9D8CFF", text: "#7B6CF0", tint: "#F1EEFF", prog: "#9D8CFF", progL: "#F1EEFF", progD: "#5243C2", pink: "#FF8FB8", heart: "#E2508A", heartL: "#FFEEF5", star: "#FFD166", chip: "#F1EEFF", chipInk: "#5243C2", dd: "linear-gradient(135deg,#ECE8FF,#FFE9F2)", memo: "#F7F5FF", days: ["#9D8CFF", "#FF8FB8", "#7FD1E8", "#FFD166", "#9BD8A8"] },
+  blueberry: { name: "블루베리 요거트", bg: "#FFFFFF", surface: "#FFFFFF", field: "#F0F2FB", ink: "#16204A", muted: "#6E7596", line: "#E9ECF8", btn: "#3B5BFF", main: "#3B5BFF", text: "#3B5BFF", tint: "#E9EDFF", prog: "#3B5BFF", progL: "#E9EDFF", progD: "#2B44CC", pink: "#FF6FA5", heart: "#E3437F", heartL: "#FFEDF4", star: "#FFCC33", chip: "#E9EDFF", chipInk: "#2B44CC", dd: "linear-gradient(135deg,#E3E9FF,#F4F6FF)", memo: "#F5F7FF", tabon: "#16204A", days: ["#3B5BFF", "#5CD3F5", "#FF6FA5", "#FFB020", "#8E7CFF"] },
+  sage:      { name: "세이지 & 오트", bg: "#FAF8F3", surface: "#FFFFFF", field: "#F1EDE3", ink: "#2E3B33", muted: "#7C8579", line: "#ECE7DC", btn: "#2E3B33", main: "#7FA88B", text: "#5E8A6B", tint: "#E5EDE2", prog: "#7FA88B", progL: "#E5EDE2", progD: "#3F6B4C", pink: "#E39A8B", heart: "#C4614F", heartL: "#FBEDE9", star: "#E9B949", chip: "#F3EBD9", chipInk: "#7A5C25", dd: "linear-gradient(135deg,#E5EDE2,#F5EEDD)", memo: "#F5F1E6", days: ["#7FA88B", "#E9B949", "#E39A8B", "#8FA9C9", "#B49BC8"] },
+  mono:      { name: "모노 + 체리", bg: "#FFFFFF", surface: "#FFFFFF", field: "#F3F3F3", ink: "#141414", muted: "#7A7A7A", line: "#EDEDED", btn: "#141414", main: "#FF3B4E", text: "#E5283B", tint: "#FFECEE", prog: "#141414", progL: "#F3F3F3", progD: "#141414", pink: "#FF3B4E", heart: "#FF3B4E", heartL: "#FFECEE", star: "#FF3B4E", chip: "#F3F3F3", chipInk: "#141414", dd: "linear-gradient(135deg,#F4F4F4,#FFFFFF)", memo: "#F7F7F7", days: ["#FF3B4E", "#141414", "#9A9A9A", "#FF9AA4", "#5A5A5A"] },
+  skycoral:  { name: "하늘 + 코랄", bg: "#FFFFFF", surface: "#FFFFFF", field: "#F2F4F9", ink: "#1C2547", muted: "#717895", line: "#EDF0F6", btn: "#1C2547", main: "#4EBEFA", text: "#1E9BE0", tint: "#E6F5FF", prog: "#FF7E67", progL: "#FFEDE9", progD: "#C2462F", pink: "#FF7E67", heart: "#E5523A", heartL: "#FFEFEB", star: "#FFCF33", chip: "#FFEDE9", chipInk: "#C2462F", dd: "linear-gradient(135deg,#E6F5FF,#FFECE8)", memo: "#F6F8FC", days: ["#4EBEFA", "#FF7E67", "#FFCF33", "#9BD3AE", "#A994FF"] },
+  butter:    { name: "버터 & 네이비", bg: "#FFFDF4", surface: "#FFFFFF", field: "#F7F2DF", ink: "#1E2A4A", muted: "#7A7F92", line: "#F2EDD8", btn: "#1E2A4A", btnInk: "#FFE27A", main: "#F5C518", text: "#2E4FA8", tint: "#FFF1B8", prog: "#F5C518", progL: "#FFF6CF", progD: "#6B5300", pink: "#FF8E8E", heart: "#D9534F", heartL: "#FFEFEF", star: "#1E2A4A", fabStar: "#FFE27A", chip: "#FFF1B8", chipInk: "#6B5300", dd: "linear-gradient(135deg,#FFF1B8,#FFF9E3)", memo: "#FFF8DC", wing: "#F5C518", days: ["#F5C518", "#2E4FA8", "#FF8E8E", "#7CC6A4", "#B79CFF"] },
+  night:     { name: "밤하늘", dark: true, bg: "#121830", surface: "#1B2240", field: "#232B4C", ink: "#EEF1FA", muted: "#9AA3C0", line: "#2A3354", btn: "#FFD25A", main: "#7CC8FF", text: "#7CC8FF", tint: "#22305A", prog: "#7CC8FF", progL: "#22305A", progD: "#7CC8FF", pink: "#FF8FB8", heart: "#FF8FB8", heartL: "#3A2747", star: "#FFD25A", fabStar: "#121830", chip: "#2A3358", chipInk: "#FFD25A", dd: "linear-gradient(135deg,#25306A,#1C3A4A)", memo: "#1F2747", tabon: "#FFD25A", birdFill: "#1B2240", bird: "#EEF1FA", days: ["#7CC8FF", "#FFD25A", "#FF8FB8", "#9FE29A", "#B9A6FF"] }
+};
+const THEMES = Object.entries(PAL).map(([id, c]) => [id, c.name, c]);
+const curPal = () => PAL[S.set && S.set.theme] || PAL.peach;
+const palBase = (p, k) => k === "bg" ? p.bg : k === "tab" ? (p.tabon || p.btn) : p.text;
 function renderThemes() {
   $("#themeList").innerHTML = THEMES.map(([id, name, c]) =>
-    `<button type="button" class="theme" data-theme="${id}" aria-pressed="${S.set.theme === id}"><span class="tsw"><i style="background:${c.bg}"></i><i style="background:${c.tab}"></i><i style="background:${c.accent}"></i><i style="background:${c.mark || "#C9A86A"}"></i></span>${name}</button>`).join("");
+    `<button type="button" class="theme" data-theme="${id}" aria-pressed="${S.set.theme === id}"><span class="tsw"><i style="background:${c.bg}"></i><i style="background:${c.btn}"></i><i style="background:${c.main}"></i><i style="background:${c.prog}"></i><i style="background:${c.star}"></i></span>${name}</button>`).join("");
 }
 function setTheme(id) {
-  const t = THEMES.find(x => x[0] === id); if (!t) return;
-  Object.assign(S.set, t[2], { theme: id }); applySettings(); saveSettings(); renderSettings();
+  if (!PAL[id]) return;
+  S.set.theme = id; S.set.ov = {}; applySettings(); saveSettings(); renderSettings();
 }
 const PRESETS = {
   bg: [["#FFFFFF","흰색"],["#FBF8F1","아이보리"],["#EEF5FB","하늘"],["#FCF1F3","분홍"],["#EEF7F3","민트"],["#F3F1FA","라벤더"],["#15191C","다크"],["#000000","블랙"]],
@@ -1175,41 +1253,41 @@ const lum = h => { const c = hexRgb(h).map(v => { v /= 255; return v <= .03928 ?
 const onColor = h => lum(h) > .45 ? "#17212A" : "#FFFFFF";
 function loadSettings() {
   const v = ls.get("tn-settings", {}) || {};
-  // 예전 기본색(흰 배경·초록)을 그대로 쓰던 사람은 새 기본 테마로
-  if (!v.theme) {
-    const old = !v.bg || (String(v.bg).toUpperCase() === "#FFFFFF" && String(v.tab).toUpperCase() === "#17212A" && String(v.accent).toUpperCase() === "#0E7C66");
-    if (old) { delete v.bg; delete v.tab; delete v.accent; v.theme = "midnight"; } else v.theme = "custom";
-  }
-  // 3.0: 새 디자인(위시 라이트)으로 한 번 바꿔 줌. 비밀번호·글씨체는 그대로
-  if (!v.v3) { ["theme", "bg", "tab", "accent", "mark", "markInk"].forEach(k => delete v[k]); v.theme = "wish"; v.v3 = true; ls.set("tn-settings", Object.assign({}, DEF_SET, v)); }
-  return Object.assign({}, DEF_SET, v);
+  // 3.1: 새 색 조합 테마로 한 번 바꿔 줌 (기본: 피치 크림). 비밀번호·글씨체는 그대로
+  if (!v.v31) { ["theme", "bg", "tab", "accent", "mark", "markInk", "v3"].forEach(k => delete v[k]); v.theme = "peach"; v.ov = {}; v.v31 = true; ls.set("tn-settings", Object.assign({}, DEF_SET, v)); }
+  if (!PAL[v.theme]) v.theme = "peach";
+  return Object.assign({}, DEF_SET, v, { ov: v.ov || {} });
 }
 function saveSettings() { ls.set("tn-settings", S.set); }
 function applySettings() {
-  const { bg, tab, accent } = S.set, r = document.documentElement.style, dark = lum(bg) < .2;
-  const mk = /^#[0-9A-F]{6}$/i.test(S.set.mark || "") ? S.set.mark : "#F2E8D5", mki = /^#[0-9A-F]{6}$/i.test(S.set.markInk || "") ? S.set.markInk : "#8B6B33";
+  const p = curPal(), ov = S.set.ov || {}, r = document.documentElement.style;
+  const bg = ov.bg || p.bg, dark = lum(bg) < .2, flip = !!ov.bg && dark !== !!p.dark;
   S.darkBg = dark;
   applyFont();
-  const v = dark
-    ? { "--ink": "#ECF1F0", "--muted": "#A2AEAC", "--line": mix(bg, "#FFFFFF", .16), "--surface": mix(bg, "#FFFFFF", .06), "--field": mix(bg, "#FFFFFF", .1),
-        "--mark": mix(bg, "#C9A86A", .16), "--mark-ink": "#D8BC86", "--soft": mix(bg, accent, .22), "--danger": "#F07A63",
-        "--rose": "#E58AA4", "--shadow": "none" }
-    : { "--ink": mix("#1A2233", tab, .25), "--muted": mix("#66708A", tab, .2), "--line": mix(bg, "#1A2233", .09), "--surface": "#FFFFFF",
-        "--field": mix(bg, "#1A2233", .035), "--mark": mk, "--mark-ink": mki, "--soft": mix(bg, accent, .1), "--danger": "#B4443A",
-        "--rose": "#B5506E", "--shadow": "0 1px 2px rgba(20,28,45,.05),0 4px 14px rgba(20,28,45,.05)" };
-  v["--bg"] = bg; v["--tab"] = tab; v["--tab-ink"] = onColor(tab);
-  v["--btn"] = dark ? accent : tab; v["--btn-ink"] = onColor(v["--btn"]);
-  v["--route"] = S.set.theme === "wish" ? "#4EBEFA" : accent;
-  if (S.set.theme === "wish") { v["--ink"] = "#1C2547"; v["--muted"] = "#717895"; v["--line"] = "#EDF0F6"; v["--field"] = "#F6F8FC"; v["--soft"] = "#EAF7FF"; v["--rose"] = "#FF7EB6"; }
-  document.documentElement.classList.toggle("dk", dark);
-  v["--accent"] = dark && lum(accent) < .12 ? mix(accent, "#FFFFFF", .45) : accent; v["--accent-ink"] = onColor(v["--accent"]);
+  const base = flip
+    ? (dark ? { surface: mix(bg, "#FFFFFF", .06), field: mix(bg, "#FFFFFF", .1), ink: "#EEF1FA", muted: "#A2AEC0", line: mix(bg, "#FFFFFF", .16), memo: mix(bg, "#FFFFFF", .08), chip: mix(bg, "#FFFFFF", .12), chipInk: p.star, tint: mix(bg, p.main, .25), progL: mix(bg, p.prog, .25), heartL: mix(bg, p.pink, .25), dd: `linear-gradient(135deg,${mix(bg, p.main, .3)},${mix(bg, p.prog, .25)})`, birdFill: mix(bg, "#FFFFFF", .06), bird: "#EEF1FA" }
+            : { surface: "#FFFFFF", field: mix(bg, "#1A2233", .04), ink: "#1C2547", muted: "#717895", line: mix(bg, "#1A2233", .08), memo: mix(bg, "#1A2233", .03), chip: "#FFF4D6", chipInk: "#7C6000", birdFill: "#FFFFFF", bird: "#1C2547" })
+    : {};
+  const P = Object.assign({}, p, base);
+  const btn = ov.tab || P.btn, tabon = ov.tab || P.tabon || P.ink, acc = ov.accent || P.text, main = ov.accent || P.main;
+  const v = {
+    "--bg": bg, "--surface": P.surface, "--field": P.field, "--ink": P.ink, "--muted": P.muted, "--line": P.line,
+    "--btn": btn, "--btn-ink": ov.tab ? onColor(btn) : (P.btnInk || onColor(btn)), "--tab": tabon, "--tab-ink": onColor(tabon), "--tabon": tabon, "--tabon-ink": onColor(tabon),
+    "--accent": acc, "--accent-ink": onColor(acc), "--sky": main, "--sky-d": acc, "--sky-l": ov.accent ? mix(bg, main, dark ? .25 : .12) : P.tint, "--soft": ov.accent ? mix(bg, main, dark ? .25 : .12) : P.tint,
+    "--lime": P.prog, "--lime-l": P.progL, "--lime-d": P.progD, "--pink": P.pink, "--pink-l": P.heartL, "--heart": P.heart, "--rose": P.pink,
+    "--star": P.star, "--star-l": P.chip, "--chip-ink": P.chipInk, "--fab-star": ov.tab ? onColor(btn) === "#FFFFFF" ? "#FFCF33" : "#1C2547" : (P.fabStar || P.star),
+    "--dd": P.dd, "--mark": P.memo, "--mark-ink": P.ink, "--route": main, "--wing": ov.accent || P.wing || P.main, "--bird": P.bird || P.ink, "--bird-fill": P.birdFill || "#FFFFFF",
+    "--danger": dark ? "#F07A63" : "#C2453A", "--shadow": dark ? "none" : "0 1px 2px rgba(28,37,71,.04),0 6px 18px rgba(28,37,71,.05)"
+  };
+  S.dayColors = P.days;
   Object.entries(v).forEach(([k, x]) => r.setProperty(k, x));
   r.setProperty("color-scheme", dark ? "dark" : "light");
+  document.documentElement.classList.toggle("dk", dark);
   const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = bg;
   const cs = document.querySelector('meta[name="color-scheme"]'); if (cs) cs.content = dark ? "dark only" : "light only";
 }
 function swatches(key) {
-  const cur = S.set[key].toUpperCase(), inPreset = PRESETS[key].some(([h]) => h === cur);
+  const cur = String((S.set.ov || {})[key] || palBase(curPal(), key)).toUpperCase(), inPreset = PRESETS[key].some(([h]) => h === cur);
   return PRESETS[key].map(([h, n]) => `<div class="swi"><button type="button" data-k="${key}" data-v="${h}" aria-pressed="${h === cur}" aria-label="${n}" style="background:${h}"></button><small>${n}</small></div>`).join("")
     + `<div class="swi"><label aria-label="직접 고르기" ${inPreset ? "" : `style="background:${cur};box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink)"`}>+<input type="color" data-k="${key}" value="${cur.toLowerCase()}"></label><small>직접</small></div>`;
 }
@@ -1221,12 +1299,12 @@ function renderSettings() {
   $("#pwSet").textContent = S.set.pw ? "비밀번호 바꾸기" : "비밀번호 정하기";
   $("#swBg").innerHTML = swatches("bg"); $("#swTab").innerHTML = swatches("tab"); $("#swAcc").innerHTML = swatches("accent");
 }
-function setSetting(k, v) { S.set[k] = v.toUpperCase(); S.set.theme = "custom"; applySettings(); saveSettings(); renderSettings(); }
+function setSetting(k, v) { S.set.ov = Object.assign({}, S.set.ov, { [k]: v.toUpperCase() }); applySettings(); saveSettings(); renderSettings(); }
 function openSettings(from) { renderSettings(); openDlg($("#sd"), from); }
 $("#sd").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (b) setSetting(b.dataset.k, b.dataset.v); });
-$("#sd").addEventListener("input", e => { const i = e.target.closest("input[data-k]"); if (i) { S.set[i.dataset.k] = i.value.toUpperCase(); applySettings(); } });
+$("#sd").addEventListener("input", e => { const i = e.target.closest("input[data-k]"); if (i) { S.set.ov = Object.assign({}, S.set.ov, { [i.dataset.k]: i.value.toUpperCase() }); applySettings(); } });
 $("#sd").addEventListener("change", e => { const i = e.target.closest("input[data-k]"); if (i) setSetting(i.dataset.k, i.value); });
-$("#sReset").onclick = () => setTheme("wish");
+$("#sReset").onclick = () => setTheme("peach");
 $("#themeList").addEventListener("click", e => { const b = e.target.closest("[data-theme]"); if (b) setTheme(b.dataset.theme); });
 $("#sdForm").onsubmit = e => { e.preventDefault(); $("#sd").close(); };
 $("#sd").addEventListener("close", () => { if (!S.ready) return; if (S.tripId) { updateTrip(false); renderFood(false); } else renderList(); });
@@ -1731,9 +1809,11 @@ function updateTrip(fit) {
     `<span class="mem-chip"><span class="av">${esc(m.nick.slice(0, 1))}</span>${esc(m.nick)}${m.me ? "<small>(나)</small>" : ""}${m.owner ? "<small>방장</small>" : ""}</span>`).join("")
     + `<button type="button" class="invite-btn" id="inviteBtn">+ 초대</button>`;
   const nc = /^#[0-9A-F]{6}$/i.test(t.notesColor || "") ? t.notesColor : "";
-  const ncStyle = nc ? ` style="--memo:${nc};--memo-ink:${mix(nc, "#000000", .55)}"` : "";
+  const dc = cleanDeco(t.notesDeco), dfont = MEMO_FONTS.find(f => f[0] === dc.font);
+  if (dfont) loadFonts([dfont]);
+  const ncStyle = ` style="${nc ? `--memo:${nc};--memo-ink:${mix(nc, "#000000", .55)};` : ""}${dfont ? `font-family:${esc(dfont[2])},${esc(FONT_BASE)}` : ""}"`;
   $("#notesBox").innerHTML = t.notes
-    ? `<section class="notes${nc ? " custom" : ""}"${ncStyle}><h2>여행 준비 메모<button type="button" class="link" id="notesEdit">수정</button></h2>${t.notesHtml ? `<div class="txt rich">${richHtml(t.notesHtml)}</div>` : `<div class="txt">${linkify(t.notes)}</div>`}</section>`
+    ? `<section class="notes${nc ? " custom" : ""}${dc.paper ? " paper-" + dc.paper : ""}${dc.tape ? " has-tape" : ""}${dc.deco ? " has-deco" : ""}"${ncStyle}>${dc.tape ? `<span class="tape" style="background:${tapeBg(dc.tape)}"></span>` : ""}${dc.deco ? `<span class="deco">${decoHtml(dc.deco)}</span>` : ""}<h2>여행 준비 메모<button type="button" class="link" id="notesEdit">수정</button></h2>${t.notesHtml ? `<div class="txt rich">${richHtml(t.notesHtml)}</div>` : `<div class="txt">${linkify(t.notes)}</div>`}</section>`
     : `<div class="notes-add"><button type="button" class="btn sm" id="notesEdit">+ 여행 준비 메모</button>${t.items.length ? "" : '<button type="button" class="btn sm" id="quickImport">메모장에서 가져오기</button>'}</div>`;
   const tab = (key, top, sub, c) => `<button class="tab" role="tab" data-day="${key}" aria-selected="${S.day === key}">${c ? `<i class="dot" style="background:${c}"></i>` : ""}${top}${sub ? `<small>${sub}</small>` : ""}</button>`;
   $("#tabs").innerHTML = tab("all", "전체", "") + days.map((d, i) => tab(d, `${i + 1}일차`, dlabel(d), dayColor(i))).join("");
@@ -1865,7 +1945,7 @@ function makeMap(el, opt = {}) {
   }
   return window.L ? leafletAdapter(el, opt) : null;
 }
-const pinColors = kind => ({ plan: [cssVar("--ink"), S.darkBg ? cssVar("--bg") : "#FFFFFF"], food: [cssVar("--rose"), "#FFFFFF"], edit: [cssVar("--accent"), cssVar("--accent-ink")] })[kind || "plan"];
+const pinColors = kind => ({ plan: [cssVar("--tabon") || cssVar("--ink"), cssVar("--tabon-ink") || "#FFFFFF"], food: [cssVar("--rose"), "#FFFFFF"], edit: [cssVar("--accent"), cssVar("--accent-ink")] })[kind || "plan"];
 function gmapAdapter(el, opt) {
   const g = google.maps;
   const node = document.createElement("div"); node.style.cssText = "width:100%;height:100%"; el.appendChild(node);
@@ -2145,23 +2225,51 @@ $("#ddForm").onsubmit = e => {
 /* ---------- 준비 메모 ---------- */
 let NE = null;
 const MEMO_COLORS = [["", "기본"], ["#FDE2E4", "분홍"], ["#FFE5CC", "주황"], ["#E2F5E1", "연두"], ["#DCEEFF", "하늘"], ["#ECE4FB", "보라"], ["#EEEEEE", "회색"], ["#FFFFFF", "흰색"]];
-let NC = "";
+let NC = "", ND = {};
+const PAPERS = [["", "무지"], ["line", "줄노트"], ["grid", "모눈"], ["dot", "도트"]];
+const TAPES = [["", ""], ["#FFD86B", "노랑"], ["#FFB3C7", "분홍"], ["#A7DCF7", "하늘"], ["#B5E5B0", "민트"], ["#D4C4FF", "보라"], ["stripe", "줄무늬"], ["check", "체크"]];
+const DECOS = ["", "bird", "bird-happy", "✈️", "🌸", "⭐", "🍀", "💗", "🧳", "📸", "🍜", "🎀"];
+const tapeBg = c => c === "stripe" ? "repeating-linear-gradient(45deg,#FFB3C7 0 6px,#FFF 6px 12px)" : c === "check" ? "repeating-conic-gradient(#A7DCF7 0 25%,#FFFFFF 0 50%) 0 0/10px 10px" : c;
+const decoHtml = d => !d ? "" : d.startsWith("bird") ? birdSvg(d) : esc(d);
+const cleanDeco = o => {
+  o = o && typeof o === "object" ? o : {};
+  return { paper: PAPERS.some(x => x[0] === o.paper) ? o.paper : "", tape: TAPES.some(x => x[0] === o.tape) ? o.tape : "",
+    deco: DECOS.includes(o.deco) ? o.deco : "", font: MEMO_FONTS.some(f => f[0] === o.font) ? o.font : "" };
+};
+function paintDeco() {
+  $("#nPaper").innerHTML = PAPERS.map(([id, n]) => `<button type="button" class="paperbtn${id ? " paper-" + id : ""}" data-paper="${id}" aria-pressed="${ND.paper === id}">${n}</button>`).join("");
+  loadFonts(MEMO_FONTS);
+  $("#nFont").innerHTML = [["", "기본", "var(--font)"], ...MEMO_FONTS.map(f => [f[0], f[1], f[2]])].map(([id, n, css]) => `<button type="button" data-nfont="${id}" aria-pressed="${ND.font === id}" style="font-family:${esc(css)}">${n}</button>`).join("");
+  $("#nTape").innerHTML = TAPES.map(([c, n]) => `<button type="button" class="tp" data-tape="${c}" aria-pressed="${ND.tape === c}" aria-label="${n || "없음"}">${c ? `<i style="background:${tapeBg(c)}"></i>` : "없음"}</button>`).join("");
+  $("#nDeco").innerHTML = DECOS.map(d => `<button type="button" class="ds" data-deco="${d}" aria-pressed="${ND.deco === d}" aria-label="${d || "없음"}">${d ? decoHtml(d) : '<span style="font-size:14px">없음</span>'}</button>`).join("");
+  const box = $("#nRich"); box.classList.remove("paper-line", "paper-grid", "paper-dot"); if (ND.paper) box.classList.add("paper-" + ND.paper);
+  const f = MEMO_FONTS.find(x => x[0] === ND.font); box.style.fontFamily = f ? f[2] + "," + FONT_BASE : "";
+}
+$("#nd").addEventListener("click", e => {
+  const b = e.target.closest("[data-paper],[data-nfont],[data-tape],[data-deco]"); if (!b) return;
+  if (b.dataset.paper != null) ND.paper = b.dataset.paper;
+  else if (b.dataset.nfont != null) ND.font = b.dataset.nfont;
+  else if (b.dataset.tape != null) ND.tape = b.dataset.tape;
+  else ND.deco = b.dataset.deco;
+  paintDeco();
+});
 function paintNotesColor() {
   $("#nColors").innerHTML = MEMO_COLORS.map(([c, n]) =>
     `<div class="swi"><button type="button" data-nc="${c}" aria-pressed="${NC === c}" aria-label="${n}" style="background:${c || "var(--mark)"}"></button><small>${n}</small></div>`).join("");
   const box = $("#nRich");
-  box.style.background = NC || "var(--mark)"; box.classList.toggle("custom", !!NC);
+  box.style.backgroundColor = NC || "var(--mark)"; box.classList.toggle("custom", !!NC);
 }
 $("#nColors").addEventListener("click", e => { const b = e.target.closest("[data-nc]"); if (!b) return; NC = b.dataset.nc; paintNotesColor(); });
 function openNotes(t, from) {
   NE = t.id; NC = /^#[0-9A-F]{6}$/i.test(t.notesColor || "") ? t.notesColor : "";
   setRich($("#nRich"), t.notesHtml || plainToHtml(t.notes || ""));
-  paintNotesColor(); openDlg($("#nd"), from);
+  ND = cleanDeco(t.notesDeco);
+  paintNotesColor(); paintDeco(); openDlg($("#nd"), from);
 }
 $("#nCancel").onclick = () => $("#nd").close();
 $("#ndForm").onsubmit = e => {
   e.preventDefault(); const r = richOut($("#nRich"));
-  updateRoom(NE, { notes: r.text, notesHtml: r.html, notesColor: NC }); $("#nd").close(); updateTrip(false);
+  updateRoom(NE, { notes: r.text, notesHtml: r.html, notesColor: NC, notesDeco: cleanDeco(ND) }); $("#nd").close(); updateTrip(false);
 };
 
 /* ---------- 메모장에서 가져오기 ---------- */
