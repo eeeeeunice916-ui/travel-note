@@ -107,9 +107,22 @@ a{color:var(--accent);overflow-wrap:anywhere}
 .notes{position:relative}
 .notes.has-tape{margin-top:18px}
 .notes .tape{position:absolute;left:50%;top:-10px;width:92px;height:22px;transform:translateX(-50%) rotate(-3deg);border-radius:2px;opacity:.85;box-shadow:0 1px 2px rgba(0,0,0,.06)}
-.notes .deco{position:absolute;right:10px;bottom:6px;font-size:34px;line-height:1;transform:rotate(8deg);pointer-events:none}
-.notes .deco svg{width:46px;height:46px}
-.notes.has-deco{padding-bottom:34px}
+.stk-layer{position:absolute;inset:0;pointer-events:none;z-index:2}
+.stk{position:absolute;width:calc(54px * var(--s,1));height:calc(54px * var(--s,1));transform:translate(-50%,-50%) rotate(var(--r,0deg));
+  filter:drop-shadow(1.6px 0 0 #fff) drop-shadow(-1.6px 0 0 #fff) drop-shadow(0 1.6px 0 #fff) drop-shadow(0 -1.6px 0 #fff) drop-shadow(0 3px 4px rgba(0,0,0,.16))}
+.stk svg{width:100%;height:100%;display:block}
+.stkboard{padding:14px 6px 22px;border-radius:16px;background:var(--bg);border:1px dashed var(--line);overflow:hidden}
+.stkboard .notes{margin:0;min-height:120px}
+.stkboard a,.stkboard .link{pointer-events:none}
+.stkboard .stk{pointer-events:auto;touch-action:none;cursor:grab}
+.stkboard .stk.sel{outline:2px dashed var(--sky-d);outline-offset:3px;border-radius:10px}
+.stkctl{display:flex;flex-wrap:wrap;gap:6px}
+.stkctl button{min-height:38px;padding:0 12px;border-radius:999px;border:0;background:var(--field);color:var(--ink);font-weight:700;font-size:13px;cursor:pointer}
+.stkctl .del{color:var(--danger)}
+.stktray{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:4px;max-height:200px;overflow-y:auto;padding:4px;border-radius:14px;background:var(--field)}
+.stktray button{aspect-ratio:1;border:0;background:transparent;border-radius:10px;padding:6px;cursor:pointer}
+.stktray button:active{background:var(--surface)}
+.stktray svg{width:100%;height:100%;display:block}
 .paper-line .txt,.rtbox.paper-line{background-image:linear-gradient(transparent calc(1.7em - 1px),rgba(120,100,90,.16) calc(1.7em - 1px));background-size:100% 1.7em;line-height:1.7em}
 .notes.paper-grid,.rtbox.paper-grid{background-image:linear-gradient(rgba(120,110,100,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(120,110,100,.10) 1px,transparent 1px);background-size:18px 18px}
 .notes.paper-dot,.rtbox.paper-dot{background-image:radial-gradient(rgba(120,110,100,.28) 1.2px,transparent 1.4px);background-size:16px 16px}
@@ -142,11 +155,6 @@ a{color:var(--accent);overflow-wrap:anywhere}
 .rtp{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .rtbreak{flex-basis:100%;height:0}
 .rtbar button.fc{border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
-.rtp.stk{display:grid;gap:2px}
-.rtp.stk[hidden]{display:none}
-.stkrow{display:flex;flex-wrap:wrap;align-items:center;gap:0}
-.stkrow .rtlab{width:30px}
-.rtbar .stkrow button{min-width:32px;height:34px;padding:0;font-size:21px;font-family:var(--font)}
 .rtfont{max-width:110px}
 .rtlab{font-size:12px;color:var(--muted);margin:0 2px}
 .rtbox{min-height:130px;max-height:42vh;overflow:auto;padding:10px 12px;font-size:16px;line-height:1.55;outline:none;color:var(--ink);-webkit-user-select:text;user-select:text;white-space:normal;overflow-wrap:anywhere}
@@ -555,7 +563,10 @@ input:not([type=file]),select,textarea{border-radius:12px;border-color:transpare
     <div class="set"><span class="lab">메모지 무늬</span><div class="decoopts" id="nPaper"></div></div>
     <div class="set"><span class="lab">기본 글씨체</span><div class="decoopts" id="nFont"></div></div>
     <div class="set"><span class="lab">마스킹테이프</span><div class="decoopts" id="nTape"></div></div>
-    <div class="set"><span class="lab">모서리 스티커</span><div class="decoopts" id="nDeco"></div></div>
+    <div class="set"><span class="lab">스티커 꾸미기</span><p class="desc">아래 스티커를 누르면 메모에 붙어요. 끌어서 옮기고, 붙인 스티커를 누르면 크기·회전·삭제를 할 수 있어요.</p>
+      <div class="stkboard" id="nBoard"></div>
+      <div class="stkctl" id="nStkCtl" hidden><button type="button" data-sc="small">작게</button><button type="button" data-sc="big">크게</button><button type="button" data-sc="left">↺ 돌리기</button><button type="button" data-sc="right">↻ 돌리기</button><button type="button" data-sc="front">맨 앞으로</button><button type="button" class="del" data-sc="del">삭제</button></div>
+      <div class="stktray" id="nTray"></div></div>
     <div class="dfoot"><span class="sp"></span>
       <button type="button" class="btn" id="nCancel">취소</button>
       <button type="submit" class="btn primary">저장</button></div>
@@ -748,7 +759,7 @@ input:not([type=file]),select,textarea{border-radius:12px;border-color:transpare
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "3.1";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "3.2";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -897,17 +908,11 @@ function richOut(box) {
   const text = (box.innerText || box.textContent || "").replace(/\u00a0/g, " ").replace(/\n{3,}/g, "\n\n").trim();
   return { text, html: text ? sanitizeRich(box.innerHTML) : "" };
 }
-const STICKERS = [
-  ["여행", "✈️ 🧳 🗺️ 📍 🏨 🚄 🚌 🎫 📸 🗼 ⛩️ 🏖️"],
-  ["먹기", "🍜 🍣 🍱 🍙 🍡 🍰 🍦 ☕ 🍺 🍓 🥐 🍽️"],
-  ["기분", "💗 ⭐ ✨ 🌸 🍀 🌈 ☀️ 🌙 🎀 🫧 🥰 🤍"],
-  ["체크", "✅ ❗ ⚠️ 💡 📌 🔖 💰 🛍️ ⏰ 🎁 ❤️‍🔥 💯"]
-];
 function rteBar() {
   const hl = [["#FFF176", "노랑"], ["#B9F6CA", "연두"], ["#B3E5FC", "하늘"], ["#F8BBD0", "분홍"], ["#FFCC80", "주황"], ["#E1D5FF", "보라"]];
   const fc = [["#1C2547", "검정"], ["#E5484D", "빨강"], ["#F27B21", "주황"], ["#2F9E44", "초록"], ["#1E7FD8", "파랑"], ["#8B5CF6", "보라"], ["#E0438C", "분홍"], ["#8A8FA3", "회색"]];
   return `<div class="rtbar">
-    <div class="rttabs"><button type="button" data-rtp="text" aria-pressed="true">Aa 글자</button><button type="button" data-rtp="color" aria-pressed="false">🎨 색</button><button type="button" data-rtp="stk" aria-pressed="false">💗 스티커</button></div>
+    <div class="rttabs"><button type="button" data-rtp="text" aria-pressed="true">Aa 글자</button><button type="button" data-rtp="color" aria-pressed="false">🎨 색</button></div>
     <div class="rtp" data-p="text">
       <select class="rtsize" aria-label="글씨 크기"><option value="">크기</option><option value="2">작게</option><option value="3">보통</option><option value="5">크게</option><option value="6">아주 크게</option></select>
       <select class="rtfont" aria-label="글씨체"><option value="">글씨체</option><option value="__base">기본</option></select>
@@ -921,9 +926,6 @@ function rteBar() {
       <span class="rtbreak"></span>
       <span class="rtlab">형광펜</span>${hl.map(([c, n]) => `<button type="button" class="hl" data-hl="${c}" aria-label="형광펜 ${n}" style="background:${c}"></button>`).join("")}
       <button type="button" class="hlx" data-hl="transparent" aria-label="형광펜 지우기">지우기</button>
-    </div>
-    <div class="rtp stk" data-p="stk" hidden>
-      ${STICKERS.map(([n, list]) => `<div class="stkrow"><span class="rtlab">${n}</span>${list.split(" ").map(x => `<button type="button" data-stk="${x}" aria-label="스티커 ${x}">${x}</button>`).join("")}</div>`).join("")}
     </div>
   </div>`;
 }
@@ -959,7 +961,6 @@ document.addEventListener("click", e => {
   }
   if (b.dataset.cmd) rteRun(box, () => { document.execCommand("styleWithCSS", false, false); document.execCommand(b.dataset.cmd, false, null); });
   else if (b.dataset.fc) rteRun(box, () => { document.execCommand("styleWithCSS", false, true); document.execCommand("foreColor", false, b.dataset.fc); document.execCommand("styleWithCSS", false, false); });
-  else if (b.dataset.stk) rteRun(box, () => { document.execCommand("insertHTML", false, `<span style="font-size:1.35em">${b.dataset.stk}</span>&nbsp;`); });
   else if (b.dataset.hl) rteRun(box, () => {
     document.execCommand("styleWithCSS", false, true);
     if (!document.execCommand("hiliteColor", false, b.dataset.hl)) document.execCommand("backColor", false, b.dataset.hl);
@@ -1808,12 +1809,8 @@ function updateTrip(fit) {
   $("#who").innerHTML = `<span class="lab">함께</span>` + memberList(t).map(m =>
     `<span class="mem-chip"><span class="av">${esc(m.nick.slice(0, 1))}</span>${esc(m.nick)}${m.me ? "<small>(나)</small>" : ""}${m.owner ? "<small>방장</small>" : ""}</span>`).join("")
     + `<button type="button" class="invite-btn" id="inviteBtn">+ 초대</button>`;
-  const nc = /^#[0-9A-F]{6}$/i.test(t.notesColor || "") ? t.notesColor : "";
-  const dc = cleanDeco(t.notesDeco), dfont = MEMO_FONTS.find(f => f[0] === dc.font);
-  if (dfont) loadFonts([dfont]);
-  const ncStyle = ` style="${nc ? `--memo:${nc};--memo-ink:${mix(nc, "#000000", .55)};` : ""}${dfont ? `font-family:${esc(dfont[2])},${esc(FONT_BASE)}` : ""}"`;
   $("#notesBox").innerHTML = t.notes
-    ? `<section class="notes${nc ? " custom" : ""}${dc.paper ? " paper-" + dc.paper : ""}${dc.tape ? " has-tape" : ""}${dc.deco ? " has-deco" : ""}"${ncStyle}>${dc.tape ? `<span class="tape" style="background:${tapeBg(dc.tape)}"></span>` : ""}${dc.deco ? `<span class="deco">${decoHtml(dc.deco)}</span>` : ""}<h2>여행 준비 메모<button type="button" class="link" id="notesEdit">수정</button></h2>${t.notesHtml ? `<div class="txt rich">${richHtml(t.notesHtml)}</div>` : `<div class="txt">${linkify(t.notes)}</div>`}</section>`
+    ? notesHtml(t, false)
     : `<div class="notes-add"><button type="button" class="btn sm" id="notesEdit">+ 여행 준비 메모</button>${t.items.length ? "" : '<button type="button" class="btn sm" id="quickImport">메모장에서 가져오기</button>'}</div>`;
   const tab = (key, top, sub, c) => `<button class="tab" role="tab" data-day="${key}" aria-selected="${S.day === key}">${c ? `<i class="dot" style="background:${c}"></i>` : ""}${top}${sub ? `<small>${sub}</small>` : ""}</button>`;
   $("#tabs").innerHTML = tab("all", "전체", "") + days.map((d, i) => tab(d, `${i + 1}일차`, dlabel(d), dayColor(i))).join("");
@@ -2223,34 +2220,131 @@ $("#ddForm").onsubmit = e => {
 };
 
 /* ---------- 준비 메모 ---------- */
+function notesHtml(t, edit) {
+  const nc = /^#[0-9A-F]{6}$/i.test(t.notesColor || "") ? t.notesColor : "";
+  const dc = cleanDeco(t.notesDeco), dfont = MEMO_FONTS.find(f => f[0] === dc.font);
+  if (dfont) loadFonts([dfont]);
+  const st = ` style="${nc ? `--memo:${nc};--memo-ink:${mix(nc, "#000000", .55)};` : ""}${dfont ? `font-family:${esc(dfont[2])},${esc(FONT_BASE)}` : ""}"`;
+  return `<section class="notes${nc ? " custom" : ""}${dc.paper ? " paper-" + dc.paper : ""}${dc.tape ? " has-tape" : ""}"${st}>${dc.tape ? `<span class="tape" style="background:${tapeBg(dc.tape)}"></span>` : ""}
+    <h2>여행 준비 메모${edit ? "" : '<button type="button" class="link" id="notesEdit">수정</button>'}</h2>${t.notesHtml ? `<div class="txt rich">${richHtml(t.notesHtml)}</div>` : `<div class="txt">${linkify(t.notes)}</div>`}${stkHtml(edit ? ND.stickers : dc.stickers, edit)}</section>`;
+}
 let NE = null;
 const MEMO_COLORS = [["", "기본"], ["#FDE2E4", "분홍"], ["#FFE5CC", "주황"], ["#E2F5E1", "연두"], ["#DCEEFF", "하늘"], ["#ECE4FB", "보라"], ["#EEEEEE", "회색"], ["#FFFFFF", "흰색"]];
 let NC = "", ND = {};
 const PAPERS = [["", "무지"], ["line", "줄노트"], ["grid", "모눈"], ["dot", "도트"]];
 const TAPES = [["", ""], ["#FFD86B", "노랑"], ["#FFB3C7", "분홍"], ["#A7DCF7", "하늘"], ["#B5E5B0", "민트"], ["#D4C4FF", "보라"], ["stripe", "줄무늬"], ["check", "체크"]];
-const DECOS = ["", "bird", "bird-happy", "✈️", "🌸", "⭐", "🍀", "💗", "🧳", "📸", "🍜", "🎀"];
+const STK_INK = "#2A2F45";
+const STK_BODY = `<path d="M14 40 C14 25 25 15 38 15 C49 15 57 23 57 33 C57 44 47 51 36 51 L22 51 C17 51 14 46 14 40 Z" fill="#fff" stroke="${STK_INK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M57 30 L63 33 L57 36" fill="none" stroke="${STK_INK}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><path d="M28 51 v6 M38 51 v6" stroke="${STK_INK}" stroke-width="2.6" stroke-linecap="round"/>`;
+const STK = {
+  bird: ["새", STK_BODY + `<path d="M24 37 C30 33 37 34 40 40" fill="none" stroke="#4EBEFA" stroke-width="2.6" stroke-linecap="round"/><circle cx="46" cy="29" r="2.3" fill="${STK_INK}"/>`],
+  happy: ["웃는 새", STK_BODY + `<path d="M22 34 C26 22 36 21 41 28" fill="none" stroke="#4EBEFA" stroke-width="2.6" stroke-linecap="round"/><path d="M42 30 q4 -4 8 0" fill="none" stroke="${STK_INK}" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="48" cy="37" rx="3" ry="1.8" fill="#FFB3C7"/>`],
+  sleep: ["자는 새", STK_BODY + `<path d="M24 37 C30 33 37 34 40 40" fill="none" stroke="#4EBEFA" stroke-width="2.6" stroke-linecap="round"/><path d="M42 29 q4 3 8 0" fill="none" stroke="${STK_INK}" stroke-width="2.4" stroke-linecap="round"/><path d="M50 5 h6 l-6 6 h6 M42 10 h4 l-4 4 h4" fill="none" stroke="#9AA3C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`],
+  love: ["하트 새", STK_BODY + `<path d="M24 37 C30 33 37 34 40 40" fill="none" stroke="#FF7EB6" stroke-width="2.6" stroke-linecap="round"/><circle cx="46" cy="29" r="2.3" fill="${STK_INK}"/><path d="M47 13 c-2.4-4.6-9-3-8 1.6 c.6 2.8 4.4 5.2 8 7.6 c3.6-2.4 7.4-4.8 8-7.6 c1-4.6-5.6-6.2-8-1.6z" fill="#FF7EB6"/>`],
+  fly: ["나는 새", `<path d="M4 46 q6 -4 10 0 q4 4 8 0" fill="none" stroke="#4EBEFA" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 4"/>` + STK_BODY.replace(`<path d="M28 51 v6 M38 51 v6" stroke="${STK_INK}" stroke-width="2.6" stroke-linecap="round"/>`, "") + `<path d="M24 34 C22 18 34 8 42 12 C38 18 36 26 38 34" fill="#EAF7FF" stroke="#4EBEFA" stroke-width="2.4" stroke-linejoin="round"/><circle cx="47" cy="29" r="2.3" fill="${STK_INK}"/>`],
+  star: ["별", `<path d="M32 6 l7.6 15.4 17 2.5 -12.3 12 2.9 16.9 -15.2 -8 -15.2 8 2.9 -16.9 -12.3 -12 17 -2.5z" fill="#FFD43B" stroke="${STK_INK}" stroke-width="2.4" stroke-linejoin="round"/><circle cx="27" cy="31" r="1.9" fill="${STK_INK}"/><circle cx="37" cy="31" r="1.9" fill="${STK_INK}"/><path d="M29.5 36 q2.5 2 5 0" fill="none" stroke="${STK_INK}" stroke-width="1.8" stroke-linecap="round"/>`],
+  heart: ["하트", `<path d="M32 54 C20 45 8 37 8 24 C8 15 15 10 22 10 C27 10 30 13 32 17 C34 13 37 10 42 10 C49 10 56 15 56 24 C56 37 44 45 32 54Z" fill="#FF7EB6" stroke="${STK_INK}" stroke-width="2.4" stroke-linejoin="round"/><path d="M17 22 q2 -6 8 -6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>`],
+  cloud: ["구름", `<path d="M16 46 C8 46 5 38 10 33 C8 25 17 20 23 24 C25 15 38 13 42 22 C49 18 58 24 55 32 C61 35 59 46 51 46 Z" fill="#fff" stroke="#6CC4F5" stroke-width="2.6" stroke-linejoin="round"/><circle cx="27" cy="36" r="1.7" fill="${STK_INK}"/><circle cx="37" cy="36" r="1.7" fill="${STK_INK}"/>`],
+  sun: ["해", `<g stroke="#FFA94D" stroke-width="3" stroke-linecap="round"><path d="M32 4v7M32 53v7M4 32h7M53 32h7M12 12l5 5M47 47l5 5M12 52l5-5M47 17l5-5"/></g><circle cx="32" cy="32" r="14" fill="#FFD43B" stroke="${STK_INK}" stroke-width="2.4"/><path d="M27 31 q2 -2 4 0 M33 31 q2 -2 4 0" fill="none" stroke="${STK_INK}" stroke-width="1.8" stroke-linecap="round"/>`],
+  plane: ["종이비행기", `<path d="M6 30 L58 10 L42 54 L32 38 Z" fill="#fff" stroke="${STK_INK}" stroke-width="2.4" stroke-linejoin="round"/><path d="M32 38 L58 10" stroke="${STK_INK}" stroke-width="2.4"/><path d="M32 38 L30 50 L37 44" fill="#D9F1FF" stroke="${STK_INK}" stroke-width="2.2" stroke-linejoin="round"/>`],
+  flower: ["꽃", `<g fill="#FFB3C7" stroke="${STK_INK}" stroke-width="2.2"><circle cx="32" cy="16" r="9"/><circle cx="47" cy="27" r="9"/><circle cx="41" cy="45" r="9"/><circle cx="23" cy="45" r="9"/><circle cx="17" cy="27" r="9"/></g><circle cx="32" cy="32" r="8" fill="#FFD43B" stroke="${STK_INK}" stroke-width="2.2"/>`],
+  clover: ["클로버", `<path d="M32 34 q3 14 12 22" fill="none" stroke="${STK_INK}" stroke-width="2.4" stroke-linecap="round"/><g fill="#8CD867" stroke="${STK_INK}" stroke-width="2.2"><circle cx="32" cy="17" r="10"/><circle cx="20" cy="31" r="10"/><circle cx="44" cy="31" r="10"/></g><circle cx="32" cy="29" r="3" fill="#6CC04A"/>`],
+  ticket: ["티켓", `<path d="M6 18 h52 v9 a5 5 0 0 0 0 10 v9 h-52 v-9 a5 5 0 0 0 0 -10z" fill="#FFE8A3" stroke="${STK_INK}" stroke-width="2.4" stroke-linejoin="round"/><path d="M44 18 v28" stroke="${STK_INK}" stroke-width="1.8" stroke-dasharray="2 3"/><text x="25" y="36" text-anchor="middle" font-family="Jua,sans-serif" font-size="8.5" fill="${STK_INK}">TICKET</text>`],
+  camera: ["카메라", `<rect x="7" y="18" width="50" height="34" rx="8" fill="#B9E4FF" stroke="${STK_INK}" stroke-width="2.4"/><path d="M22 18 l4 -7 h12 l4 7" fill="#B9E4FF" stroke="${STK_INK}" stroke-width="2.4" stroke-linejoin="round"/><circle cx="32" cy="35" r="10" fill="#fff" stroke="${STK_INK}" stroke-width="2.4"/><circle cx="32" cy="35" r="4" fill="${STK_INK}"/><circle cx="49" cy="25" r="2" fill="#FF7EB6"/>`],
+  pin: ["핀", `<path d="M32 58 C24 46 14 37 14 25 C14 14 22 6 32 6 C42 6 50 14 50 25 C50 37 40 46 32 58Z" fill="#FF6B6B" stroke="${STK_INK}" stroke-width="2.4" stroke-linejoin="round"/><circle cx="32" cy="25" r="7" fill="#fff" stroke="${STK_INK}" stroke-width="2.2"/>`],
+  sparkle: ["반짝", `<path d="M24 8 C26 22 28 24 42 26 C28 28 26 30 24 44 C22 30 20 28 6 26 C20 24 22 22 24 8Z" fill="#FFD43B" stroke="${STK_INK}" stroke-width="2" stroke-linejoin="round"/><path d="M47 34 C48 42 49 43 57 44 C49 45 48 46 47 54 C46 46 45 45 37 44 C45 43 46 42 47 34Z" fill="#A994FF" stroke="${STK_INK}" stroke-width="2" stroke-linejoin="round"/>`],
+  ribbon: ["리본", `<path d="M32 30 L12 18 C8 16 6 20 6 30 C6 40 8 44 12 42Z M32 30 L52 18 C56 16 58 20 58 30 C58 40 56 44 52 42Z" fill="#FF9EC4" stroke="${STK_INK}" stroke-width="2.3" stroke-linejoin="round"/><path d="M28 34 L22 54 L28 50 L32 56 L34 36Z M36 34 L42 54 L36 50" fill="#FF9EC4" stroke="${STK_INK}" stroke-width="2.3" stroke-linejoin="round"/><rect x="26" y="24" width="12" height="13" rx="4" fill="#FF7EB6" stroke="${STK_INK}" stroke-width="2.3"/>`],
+  go: ["GO!", `<circle cx="32" cy="32" r="25" fill="#4EBEFA" stroke="${STK_INK}" stroke-width="2.4"/><text x="32" y="39" text-anchor="middle" font-family="Jua,sans-serif" font-size="20" fill="#fff">GO!</text>`],
+  must: ["필수", `<rect x="6" y="18" width="52" height="28" rx="14" fill="#FF6B6B" stroke="${STK_INK}" stroke-width="2.4"/><text x="32" y="38" text-anchor="middle" font-family="Jua,sans-serif" font-size="17" fill="#fff">필수!</text>`],
+  yum: ["맛집", `<rect x="6" y="18" width="52" height="28" rx="14" fill="#FFA94D" stroke="${STK_INK}" stroke-width="2.4"/><text x="32" y="38" text-anchor="middle" font-family="Jua,sans-serif" font-size="17" fill="#fff">맛집</text>`],
+  ok: ["완료", `<rect x="6" y="18" width="52" height="28" rx="14" fill="#8CD867" stroke="${STK_INK}" stroke-width="2.4"/><text x="32" y="38" text-anchor="middle" font-family="Jua,sans-serif" font-size="16" fill="#fff">완료 ✓</text>`],
+  tapeP: ["분홍 테이프", `<rect x="4" y="22" width="56" height="20" fill="#FFB3C7" opacity=".85" transform="rotate(-8 32 32)"/><path d="M8 27 l48 -8 M10 35 l48 -8" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 4" opacity=".8" transform="rotate(-0 32 32)"/>`],
+  tapeY: ["노랑 테이프", `<rect x="4" y="22" width="56" height="20" fill="#FFE066" opacity=".85" transform="rotate(6 32 32)"/><g fill="#fff" opacity=".7" transform="rotate(6 32 32)"><circle cx="12" cy="32" r="2"/><circle cx="22" cy="28" r="2"/><circle cx="32" cy="34" r="2"/><circle cx="42" cy="28" r="2"/><circle cx="52" cy="33" r="2"/></g>`]
+};
+const STK_MAX = 24;
+const stkSvg = k => `<svg viewBox="0 0 64 64" aria-hidden="true">${STK[k][1]}</svg>`;
+const stkHtml = (list, edit) => `<div class="stk-layer">${(list || []).map((x, i) => STK[x.k] ? `<span class="stk${edit && i === SSel ? " sel" : ""}" data-si="${i}" style="left:${x.x}%;top:${x.y}%;--s:${x.s};--r:${x.r}deg">${stkSvg(x.k)}</span>` : "").join("")}</div>`;
+let SSel = -1;
 const tapeBg = c => c === "stripe" ? "repeating-linear-gradient(45deg,#FFB3C7 0 6px,#FFF 6px 12px)" : c === "check" ? "repeating-conic-gradient(#A7DCF7 0 25%,#FFFFFF 0 50%) 0 0/10px 10px" : c;
-const decoHtml = d => !d ? "" : d.startsWith("bird") ? birdSvg(d) : esc(d);
+const clampN = (v, a, b, d) => { v = +v; return isFinite(v) ? Math.min(b, Math.max(a, Math.round(v * 10) / 10)) : d; };
+function cleanStk(o) {
+  let list = Array.isArray(o.stickers) ? o.stickers : [];
+  if (!list.length && (o.deco === "bird" || o.deco === "bird-happy")) list = [{ k: o.deco === "bird" ? "bird" : "happy", x: 90, y: 78, s: 1, r: 8 }];
+  return list.filter(x => x && STK[x.k]).slice(0, STK_MAX).map(x => ({ k: x.k, x: clampN(x.x, 0, 100, 50), y: clampN(x.y, -10, 110, 50), s: clampN(x.s, .5, 2.5, 1), r: clampN(x.r, -180, 180, 0) }));
+}
 const cleanDeco = o => {
   o = o && typeof o === "object" ? o : {};
   return { paper: PAPERS.some(x => x[0] === o.paper) ? o.paper : "", tape: TAPES.some(x => x[0] === o.tape) ? o.tape : "",
-    deco: DECOS.includes(o.deco) ? o.deco : "", font: MEMO_FONTS.some(f => f[0] === o.font) ? o.font : "" };
+    font: MEMO_FONTS.some(f => f[0] === o.font) ? o.font : "", stickers: cleanStk(o) };
 };
 function paintDeco() {
   $("#nPaper").innerHTML = PAPERS.map(([id, n]) => `<button type="button" class="paperbtn${id ? " paper-" + id : ""}" data-paper="${id}" aria-pressed="${ND.paper === id}">${n}</button>`).join("");
   loadFonts(MEMO_FONTS);
   $("#nFont").innerHTML = [["", "기본", "var(--font)"], ...MEMO_FONTS.map(f => [f[0], f[1], f[2]])].map(([id, n, css]) => `<button type="button" data-nfont="${id}" aria-pressed="${ND.font === id}" style="font-family:${esc(css)}">${n}</button>`).join("");
   $("#nTape").innerHTML = TAPES.map(([c, n]) => `<button type="button" class="tp" data-tape="${c}" aria-pressed="${ND.tape === c}" aria-label="${n || "없음"}">${c ? `<i style="background:${tapeBg(c)}"></i>` : "없음"}</button>`).join("");
-  $("#nDeco").innerHTML = DECOS.map(d => `<button type="button" class="ds" data-deco="${d}" aria-pressed="${ND.deco === d}" aria-label="${d || "없음"}">${d ? decoHtml(d) : '<span style="font-size:14px">없음</span>'}</button>`).join("");
   const box = $("#nRich"); box.classList.remove("paper-line", "paper-grid", "paper-dot"); if (ND.paper) box.classList.add("paper-" + ND.paper);
   const f = MEMO_FONTS.find(x => x[0] === ND.font); box.style.fontFamily = f ? f[2] + "," + FONT_BASE : "";
+  paintBoard();
 }
+function paintBoard() {
+  if (!$("#nBoard")) return;
+  const r = richOut($("#nRich"));
+  $("#nBoard").innerHTML = notesHtml({ notes: r.text || " ", notesHtml: r.html, notesColor: NC, notesDeco: ND }, true);
+  $("#nStkCtl").hidden = !(SSel >= 0 && ND.stickers[SSel]);
+}
+let boardTimer = null;
+$("#nRich").addEventListener("input", () => { clearTimeout(boardTimer); boardTimer = setTimeout(paintBoard, 300); });
+$("#nTray").innerHTML = Object.entries(STK).map(([k, [n]]) => `<button type="button" data-addstk="${k}" aria-label="${n} 스티커 붙이기">${stkSvg(k)}</button>`).join("");
+$("#nTray").addEventListener("click", e => {
+  const b = e.target.closest("[data-addstk]"); if (!b) return;
+  if (ND.stickers.length >= STK_MAX) { toast(`스티커는 ${STK_MAX}개까지 붙일 수 있어요.`); return; }
+  const n = ND.stickers.length;
+  ND.stickers.push({ k: b.dataset.addstk, x: 30 + (n * 17) % 50, y: 35 + (n * 23) % 40, s: 1, r: (n % 2 ? 8 : -8) });
+  SSel = ND.stickers.length - 1; paintBoard();
+});
+$("#nStkCtl").addEventListener("click", e => {
+  const b = e.target.closest("[data-sc]"), x = ND.stickers[SSel]; if (!b || !x) return;
+  const a = b.dataset.sc;
+  if (a === "small") x.s = Math.max(.5, Math.round((x.s - .2) * 10) / 10);
+  else if (a === "big") x.s = Math.min(2.5, Math.round((x.s + .2) * 10) / 10);
+  else if (a === "left") x.r = Math.max(-180, x.r - 15);
+  else if (a === "right") x.r = Math.min(180, x.r + 15);
+  else if (a === "front") { ND.stickers.splice(SSel, 1); ND.stickers.push(x); SSel = ND.stickers.length - 1; }
+  else if (a === "del") { ND.stickers.splice(SSel, 1); SSel = -1; }
+  paintBoard();
+});
+(() => {
+  let drag = null;
+  const board = $("#nBoard");
+  board.addEventListener("pointerdown", e => {
+    const el = e.target.closest(".stk"); 
+    if (!el) { if (SSel >= 0) { SSel = -1; paintBoard(); } return; }
+    e.preventDefault();
+    const i = +el.dataset.si, note = board.querySelector(".notes"); if (!note) return;
+    drag = { i, el, note, sx: e.clientX, sy: e.clientY, moved: false, id: e.pointerId };
+    try { board.setPointerCapture(e.pointerId); } catch (x) {}
+  });
+  board.addEventListener("pointermove", e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 4) return;
+    drag.moved = true;
+    const rc = drag.note.getBoundingClientRect(), x = ND.stickers[drag.i];
+    x.x = clampN((e.clientX - rc.left) / rc.width * 100, 0, 100, 50);
+    x.y = clampN((e.clientY - rc.top) / rc.height * 100, -10, 110, 50);
+    drag.el.style.left = x.x + "%"; drag.el.style.top = x.y + "%";
+  });
+  const end = e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const d = drag; drag = null;
+    SSel = d.moved ? d.i : (SSel === d.i ? -1 : d.i);
+    paintBoard();
+  };
+  board.addEventListener("pointerup", end); board.addEventListener("pointercancel", end);
+})();
 $("#nd").addEventListener("click", e => {
-  const b = e.target.closest("[data-paper],[data-nfont],[data-tape],[data-deco]"); if (!b) return;
+  const b = e.target.closest("[data-paper],[data-nfont],[data-tape]"); if (!b) return;
   if (b.dataset.paper != null) ND.paper = b.dataset.paper;
   else if (b.dataset.nfont != null) ND.font = b.dataset.nfont;
-  else if (b.dataset.tape != null) ND.tape = b.dataset.tape;
-  else ND.deco = b.dataset.deco;
+  else ND.tape = b.dataset.tape;
   paintDeco();
 });
 function paintNotesColor() {
@@ -2258,12 +2352,13 @@ function paintNotesColor() {
     `<div class="swi"><button type="button" data-nc="${c}" aria-pressed="${NC === c}" aria-label="${n}" style="background:${c || "var(--mark)"}"></button><small>${n}</small></div>`).join("");
   const box = $("#nRich");
   box.style.backgroundColor = NC || "var(--mark)"; box.classList.toggle("custom", !!NC);
+  paintBoard();
 }
 $("#nColors").addEventListener("click", e => { const b = e.target.closest("[data-nc]"); if (!b) return; NC = b.dataset.nc; paintNotesColor(); });
 function openNotes(t, from) {
   NE = t.id; NC = /^#[0-9A-F]{6}$/i.test(t.notesColor || "") ? t.notesColor : "";
   setRich($("#nRich"), t.notesHtml || plainToHtml(t.notes || ""));
-  ND = cleanDeco(t.notesDeco);
+  ND = cleanDeco(t.notesDeco); SSel = -1;
   paintNotesColor(); paintDeco(); openDlg($("#nd"), from);
 }
 $("#nCancel").onclick = () => $("#nd").close();
