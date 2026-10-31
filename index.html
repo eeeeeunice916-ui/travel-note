@@ -625,6 +625,8 @@ body.in-trip .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
 .store .t{display:grid;line-height:1.25;min-width:0;flex:1}
 .store .t b{font:400 17px var(--round)}
 .store .t small{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.store .go.g{color:#2B5DB8;background:#EAF2FF}
+.store .go.loc{border:1.5px dashed var(--line);background:transparent;color:var(--muted);cursor:pointer}
 .store .go{flex:none;font-size:11px;font-weight:800;color:#03A94D;background:#E6F8EE;border-radius:999px;padding:5px 9px;text-decoration:none;white-space:nowrap}
 .store .more{flex:none;width:30px;height:30px;border-radius:9px;border:0;background:transparent;color:var(--muted);font-size:16px;cursor:pointer}
 .store .fold{color:var(--muted);font-size:13px;width:14px;text-align:center}
@@ -1127,7 +1129,8 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
       <label for="shPrice">개당 가격<input id="shPrice" inputmode="decimal" placeholder="몰라도 돼요" autocomplete="off"></label></div>
     <label for="shCur">통화<select id="shCur"></select></label>
     <p class="hint" id="shTotal"></p>
-    <div><span class="lab">가게</span><div class="decoopts" id="shStores"></div></div>
+    <div><span class="lab">가게</span><div class="decoopts" id="shStores"></div>
+      <button type="button" class="link" id="shLoc" style="margin-top:8px">📍 고른 가게의 위치(지점) 정하기</button></div>
     <div class="grid2 keep"><label for="shWho">누가 살까요<select id="shWho"></select></label><label for="shGift">선물이라면 누구 거?<input id="shGift" placeholder="예: 엄마" autocomplete="off"></label></div>
     <label for="shMemo">메모<input id="shMemo" placeholder="예: 포도맛, 3개 묶음" autocomplete="off"></label>
     <label for="shLocal">현지어 이름 (보여주기용)<input id="shLocal" placeholder="예: こんにゃくゼリー" autocomplete="off"></label>
@@ -1277,7 +1280,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "4.0";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "4.2";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2017,7 +2020,7 @@ function itemHtml(it, n) {
     return `<button type="button" class="chip" data-copy="${esc(code)}">${label ? esc(label) + " " : ""}<b>${esc(code)}</b><small>복사</small></button>`; }).join("");
   const memo = it.memoHtml ? "" : lines(it.memo).map(l => /^(→|->|=>)/.test(l) ? `<li class="arrow">${linkify(l.replace(/^(->|=>)/, "→"))}</li>` : `<li>${linkify(l)}</li>`).join("");
   const nav = has ? `${naverA(it.place, it.lat, it.lng)}
-    <a href="${gDirUrl(it.place, it.lat, it.lng, it.pid)}" target="_blank" rel="noopener">구글 길찾기</a>` : "";
+    ${gA({ kind: "item", ref: it.id, name: it.place, addr: it.address, lat: it.lat, lng: it.lng, pid: it.pid }, "구글 길찾기", true)}` : "";
   const edited = it.updatedBy ? `<span class="edited">${esc(it.updatedBy)} · ${ago(it.updatedAt)}</span>` : "";
   return `<article class="item" data-id="${it.id}"><div class="num${has ? "" : " off"}">${n}</div><div class="body">
     <div class="head">${it.time ? `<span class="time">${esc(it.time)}</span>` : ""}<h3 class="place">${esc(it.place)}</h3>${it.duration ? `<span class="dur">${esc(it.duration)}</span>` : ""}</div>
@@ -2146,7 +2149,7 @@ function renderFood(fit) {
       ${menuHtml(f)}
       <div class="fw">${who.length ? `♥ ${who.map(esc).join(", ")} · ` : ""}${f.addedBy ? esc(f.addedBy) + " 추가" : ""}</div>
       <div class="acts"><button type="button" data-toplan="${f.id}">일정에 넣기</button><button type="button" data-visit="${f.id}">${f.visited ? "안 갔어요" : "다녀왔어요"}</button><button type="button" data-fedit="${f.id}">수정</button>
-        ${has ? `${naverA(f.name, f.lat, f.lng, "네이버 지도")}<a href="${gPlaceUrl(f.name, f.address, f.lat, f.lng, f.pid)}" target="_blank" rel="noopener">구글 지도</a>` : ""}</div></li>`;
+        ${has ? `${naverA(f.name, f.lat, f.lng, "네이버 지도")}${gA({ kind: "food", ref: f.id, name: f.name, addr: f.address, lat: f.lat, lng: f.lng, pid: f.pid }, "구글 지도")}` : ""}</div></li>`;
   };
   $("#foodList").innerHTML = todo.length ? todo.map(card).join("") : `<li class="none">${birdSvg(done.length ? "bird-happy" : "bird")}<span>${done.length ? "모두 다녀왔어요!" : S.foodCat !== "all" ? "이 종류의 맛집이 없어요." : "가고 싶은 맛집을 ‘+ 맛집 추가’로 모아 보세요. 같이 가는 사람 모두에게 보여요."}</span></li>`;
   $("#foodDoneBox").hidden = !done.length; $("#foodDoneSum").textContent = `다녀온 곳 ${done.length}개`;
@@ -3193,7 +3196,7 @@ function renderToday() {
         ${next.address ? `<div class="addr">${linkify(next.address)}</div>` : ""}
         ${prevIdx >= 0 ? `<div class="mvlab">이전 일정에서</div>` + moveHtml(list[prevIdx], next) : ""}
         ${next.lat != null ? (S.myPos && Date.now() - S.myPos.at < 10 * 60e3 ? `<div class="mvlab">지금 내 위치에서</div>` + (moveHtml(S.myPos, next) || '<div class="move"><span>📍 거의 다 왔어요!</span></div>') : `<button type="button" class="btn sm mybtn" data-fromme>📍 내 위치에서 걸리는 시간 보기</button>`) : ""}
-        <div class="acts">${next.lat != null ? `<a href="${gDirUrl(next.place, next.lat, next.lng, next.pid)}" target="_blank" rel="noopener">구글 길찾기</a>${naverA(next.place, next.lat, next.lng, "네이버 지도")}` : ""}<button type="button" data-goplan>오늘 일정 전체</button></div></section>`
+        <div class="acts">${next.lat != null ? `${gA({ kind: "item", ref: next.id, name: next.place, addr: next.address, lat: next.lat, lng: next.lng, pid: next.pid }, "구글 길찾기", true)}${naverA(next.place, next.lat, next.lng, "네이버 지도")}` : ""}<button type="button" data-goplan>오늘 일정 전체</button></div></section>`
         : `<section class="tnext"><p class="k">다음 일정</p><p class="none plain">${list.length ? "오늘 일정을 다 마쳤어요. 수고했어요!" : "오늘 일정이 비어 있어요."}</p></section>`}
       ${list.length ? `<ul class="tlist">${list.map((i, k) => `<li class="${i === next ? "on" : i.time && i.time < now ? "past" : ""}"><span class="time">${esc(i.time || "·")}</span>${esc(i.place)}</li>`).join("")}</ul>` : ""}`;
   } else if (st === "before") {
@@ -3606,6 +3609,36 @@ const gPlaceUrl = (name, addr, lat, lng, pid) => pid ? `https://www.google.com/m
   : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name && addr ? name + " " + addr : `${lat},${lng}`)}`;
 const gDirUrl = (name, lat, lng, pid) => pid ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(name || `${lat},${lng}`)}&destination_place_id=${encodeURIComponent(pid)}`
   : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+/* 구글 링크: 장소 번호(pid)가 없으면 누를 때 한 번만 근처에서 같은 이름 가게를 찾아 번호를 저장하고 가게 페이지로 엶 */
+const gA = (o, label, dir) => {
+  const url = dir ? gDirUrl(o.name, o.lat, o.lng, o.pid) : gPlaceUrl(o.name, o.addr, o.lat, o.lng, o.pid);
+  const fix = !o.pid && o.name && GOOGLE_KEY ? ` data-gfix="${o.kind}|${esc(o.ref)}|${dir ? 1 : 0}"` : "";
+  return `<a href="${url}" target="_blank" rel="noopener"${fix}>${label}</a>`;
+};
+function gfixTarget(kind, ref) {
+  if (kind === "item") { const it = (trip(S.tripId) || { items: [] }).items.find(x => x.id === ref); return it && { name: it.place, addr: it.address, lat: it.lat, lng: it.lng, save: pid => setItem(S.tripId, Object.assign({}, it, { pid })) }; }
+  if (kind === "food") { const f = (S.food.get(S.tripId) || []).find(x => x.id === ref); return f && { name: f.name, addr: f.address, lat: f.lat, lng: f.lng, save: pid => setFood(S.tripId, Object.assign({}, f, { pid })) }; }
+  if (kind === "store") { const t = trip(S.tripId), l = t && (t.shopLocs || {})[ref]; return l && { name: l.label || ref, addr: l.addr, lat: l.lat, lng: l.lng, save: pid => updateRoom(S.tripId, { shopLocs: Object.assign({}, t.shopLocs, { [ref]: Object.assign({}, l, { pid }) }) }) }; }
+  return null;
+}
+document.addEventListener("click", async e => {
+  const a = e.target.closest("a[data-gfix]"); if (!a) return;
+  const [kind, ref, dir] = a.dataset.gfix.split("|"), o = gfixTarget(kind, ref);
+  if (!o || o.lat == null || googleOff || !canUse("search")) return;   // 그냥 원래 링크로
+  e.preventDefault();
+  const w = window.open("about:blank", "_blank");
+  let pid = "";
+  try {
+    countUse("search");
+    const res = await googleSearch(o.name, { lat: o.lat, lng: o.lng }, 3000);
+    // 가게는 600m 안, 이름이 똑같으면(지명·큰 관광지) 3km 안까지 같은 곳으로 봄
+    const same = r => String(r.name || "").replace(/\s/g, "") === String(o.name || "").replace(/\s/g, "");
+    const best = res.map(r => [r, distKm(o, r)]).filter(x => x[1] < 0.6 || (same(x[0]) && x[1] < 3)).sort((x, y) => x[1] - y[1])[0];
+    if (best) { pid = best[0].pid || ""; if (pid) o.save(pid); }
+  } catch (x) {}
+  const url = dir === "1" ? gDirUrl(o.name, o.lat, o.lng, pid) : gPlaceUrl(o.name, o.addr, o.lat, o.lng, pid);
+  if (w) w.location.href = url; else location.href = url;
+});
 const naverUrl = (name, lat, lng) => `nmap://route/public?dlat=${lat}&dlng=${lng}&dname=${encodeURIComponent(name || "목적지")}&appname=${encodeURIComponent(location.origin || "https://eeeeeunice916.github.io")}`;
 const naverWeb = name => `https://map.naver.com/p/search/${encodeURIComponent(name || "")}`;
 const naverA = (name, lat, lng, label = "네이버 길찾기") => `<a href="${naverUrl(name, lat, lng)}" data-nmap="${esc(name || "")}|${lat}|${lng}" rel="noopener">${label}</a>`;
@@ -3777,7 +3810,8 @@ function renderShop() {
     const loc = (t.shopLocs || {})[st], sum = its.filter(x => !x.done).reduce((s, x) => s + shExpect(x), 0);
     return `<section class="store${folded ? " folded" : ""}" data-store="${esc(st)}"><div class="sh" data-fold="${esc(st)}"><span class="ic">${storeIcon(st)}</span>
         <div class="t"><b>${esc(st)}</b><small>${loc && loc.label ? esc(loc.label) + " · " : ""}${allDone ? "다 샀어요 ✓" : `${dn}/${its.length}${sum ? " · " + fmtAmt(sum, c.cur) : ""}`}</small></div>
-        ${loc ? `<a class="go" href="${naverUrl(loc.label || st, loc.lat, loc.lng)}" data-nmap="${esc(loc.label || st)}|${loc.lat}|${loc.lng}">N 길찾기</a>` : ""}
+        ${loc ? `<a class="go" href="${naverUrl(loc.label || st, loc.lat, loc.lng)}" data-nmap="${esc(loc.label || st)}|${loc.lat}|${loc.lng}">N 길찾기</a>${gA({ kind: "store", ref: st, name: loc.label || st, addr: loc.addr, lat: loc.lat, lng: loc.lng, pid: loc.pid }, "G 길찾기", true).replace("<a ", '<a class="go g" ')}`
+          : `<button type="button" class="go loc" data-stmenu="${esc(st)}">📍 위치</button>`}
         <button type="button" class="more" data-stmenu="${esc(st)}" aria-label="${esc(st)} 설정">⋯</button><span class="fold">${folded ? "⌄" : "⌃"}</span></div>
       <div class="prog"><i style="width:${its.length ? Math.round(dn / its.length * 100) : 0}%"></i></div>
       ${folded ? "" : `<ul class="items">${vis.map(row).join("")}</ul>
@@ -3890,6 +3924,7 @@ $("#shFile").onchange = async e => {
   renderShPhotos();
 };
 $("#shCancel").onclick = () => $("#sh").close();
+$("#shLoc").onclick = () => openStore(SE.store || "기타");
 function shFromForm() {
   const p = parseFloat(String($("#shPrice").value).replace(/,/g, ""));
   const { _new, ...base } = SE;
@@ -3968,7 +4003,7 @@ $("#stFind").onclick = async () => {
 $("#stQ").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("#stFind").click(); } });
 $("#stRes").onclick = e => {
   const b = e.target.closest("[data-stp]"); if (!b) return; const r = $("#stRes")._res[+b.dataset.stp], t = trip(S.tripId);
-  updateRoom(S.tripId, { shopLocs: Object.assign({}, t.shopLocs || {}, { [ST]: { lat: r.lat, lng: r.lng, label: r.name } }) });
+  updateRoom(S.tripId, { shopLocs: Object.assign({}, t.shopLocs || {}, { [ST]: { lat: r.lat, lng: r.lng, label: r.name, addr: r.addr || "", pid: r.pid || "" } }) });
   $("#st").close(); renderShop(); toast("가게 위치를 저장했어요.");
 };
 $("#stClear").onclick = () => { const t = trip(S.tripId), l = Object.assign({}, t.shopLocs || {}); delete l[ST]; updateRoom(S.tripId, { shopLocs: l }); $("#st").close(); renderShop(); };
@@ -4321,9 +4356,9 @@ function nearCenter(list) {
   return { lat: pts.reduce((a, x) => a + x.lat, 0) / pts.length, lng: pts.reduce((a, x) => a + x.lng, 0) / pts.length };
 }
 let googleOff = false;
-async function googleSearch(q, center) {
+async function googleSearch(q, center, radius = 50000) {
   const body = { textQuery: q, languageCode: "ko", pageSize: 6 };
-  if (center) body.locationBias = { circle: { center: { latitude: center.lat, longitude: center.lng }, radius: 50000 } };
+  if (center) body.locationBias = { circle: { center: { latitude: center.lat, longitude: center.lng }, radius } };
   const r = await fetch("https://places.googleapis.com/v1/places:searchText", {
     method: "POST",
     headers: { "Content-Type": "application/json", "X-Goog-Api-Key": GOOGLE_KEY, "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.location" },
