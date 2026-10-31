@@ -1300,7 +1300,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "4.4";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "4.5";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -1595,7 +1595,7 @@ function watchRoom(code) {
     const d = snap.data();
     if (!d.members || !d.members[C.uid]) { removeCode(code); refresh("gone", code); return; }
     S.rooms.set(code, d); refresh("room", code);
-  }, e => { if (e.code === "permission-denied") { removeCode(code); refresh("gone", code); } });
+  }, e => { console.warn("room watch", code, e && e.code); });   // 권한 오류로 목록에서 지우지 않음 (규칙을 바꾸는 중에 여행이 사라지는 것 방지)
 }
 function watchItems(code) {
   if (S.itemsCode === code) return;
@@ -2499,6 +2499,22 @@ async function cleanUser(id, nick) {
     toast(`정리했어요.${n ? ` 여행 ${n}개에서 뺐어요.` : ""}`); showUsers();
   } catch (x) { toast(x && x.code === "permission-denied" ? "권한이 없어요. Firestore 규칙을 새 버전(관리자 정리 포함)으로 게시해 주세요." : errMsg(x), 5000); }
 }
+async function showRooms() {
+  const box = $("#roomBox"); box.innerHTML = '<p class="desc">불러오는 중…</p>';
+  try {
+    const qs = await C.db.collection("rooms").get();
+    const list = qs.docs.map(d => Object.assign({ id: d.id }, d.data())).sort((a, b) => (b.start || "").localeCompare(a.start || ""));
+    box.innerHTML = `<p class="desc">서버에 있는 여행 ${list.length}개</p><div class="tw2"><table class="adm"><tr><th>여행</th><th>날짜</th><th>사람</th><th></th></tr>
+      ${list.map(r => { const mine = r.members && r.members[C.uid], nicks = [...new Set(Object.values(r.members || {}).map(m => m.nick || "?"))];
+        return `<tr><td>${esc(r.title || "(제목 없음)")}<br><small style="color:var(--muted)">${fmtCode(r.id)}</small></td><td>${esc((r.start || "").slice(5).replace("-", "."))}</td><td>${nicks.map(esc).join(", ")}</td>
+          <td>${mine && S.codes.includes(r.id) ? "들어가 있음" : `<button type="button" class="link" data-rjoin="${r.id}">입장</button>`}</td></tr>`; }).join("")}</table></div>`;
+  } catch (x) { box.innerHTML = `<p class="warn">${x && x.code === "permission-denied" ? "여행 목록을 볼 권한이 없어요. Firestore 규칙을 새 버전(관리자 목록 포함)으로 게시해 주세요." : esc(errMsg(x))}</p>`; }
+}
+document.addEventListener("click", async e => {
+  if (e.target.closest("#roomList")) { showRooms(); return; }
+  const j = e.target.closest("[data-rjoin]");
+  if (j) { try { await joinRoom(j.dataset.rjoin, S.nick || "관리자"); toast("입장했어요."); showRooms(); } catch (x) { toast(errMsg(x), 4500); } }
+});
 let ULU = null;
 function openUserLimit(id, nick) {
   ULU = id; const L = Object.assign({}, U.base || DEF_LIMITS, (U.userLim || {})[id] || {});
@@ -2549,6 +2565,7 @@ async function renderAdmin() {
     <div class="grid2 keep"><label>지도 하루<input id="limMD" inputmode="numeric" value="${L.userMapsDay}"></label><label>지도 한 달<input id="limMM" inputmode="numeric" value="${L.userMapsMonth}"></label>
       <label>검색 하루<input id="limSD" inputmode="numeric" value="${L.userSearchDay}"></label><label>검색 한 달<input id="limSM" inputmode="numeric" value="${L.userSearchMonth}"></label></div>
     <div class="row"><button type="button" class="btn sm primary" id="limSave">한도 저장</button><button type="button" class="btn sm" id="adminOut">이 기기 관리자 해제</button></div>
+    <h3 style="margin-top:10px">모든 여행</h3><div class="row"><button type="button" class="btn sm" id="roomList">모든 여행 보기·입장</button></div><div id="roomBox"></div>
     <h3 style="margin-top:10px">사용자</h3><div class="row"><button type="button" class="btn sm" id="userList">사용자 목록 보기</button></div><div id="userBox"></div>`;
 }
 document.addEventListener("click", async e => {
