@@ -180,6 +180,7 @@ a{color:var(--accent);overflow-wrap:anywhere}
 .mapgate .mg-ic{font-size:32px}
 .mapgate b{font:400 18px var(--round)}
 .mapgate small{font-size:12px;color:var(--muted)}
+.tw2{overflow-x:auto}
 table.adm{width:100%;border-collapse:collapse;font-size:13px}
 table.adm th,table.adm td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:right}
 table.adm th:first-child,table.adm td:first-child{text-align:left}
@@ -1004,7 +1005,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
       <p class="desc">한도에 닿으면 기본 지도와 기본 검색으로 자동으로 바뀌어서 요금이 나오지 않아요.</p>
       <label class="tgl"><span>여행을 열면 지도도 바로 열기</span><input type="checkbox" id="autoMap"></label>
       <p class="desc" style="margin-top:-4px">끄면 ‘지도 보기’를 눌렀을 때만 지도를 불러와서 사용량이 크게 줄어요.</p></section>
-    <section class="set"><h3>관리자</h3><div id="adminBox"></div></section>
+    <section class="set"><h3>관리자</h3><div id="adminBox"></div><p class="desc">앱 관리자는 사용자 닉네임, 마지막 접속 날짜, 여행 수, 지도·검색 사용 횟수를 볼 수 있어요. 관리자 화면에는 여행 내용(일정·사진·경비)이 나오지 않아요.</p></section>
     <section class="set"><h3>삭제 비밀번호</h3><p class="desc" id="pwState"></p>
       <div class="row"><button type="button" class="btn sm" id="pwSet">비밀번호 정하기</button></div></section>
     <section class="set"><h3>미리보기</h3>
@@ -1136,6 +1137,16 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
     <button type="button" class="btn primary" id="shwClose">닫기</button>
   </form>
 </dialog>
+<dialog id="ul">
+  <form id="ulForm" method="dialog">
+    <h2 id="ulTitle">한도</h2>
+    <p class="desc" id="ulDesc"></p>
+    <div class="grid2 keep"><label for="ulMD">지도 하루<input id="ulMD" inputmode="numeric"></label><label for="ulMM">지도 한 달<input id="ulMM" inputmode="numeric"></label>
+      <label for="ulSD">검색 하루<input id="ulSD" inputmode="numeric"></label><label for="ulSM">검색 한 달<input id="ulSM" inputmode="numeric"></label></div>
+    <p class="hint">0으로 하면 그 사람은 구글·네이버 지도 대신 기본 지도만 써요.</p>
+    <div class="dfoot"><button type="button" class="btn" id="ulReset">기본값으로</button><span class="sp"></span><button type="button" class="btn" id="ulCancel">취소</button><button type="submit" class="btn primary">저장</button></div>
+  </form>
+</dialog>
 <dialog id="ask">
   <form id="askForm" method="dialog">
     <h2 id="askTitle"></h2>
@@ -1167,7 +1178,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "3.7";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "3.8";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -1726,7 +1737,7 @@ $("#sNickSave").onclick = () => {
   S.codes.forEach(code => { if (S.rooms.has(code)) fire(roomRef(code).update({ ["members." + C.uid + ".nick"]: n })); });
   toast("닉네임을 바꿨어요.");
 };
-function setNick(n) { S.nick = n; ls.set("tn-nick", n); }
+function setNick(n) { S.nick = n; ls.set("tn-nick", n); touchUser(true); }
 
 /* ---------- 삭제 비밀번호 ---------- */
 async function hashPw(p) {
@@ -1773,7 +1784,7 @@ function showTrip(id) {
   S.tripId = id; const t = trip(id), today = fd(new Date());
   loadUsage();
   S.day = today >= t.start && today <= t.end ? today : "all";
-  S.mode = tripState(t) === "during" ? "today" : "plan"; S.reorder = null;
+  S.mode = "today"; S.reorder = null;
   watchItems(id); watchShop(id); watchFood(id); ["money", "pack", "diary"].forEach(n => watchSub(n, id)); renderTrip(); window.scrollTo(0, 0);
 }
 function showList() { S.tripId = null; document.body.classList.remove("in-trip"); renderList(); window.scrollTo(0, 0); }
@@ -1895,7 +1906,7 @@ function renderList() {
   $("#joinBtn").onclick = () => openJoin("");
   const mg = $("#migrate"); if (mg) mg.onclick = migrateLegacy;
   const mn = $("#migrateNo"); if (mn) mn.onclick = () => { ls.set("tn-migrated", true); renderList(); };
-  bindLongPress($(".trips"));
+  bindLongPress($(".trips")); touchUser();
   const dd = $(".dd"); if (dd) dd.onclick = e => { e.preventDefault(); openTripView(dd.dataset.dd); };
 }
 
@@ -2263,6 +2274,8 @@ async function loadUsage(force) {
     Object.assign(U, { day: d, month: m, nvDay: nd, nvMonth: nm, uDay: ud, uMonth: um, ok: true });
   } catch (e) { U.ok = false; }
   try { const c = await C.db.collection("config").doc("limits").get(); if (c.exists) U.lim = Object.assign({}, DEF_LIMITS, c.data()); } catch (e) {}
+  U.base = Object.assign({}, U.lim);
+  try { const o = await C.db.collection("config").doc("userLimits").get(); U.userLim = o.exists ? o.data() : {}; const mine = U.userLim[C.uid]; if (mine) U.lim = Object.assign({}, U.lim, mine); } catch (e) { U.userLim = {}; }
   try { const a = await C.db.collection("admins").doc(C.uid).get(); S.admin = a.exists; } catch (e) { S.admin = false; }
 }
 function usageOf(kind) {
@@ -2305,6 +2318,54 @@ function countUse(kind, nv) {
   U.day[kind] = (U.day[kind] || 0) + 1; U.month[kind] = (U.month[kind] || 0) + 1;
   bump("d-" + dayKey(), kind); bump("m-" + monthKey(), kind);
 }
+/* 사용자 목록: 각자 닉네임·마지막 접속·여행 수만 남김 (여행 내용은 안 남김). 관리자만 목록을 볼 수 있음 */
+function touchUser(force) {
+  if (!C.db || !C.uid) return;
+  const last = ls.get("tn-user-touch", 0) || 0;
+  if (!force && Date.now() - last < 30 * 60e3 && ls.get("tn-user-trips", -1) === S.codes.length) return;
+  ls.set("tn-user-trips", S.codes.length);
+  ls.set("tn-user-touch", Date.now());
+  C.db.collection("users").doc(C.uid).set({ nick: S.nick || "", lastSeen: Date.now(), trips: S.codes.length }, { merge: true }).catch(() => {});
+}
+async function showUsers() {
+  const box = $("#userBox"); if (!box) return;
+  box.innerHTML = '<p class="desc">불러오는 중…</p>';
+  try {
+    const qs = await C.db.collection("users").get();
+    const list = qs.docs.map(d => Object.assign({ id: d.id }, d.data())).sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
+    const mk = monthKey();
+    const use = await Promise.all(list.map(u => uref(`u-${u.id}-m-${mk}`).get().then(x => x.exists ? x.data() : {}).catch(() => ({}))));
+    const now = Date.now(), active = list.filter(u => now - (u.lastSeen || 0) < 30 * 864e5).length;
+    box.innerHTML = `<p class="desc">전체 <b>${list.length}</b>명 · 최근 30일 사용 <b>${active}</b>명</p>
+      <div class="tw2"><table class="adm"><tr><th>닉네임</th><th>마지막 접속</th><th>여행</th><th>이번 달 지도/검색</th><th>한도</th></tr>
+      ${list.map((u, i) => `<tr><td>${esc(u.nick || "(이름 없음)")}${u.id === C.uid ? " (나)" : ""}<br><small style="color:var(--muted)">${esc(u.id.slice(-4))}</small></td><td>${u.lastSeen ? ago(u.lastSeen) : "–"}</td><td>${u.trips ?? "–"}</td><td>${use[i].maps || 0} / ${use[i].search || 0}</td><td><button type="button" class="link" data-ulim="${esc(u.id)}" data-unick="${esc(u.nick || "")}">${(U.userLim || {})[u.id] ? `지도 ${U.userLim[u.id].userMapsDay}/일 ✎` : "기본 ✎"}</button></td></tr>`).join("")}</table></div>
+      <p class="desc">같은 사람이 아이폰 사파리와 홈 화면 앱처럼 여러 기기로 쓰면 따로 나와요 (아래 작은 글자가 기기 끝 번호).</p>`;
+  } catch (x) {
+    box.innerHTML = `<p class="warn">${x && x.code === "permission-denied" ? "목록을 볼 권한이 없어요. Firestore 규칙에 사용자 목록 부분을 넣어 주세요." : esc(errMsg(x))}</p>`;
+  }
+}
+document.addEventListener("click", e => {
+  if (e.target.closest("#userList")) { showUsers(); return; }
+  const b = e.target.closest("[data-ulim]"); if (b) openUserLimit(b.dataset.ulim, b.dataset.unick);
+});
+let ULU = null;
+function openUserLimit(id, nick) {
+  ULU = id; const L = Object.assign({}, U.base || DEF_LIMITS, (U.userLim || {})[id] || {});
+  $("#ulTitle").textContent = `${nick || "(이름 없음)"} 한도`;
+  $("#ulDesc").textContent = (U.userLim || {})[id] ? "이 사람만 따로 정한 한도예요." : `지금은 기본 한도를 따라요 (지도 하루 ${L.userMapsDay}번).`;
+  $("#ulMD").value = L.userMapsDay; $("#ulMM").value = L.userMapsMonth; $("#ulSD").value = L.userSearchDay; $("#ulSM").value = L.userSearchMonth;
+  $("#ul").showModal();
+}
+async function saveUserLimit(val) {
+  const all = Object.assign({}, U.userLim || {});
+  if (val) all[ULU] = val; else delete all[ULU];
+  try { await C.db.collection("config").doc("userLimits").set(all); U.userLim = all; $("#ul").close(); toast(val ? "이 사람 한도를 저장했어요." : "기본 한도로 되돌렸어요."); showUsers(); }
+  catch (x) { toast(errMsg(x), 4500); }
+}
+$("#ulForm").onsubmit = e => { e.preventDefault(); const v = id => Math.max(0, parseInt($(id).value, 10) || 0);
+  saveUserLimit({ userMapsDay: v("#ulMD"), userMapsMonth: v("#ulMM"), userSearchDay: v("#ulSD"), userSearchMonth: v("#ulSM") }); };
+$("#ulReset").onclick = () => saveUserLimit(null);
+$("#ulCancel").onclick = () => $("#ul").close();
 /* 네이버 지도도 사람마다 '지도 열기' 한도에 같이 셈 */
 const nvCanUse = () => { const r = limitReason("maps"); if (r === "me" || r === "meMonth") return false; return S.admin || !U.ok || (U.nvMonth.maps || 0) < QUOTA.nvMonth; };
 const nvCount = () => countUse("maps", true);
@@ -2336,7 +2397,8 @@ async function renderAdmin() {
     <h3 style="margin-top:6px">다른 사람 한도 (한 사람당)</h3>
     <div class="grid2 keep"><label>지도 하루<input id="limMD" inputmode="numeric" value="${L.userMapsDay}"></label><label>지도 한 달<input id="limMM" inputmode="numeric" value="${L.userMapsMonth}"></label>
       <label>검색 하루<input id="limSD" inputmode="numeric" value="${L.userSearchDay}"></label><label>검색 한 달<input id="limSM" inputmode="numeric" value="${L.userSearchMonth}"></label></div>
-    <div class="row"><button type="button" class="btn sm primary" id="limSave">한도 저장</button><button type="button" class="btn sm" id="adminOut">이 기기 관리자 해제</button></div>`;
+    <div class="row"><button type="button" class="btn sm primary" id="limSave">한도 저장</button><button type="button" class="btn sm" id="adminOut">이 기기 관리자 해제</button></div>
+    <h3 style="margin-top:10px">사용자</h3><div class="row"><button type="button" class="btn sm" id="userList">사용자 목록 보기</button></div><div id="userBox"></div>`;
 }
 document.addEventListener("click", async e => {
   if (e.target.closest("#adminId")) { copyText(C.uid || "", "기기 ID를 복사했어요."); return; }
@@ -4160,6 +4222,7 @@ async function boot() {
   try { await cloudInit(); await Promise.race([gmWait, new Promise(r => setTimeout(r, 4000))]); }
   catch (e) { renderStatus(errMsg(e), true); return; }
   await loadUsage(true);
+  touchUser();
   S.codes.forEach(watchRoom);
   S.ready = true;
   const params = new URLSearchParams(location.search);
