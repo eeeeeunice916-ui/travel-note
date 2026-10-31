@@ -590,6 +590,98 @@ body.in-trip .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
 .dyph em{position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:50%;background:var(--tabon);color:var(--tabon-ink);font:800 11px/20px var(--font);font-style:normal;text-align:center}
 .imsbox{display:grid;gap:10px;padding:16px}
 .imsbox img{width:100%;border-radius:14px;display:block}
+/* ===== 3.4 쇼핑 (가게별) ===== */
+.ssum{display:grid;grid-template-columns:1fr 1fr;gap:6px;border-radius:20px;padding:13px 15px;background:var(--dd);margin-bottom:10px;cursor:pointer}
+.ssum small{display:block;font-size:11px;font-weight:700;color:var(--muted)}
+.ssum b{font:400 20px var(--round)}
+.ssum .bar{grid-column:1/-1;height:8px;border-radius:9px;background:color-mix(in srgb,var(--surface) 70%,transparent);overflow:hidden;display:flex}
+.ssum .bar i{display:block;height:100%;background:var(--sky)}
+.ssum .bar i.plan{background:color-mix(in srgb,var(--sky) 40%,transparent)}
+.ssum .lg{grid-column:1/-1;display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:700}
+.sfilt{display:flex;gap:5px;overflow-x:auto;margin-bottom:10px;scrollbar-width:none}
+.sfilt::-webkit-scrollbar{display:none}
+.sfilt button{flex:none;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink);cursor:pointer}
+.sfilt button[aria-pressed="true"]{background:var(--tabon);color:var(--tabon-ink);border-color:var(--tabon)}
+.quick{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:8px;margin-bottom:12px}
+.quick .in{display:flex;gap:6px}
+.quick .in input{flex:1;min-width:0}
+.qst{display:flex;gap:4px;margin-top:7px;overflow-x:auto;scrollbar-width:none}
+.qst::-webkit-scrollbar{display:none}
+.qst button{flex:none;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--field);border:1.5px solid transparent;color:var(--ink);cursor:pointer}
+.qst button[aria-pressed="true"]{background:var(--sky-l);border-color:var(--sky);color:var(--sky-d)}
+.store{background:var(--surface);border-radius:20px;border:1px solid var(--line);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
+.store .sh{display:flex;align-items:center;gap:9px;padding:10px 10px 10px 12px;cursor:pointer}
+.store .ic{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:var(--sky-l);font-size:16px;flex:none}
+.store .t{display:grid;line-height:1.25;min-width:0;flex:1}
+.store .t b{font:400 17px var(--round)}
+.store .t small{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.store .go{flex:none;font-size:11px;font-weight:800;color:#03A94D;background:#E6F8EE;border-radius:999px;padding:5px 9px;text-decoration:none;white-space:nowrap}
+.store .more{flex:none;width:30px;height:30px;border-radius:9px;border:0;background:transparent;color:var(--muted);font-size:16px;cursor:pointer}
+.store .fold{color:var(--muted);font-size:13px;width:14px;text-align:center}
+.store.folded .sh{opacity:.72}
+.store .prog{height:4px;background:var(--field)}
+.store .prog i{display:block;height:100%;background:var(--sky)}
+.items{list-style:none;margin:0;padding:0}
+.it{display:flex;align-items:center;gap:9px;padding:9px 10px 9px 12px;border-top:1px dashed var(--line)}
+.it:first-child{border-top:0}
+.it .ck{width:26px;height:26px;border-radius:9px;border:2px solid var(--line);background:transparent;flex:none;cursor:pointer;position:relative;padding:0}
+.it .ck[aria-pressed="true"]{background:var(--lime);border-color:var(--lime)}
+.it .ck[aria-pressed="true"]::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:900;font-size:14px}
+.it .tw{flex:none;cursor:pointer}
+.it .pic{width:44px;height:44px;border-radius:12px;background:var(--sky-l);display:grid;place-items:center;font-size:21px;font-weight:800;color:var(--sky-d);object-fit:cover;border:0}
+.it .nm{flex:1;min-width:0;cursor:pointer}
+.it .nm b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .nm small{font-size:11px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tg{font-size:10px;font-weight:800;border-radius:5px;padding:0 5px;margin-left:4px;vertical-align:1px}
+.tg.tax{background:#E6F8EE;color:#13804A}
+.tg.gift{background:var(--pink-l);color:var(--heart)}
+.whoc{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;font:800 9px/1 var(--font);color:#fff;background:var(--sky);vertical-align:-3px;margin-right:4px}
+.it .rt{display:grid;justify-items:end;gap:3px;flex:none}
+.it .step{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:800}
+.it .step button{width:24px;height:24px;border-radius:8px;border:0;background:var(--field);color:var(--ink);cursor:pointer;font-weight:800;padding:0}
+.it .pz{font-size:12px;font-weight:800;text-align:right}
+.it .pz small{display:block;font-size:10px;color:var(--muted);font-weight:600}
+.it.done .nm b{text-decoration:line-through;color:var(--muted)}
+.it.done .pic{opacity:.55}
+.store .foot{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:700;color:var(--muted);padding:8px 12px;background:var(--field)}
+.store .foot b{color:var(--sky-d)}
+.taxbox{background:#F1FBF5;border:1px solid #CDEFD9;border-radius:18px;padding:11px 13px;margin-bottom:10px;font-size:12px;color:#2F5E43}
+.taxbox b{font:400 15px var(--round);color:#13804A}
+.taxbox p{margin:3px 0 0}
+html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
+.sbtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px}
+.sbtns .btn{padding:0 8px;font-size:14px}
+.sbtns .btn[disabled]{opacity:.45}
+.qtybox{display:flex;align-items:center;gap:6px;margin-top:6px}
+.qtybox button{width:40px;height:44px;border-radius:12px;border:0;background:var(--field);font-size:18px;font-weight:800;color:var(--ink);cursor:pointer}
+.qtybox input{text-align:center;padding:9px 4px}
+.tgl{display:flex!important;align-items:center;justify-content:space-between;font-size:15px!important;color:var(--ink)!important;padding:4px 2px}
+.tgl input{appearance:none;-webkit-appearance:none;width:46px!important;min-height:0!important;height:28px;border-radius:99px!important;background:var(--line)!important;position:relative;padding:0!important;border:0!important;cursor:pointer;flex:none}
+.tgl input::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tgl input:checked{background:var(--sky)!important}
+.tgl input:checked::after{left:21px}
+.sbitem{display:flex;align-items:center;gap:10px;background:var(--field);border-radius:14px;padding:10px}
+.sbitem .pic{width:48px;height:48px;border-radius:12px;background:var(--sky-l);display:grid;place-items:center;font-size:24px;object-fit:cover}
+.sbitem b{display:block}
+.sbitem small{color:var(--muted);font-size:12px}
+.stbox,.popbox{display:grid;gap:12px;padding:20px}
+.stbox h2,.popbox h2{font-size:20px}
+.popgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.popgrid button{display:grid;justify-items:center;gap:4px;padding:8px 4px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-size:12px;font-weight:700;cursor:pointer;position:relative}
+.popgrid .pic{width:100%;aspect-ratio:1;border-radius:10px;background:var(--sky-l);display:grid;place-items:center;font-size:28px}
+.popgrid button[aria-pressed="true"]{border-color:var(--sky);background:var(--sky-l)}
+.popgrid button[aria-pressed="true"]::after{content:"✓";position:absolute;right:5px;top:5px;width:20px;height:20px;border-radius:50%;background:var(--sky);color:#fff;font:900 12px/20px var(--font)}
+.popgrid button[disabled]{opacity:.45}
+.popgrid small{font-size:10px;color:var(--muted)}
+#shw{width:100%;max-width:100%;height:100%;max-height:100%;border-radius:0;margin:0}
+.shwbox{min-height:100%;display:grid;align-content:center;justify-items:center;gap:14px;padding:30px 20px calc(30px + env(safe-area-inset-bottom,0px));text-align:center}
+.shwpic .pic{width:min(70vw,280px);height:min(70vw,280px);border-radius:28px;background:var(--sky-l);display:grid;place-items:center;font-size:110px;object-fit:cover}
+.shwbox h2{font:400 28px var(--round)}
+.shwlocal{margin:0;font-size:30px;font-weight:800;letter-spacing:.02em}
+.shwask{margin:0;display:grid;gap:2px;background:var(--sky-l);color:var(--sky-d);border-radius:16px;padding:12px 18px}
+.shwask b{font-size:20px}
+.shwask small{font-size:13px}
+.shwnav{display:flex;align-items:center;gap:14px;font-weight:700}
 </style>
 </head>
 <body>
@@ -772,6 +864,8 @@ body.in-trip .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
       <label for="tStart">출발일<input type="date" id="tStart" required></label>
       <label for="tEnd">도착일<input type="date" id="tEnd" required></label>
     </div>
+    <label for="tCountry">나라<select id="tCountry"></select></label>
+    <p class="hint" style="margin-top:-8px">자동으로 두면 일정 장소를 보고 정해요. 통화, 쇼핑 가게·인기템, 국내여행의 네이버 지도에 쓰여요.</p>
     <div class="dfoot">
       <span class="sp"></span>
       <button type="button" class="btn" id="tCancel">취소</button>
@@ -962,21 +1056,79 @@ body.in-trip .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
 <!-- 쇼핑 항목 수정 -->
 <dialog id="sh">
   <form id="shForm" method="dialog">
-    <h2>쇼핑 항목</h2>
+    <h2 id="shTitle">쇼핑 항목</h2>
     <label for="shName">살 것<input id="shName" required placeholder="예: 곤약젤리" autocomplete="off"></label>
-    <label for="shMemo">메모<input id="shMemo" placeholder="예: 3개, 돈키호테, 1000엔 이하" autocomplete="off"></label>
-    <label for="shWho">누가 살까요<select id="shWho"></select></label>
-    <div><span class="lab">사진 예시</span><p class="hint" style="margin:2px 0 0">찾아야 할 상품 사진이나 캡처를 넣어 두면 가게에서 보여 주기 좋아요.</p>
+    <div class="grid2 keep"><div><span class="lab">개수</span><div class="qtybox"><button type="button" id="shQtyM" aria-label="하나 빼기">−</button><input id="shQty" inputmode="numeric" value="1" aria-label="개수"><button type="button" id="shQtyP" aria-label="하나 더">+</button></div></div>
+      <label for="shPrice">개당 가격<input id="shPrice" inputmode="decimal" placeholder="몰라도 돼요" autocomplete="off"></label></div>
+    <label for="shCur">통화<select id="shCur"></select></label>
+    <p class="hint" id="shTotal"></p>
+    <div><span class="lab">가게</span><div class="decoopts" id="shStores"></div></div>
+    <div class="grid2 keep"><label for="shWho">누가 살까요<select id="shWho"></select></label><label for="shGift">선물이라면 누구 거?<input id="shGift" placeholder="예: 엄마" autocomplete="off"></label></div>
+    <label for="shMemo">메모<input id="shMemo" placeholder="예: 포도맛, 3개 묶음" autocomplete="off"></label>
+    <label for="shLocal">현지어 이름 (보여주기용)<input id="shLocal" placeholder="예: こんにゃくゼリー" autocomplete="off"></label>
+    <label class="tgl"><span>면세로 살 거예요</span><input type="checkbox" id="shTax"></label>
+    <div><span class="lab">사진 예시</span><p class="hint" style="margin:2px 0 0">찾을 상품 사진이나 캡처를 넣어 두면 가게에서 보여 주기 좋아요.</p>
       <div id="shPhotos" class="pgrid"></div>
       <label class="btn ghost" for="shFile">사진 추가<input type="file" id="shFile" accept="image/*" multiple hidden></label></div>
     <div class="dfoot">
       <button type="button" class="btn danger" id="shDel">삭제</button>
+      <button type="button" class="btn ghost" id="shShow">🙋 보여주기</button>
       <span class="sp"></span>
       <button type="button" class="btn" id="shCancel">취소</button>
       <button type="submit" class="btn primary">저장</button>
     </div>
   </form>
 </dialog>
+<dialog id="sb">
+  <form id="sbForm" method="dialog">
+    <h2>샀어요! 🎉</h2>
+    <div class="sbitem"><span id="sbThumb"></span><div><b id="sbName"></b><small id="sbStore"></small></div></div>
+    <div class="grid2 keep amt"><label for="sbAmt">실제로 낸 돈<input id="sbAmt" inputmode="decimal" placeholder="0" autocomplete="off"></label><label for="sbCur">통화<select id="sbCur"></select></label></div>
+    <p class="hint" id="sbConv"></p>
+    <label class="tgl"><span>경비에도 기록</span><input type="checkbox" id="sbMoney"></label>
+    <div id="sbSplitBox"><span class="lab">나눌 사람</span><div class="decoopts" id="sbSplit"></div></div>
+    <label class="tgl"><span>면세로 샀어요</span><input type="checkbox" id="sbTax"></label>
+    <div class="dfoot"><button type="button" class="btn" id="sbSkip">가격 없이 체크</button><span class="sp"></span><button type="submit" class="btn primary">완료</button></div>
+  </form>
+</dialog>
+<dialog id="st">
+  <form method="dialog" class="stbox">
+    <h2 id="stTitle">가게</h2>
+    <p class="desc" id="stLoc"></p>
+    <div class="search"><input id="stQ" placeholder="지점 이름 (예: 돈키호테 사카에점)" autocomplete="off"><button type="button" class="btn" id="stFind">찾기</button></div>
+    <ul class="results" id="stRes"></ul>
+    <div class="row"><button type="button" class="btn sm" id="stUp">▲ 위로</button><button type="button" class="btn sm" id="stDown">▼ 아래로</button><button type="button" class="btn sm danger" id="stClear">위치 지우기</button></div>
+    <div class="dfoot"><span class="sp"></span><button type="button" class="btn primary" id="stClose">닫기</button></div>
+  </form>
+</dialog>
+<dialog id="pop">
+  <form method="dialog" class="popbox">
+    <h2 id="popTitle">⭐ 인기 쇼핑템</h2>
+    <label for="popCountry">나라<select id="popCountry"></select></label>
+    <div class="decoopts" id="popCats"></div>
+    <div class="popgrid" id="popGrid"></div>
+    <p class="hint" id="popInfo"></p>
+    <div class="dfoot"><span class="sp"></span><button type="button" class="btn" id="popClose">닫기</button><button type="button" class="btn primary" id="popAdd">넣기</button></div>
+  </form>
+</dialog>
+<dialog id="shw">
+  <form method="dialog" class="shwbox">
+    <div id="shwPic" class="shwpic"></div>
+    <h2 id="shwName"></h2>
+    <p class="shwlocal" id="shwLocal"></p>
+    <p class="shwask"><b id="shwAsk"></b><small id="shwAskKo"></small></p>
+    <div class="shwnav"><button type="button" class="btn" id="shwPrev">‹ 이전</button><span id="shwNum"></span><button type="button" class="btn" id="shwNext">다음 ›</button></div>
+    <button type="button" class="btn primary" id="shwClose">닫기</button>
+  </form>
+</dialog>
+<dialog id="ask">
+  <form id="askForm" method="dialog">
+    <h2 id="askTitle"></h2>
+    <input id="askIn" autocomplete="off">
+    <div class="dfoot"><span class="sp"></span><button type="button" class="btn" id="askNo">취소</button><button type="submit" class="btn primary">확인</button></div>
+  </form>
+</dialog>
+
 
 <dialog id="cf">
   <form method="dialog" class="cfbox">
@@ -1000,7 +1152,7 @@ body.in-trip .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "3.3";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "3.4";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -1379,7 +1531,7 @@ function hydrate(root, code) {
 }
 function createRoom(t) {
   const code = newCode(), now = Date.now();
-  const doc = { title: t.title, start: t.start, end: t.end, notes: t.notes || "", notesHtml: t.notesHtml || "", notesColor: t.notesColor || "", days: t.days || {}, owner: C.uid,
+  const doc = { title: t.title, start: t.start, end: t.end, country: t.country || "", notes: t.notes || "", notesHtml: t.notesHtml || "", notesColor: t.notesColor || "", days: t.days || {}, owner: C.uid,
     members: { [C.uid]: { nick: S.nick, joinedAt: now } }, createdAt: now, updatedAt: now, updatedBy: S.nick };
   S.rooms.set(code, doc); addCode(code);
   const p = fire(roomRef(code).set(doc));
@@ -1737,7 +1889,7 @@ function itemHtml(it, n) {
   const chips = lines(it.booking).map(l => { const code = codeOf(l); const label = l.replace(code, "").trim();
     return `<button type="button" class="chip" data-copy="${esc(code)}">${label ? esc(label) + " " : ""}<b>${esc(code)}</b><small>복사</small></button>`; }).join("");
   const memo = it.memoHtml ? "" : lines(it.memo).map(l => /^(→|->|=>)/.test(l) ? `<li class="arrow">${linkify(l.replace(/^(->|=>)/, "→"))}</li>` : `<li>${linkify(l)}</li>`).join("");
-  const nav = has ? `<a href="https://map.kakao.com/link/to/${encodeURIComponent(it.place || "목적지")},${it.lat},${it.lng}" target="_blank" rel="noopener">카카오맵 길찾기</a>
+  const nav = has ? `${naverA(it.place, it.lat, it.lng)}
     <a href="https://www.google.com/maps/dir/?api=1&destination=${it.lat},${it.lng}" target="_blank" rel="noopener">구글 길찾기</a>` : "";
   const edited = it.updatedBy ? `<span class="edited">${esc(it.updatedBy)} · ${ago(it.updatedAt)}</span>` : "";
   return `<article class="item" data-id="${it.id}"><div class="num${has ? "" : " off"}">${n}</div><div class="body">
@@ -1778,12 +1930,8 @@ function renderTrip() {
       <ul class="food" id="foodList"></ul>
       <details class="shopdone" id="foodDoneBox" hidden><summary id="foodDoneSum"></summary><ul class="food" id="foodDone"></ul></details>
     </div>
-    <div id="shopView" hidden>
-      <form class="shopadd" id="shopAdd"><input id="shopIn" placeholder="살 것 입력 (예: 곤약젤리 3개)" autocomplete="off" aria-label="살 것"><button class="btn primary" type="submit">추가</button></form>
-      <div class="sprog" id="shopProg" hidden></div>
-      <ul class="shop" id="shopList"></ul>
-      <details class="shopdone" id="shopDoneBox" hidden><summary id="shopDoneSum"></summary><ul class="shop" id="shopDone"></ul></details>
-    </div>`;
+    <div id="shopView" hidden><div id="shopBox"></div></div>
+`;
   document.querySelectorAll(".seg button").forEach(b => b.onclick = () => setMode(b.dataset.mode));
   $("#foodAddBtn").onclick = () => openFood(null);
   $("#foodView").onclick = e => {
@@ -1800,21 +1948,8 @@ function renderTrip() {
     const fc = e.target.closest("[data-ffocus]");
     if (fc && S.fmarkers[fc.dataset.ffocus] && S.fmap) { const mk = S.fmarkers[fc.dataset.ffocus], q = mk.pos(); S.fmap.setView(q[0], q[1], 16); mk.open(); $("#fmap").scrollIntoView({ behavior: "smooth", block: "center" }); }
   };
-  $("#shopAdd").onsubmit = e => {
-    e.preventDefault(); const v = $("#shopIn").value.trim(); if (!v) return;
-    setShop(S.tripId, { id: uid(), name: v, memo: "", who: "", done: false, created: Date.now(), addedBy: S.nick });
-    $("#shopIn").value = ""; renderShop();
-  };
   $("#foodCats").onclick = e => { const b = e.target.closest("[data-fcat]"); if (!b) return; S.foodCat = b.dataset.fcat; renderFood(true); };
-  $("#shopView").onclick = e => {
-    const ph = e.target.closest("[data-sphoto]");
-    if (ph) { if (ph.getAttribute("src")) { $("#lbImg").src = ph.src; openDlg($("#lb")); } return; }
-    const c = e.target.closest("[data-chk]");
-    if (c) { const it = (S.shop.get(S.tripId) || []).find(x => x.id === c.dataset.chk); if (!it) return;
-      const done = !it.done; setShop(S.tripId, Object.assign({}, it, { done, doneBy: done ? S.nick : "" })); renderShop(); return; }
-    const ed = e.target.closest("[data-sedit]");
-    if (ed) openShopItem((S.shop.get(S.tripId) || []).find(x => x.id === ed.dataset.sedit));
-  };
+  bindShop($("#shopView"));
   $("#back").onclick = goList;
   $("#menu").onclick = () => openDlg($("#md"));
   $("#add").onclick = () => openItem(trip(S.tripId), null);
@@ -1855,7 +1990,7 @@ function setMode(m) {
 function initFoodMap() {
   const el = $("#fmap"); if (!el) return;
   S.fmap = makeMap(el, { pool: "food" });
-  if (!S.fmap) el.innerHTML = '<p class="mapmsg">지도를 불러오지 못했어요.</p>';
+  if (!S.fmap) el.innerHTML = wantNaver() && (NV.state === "idle" || NV.state === "loading") ? '<p class="mapmsg">네이버 지도를 준비하는 중…</p>' : '<p class="mapmsg">지도를 불러오지 못했어요.</p>';
 }
 const likeCount = f => Object.keys(f.likes || {}).length;
 function renderFood(fit) {
@@ -1881,7 +2016,7 @@ function renderFood(fit) {
       ${f.link ? `<div class="addr">${linkify(f.link)}</div>` : ""}
       <div class="fw">${who.length ? `♥ ${who.map(esc).join(", ")} · ` : ""}${f.addedBy ? esc(f.addedBy) + " 추가" : ""}</div>
       <div class="acts"><button type="button" data-toplan="${f.id}">일정에 넣기</button><button type="button" data-visit="${f.id}">${f.visited ? "안 갔어요" : "다녀왔어요"}</button><button type="button" data-fedit="${f.id}">수정</button>
-        ${has ? `<a href="https://map.kakao.com/link/to/${encodeURIComponent(f.name)},${f.lat},${f.lng}" target="_blank" rel="noopener">카카오맵</a><a href="https://www.google.com/maps/search/?api=1&query=${f.lat},${f.lng}" target="_blank" rel="noopener">구글 지도</a>` : ""}</div></li>`;
+        ${has ? `${naverA(f.name, f.lat, f.lng, "네이버 지도")}<a href="https://www.google.com/maps/search/?api=1&query=${f.lat},${f.lng}" target="_blank" rel="noopener">구글 지도</a>` : ""}</div></li>`;
   };
   $("#foodList").innerHTML = todo.length ? todo.map(card).join("") : `<li class="none">${birdSvg(done.length ? "bird-happy" : "bird")}<span>${done.length ? "모두 다녀왔어요!" : S.foodCat !== "all" ? "이 종류의 맛집이 없어요." : "가고 싶은 맛집을 ‘+ 맛집 추가’로 모아 보세요. 같이 가는 사람 모두에게 보여요."}</span></li>`;
   $("#foodDoneBox").hidden = !done.length; $("#foodDoneSum").textContent = `다녀온 곳 ${done.length}개`;
@@ -1994,63 +2129,6 @@ $("#fdDel").onclick = async () => {
   if (!FE.f || !(await askConfirm(`‘${FE.f.name}’을(를) 맛집리스트에서 지울까요?`, "지우기"))) return;
   delFood(S.tripId, FE.f.id); $("#fd").close(); renderFood(false);
 };
-function renderShop() {
-  if (!$("#shopList")) return;
-  const all = S.shop.get(S.tripId) || [];
-  const todo = all.filter(x => !x.done).sort((a, b) => (a.created || 0) - (b.created || 0));
-  const done = all.filter(x => x.done).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-  const row = x => {
-    const info = [x.memo ? esc(x.memo) : "", x.who ? `<b>${esc(x.who)}</b> 담당` : "",
-      x.done ? `${esc(x.doneBy || x.updatedBy || "")} 구매` : (x.addedBy ? `${esc(x.addedBy)} 추가` : "")].filter(Boolean).join(" · ");
-    return `<li class="shopi${x.done ? " done" : ""}"><button type="button" class="chk" data-chk="${x.id}" aria-pressed="${!!x.done}" aria-label="${esc(x.name)} ${x.done ? "구매 취소" : "구매 완료"}">✓</button>
-      <div class="sb" data-sedit="${x.id}"><div class="sn">${esc(x.name)}${(x.photos || []).length > 1 ? `<span class="sphotos">사진 ${x.photos.length}장</span>` : ""}</div>${info ? `<div class="sm">${info}</div>` : ""}</div>
-      ${(x.photos || []).length ? `<img class="sthumb" data-pid="${x.photos[0]}" data-sphoto="${x.photos[0]}" alt="${esc(x.name)} 사진"${S.photos.has(x.photos[0]) ? ` src="${S.photos.get(x.photos[0])}"` : ""}>` : ""}</li>`;
-  };
-  $("#shopList").innerHTML = todo.length ? todo.map(row).join("") : `<li class="none">${birdSvg(done.length ? "bird-happy" : "bird")}<span>${done.length ? "다 샀어요!" : "아직 쇼핑리스트가 비어 있어요. 위 칸에 살 것을 적어 보세요. 같이 가는 사람 모두에게 보여요."}</span></li>`;
-  const pg = $("#shopProg"); if (pg) { pg.hidden = !all.length; pg.innerHTML = `<span>${done.length}/${all.length} 구매</span><span class="bar2"><i style="width:${all.length ? Math.round(done.length / all.length * 100) : 0}%"></i></span>`; }
-  $("#shopDoneBox").hidden = !done.length;
-  $("#shopDoneSum").textContent = `구매 완료 ${done.length}개`;
-  $("#shopDone").innerHTML = done.map(row).join("");
-  const cnt = $("#shopCnt"); if (cnt) { cnt.hidden = !todo.length; cnt.textContent = todo.length; }
-  hydrate($("#shopView"), S.tripId);
-}
-let SE = null;
-function openShopItem(it) {
-  if (!it) return; SE = it; const t = trip(S.tripId);
-  $("#shName").value = it.name; $("#shMemo").value = it.memo || "";
-  const names = memberList(t).map(m => m.nick);
-  if (it.who && !names.includes(it.who)) names.push(it.who);
-  $("#shWho").innerHTML = `<option value="">아무나</option>` + names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
-  $("#shWho").value = it.who || "";
-  SP = { photos: [...(it.photos || [])], pend: new Map() }; renderShPhotos();
-  openDlg($("#sh"));
-}
-let SP = { photos: [], pend: new Map() };
-function renderShPhotos() {
-  $("#shPhotos").innerHTML = SP.photos.map(id => { const src = SP.pend.get(id) || S.photos.get(id);
-    return `<div><img data-pid="${id}" alt=""${src ? ` src="${src}"` : ""}><button type="button" data-srm="${id}" aria-label="사진 빼기">✕</button></div>`; }).join("");
-  hydrate($("#shPhotos"), S.tripId);
-}
-$("#shPhotos").onclick = e => { const b = e.target.closest("[data-srm]"); if (!b) return; SP.photos = SP.photos.filter(x => x !== b.dataset.srm); SP.pend.delete(b.dataset.srm); renderShPhotos(); };
-$("#shFile").onchange = async e => {
-  const files = [...e.target.files]; e.target.value = "";
-  for (const f of files) { try { const d = await photoData(f), id = uid(); SP.pend.set(id, d); SP.photos.push(id); } catch (x) { toast(x.message || "사진을 추가하지 못했어요."); } }
-  renderShPhotos();
-};
-$("#shCancel").onclick = () => $("#sh").close();
-$("#shForm").onsubmit = e => {
-  e.preventDefault(); const name = $("#shName").value.trim(); if (!name) return;
-  for (const id of SP.photos) if (SP.pend.has(id)) putPhoto(S.tripId, id, SP.pend.get(id));
-  for (const id of (SE.photos || [])) if (!SP.photos.includes(id)) delPhoto(S.tripId, id);
-  setShop(S.tripId, Object.assign({}, SE, { name, memo: $("#shMemo").value.trim(), who: $("#shWho").value, photos: SP.photos }));
-  $("#sh").close(); renderShop();
-};
-$("#shDel").onclick = async () => {
-  if (!SE || !(await askConfirm(`‘${SE.name}’을(를) 쇼핑리스트에서 지울까요?`, "지우기"))) return;
-  for (const id of (SE.photos || [])) delPhoto(S.tripId, id);
-  delShop(S.tripId, SE.id); $("#sh").close(); renderShop();
-};
-
 function updateTrip(fit) {
   const t = trip(S.tripId); if (!t || !$("#tabs")) return;
   setTimeout(() => { renderShop(); renderFood(false); if (!$("#todayView")) return; const m = S.mode; if (m === "today") renderToday(); if (m === "money") renderMoney(); if (m === "pack") renderPack(); if (m === "diary") renderDiary(); }, 0);
@@ -2188,6 +2266,13 @@ function renderUsage() {
 const MAP_POOL = {};   // 여행 지도·맛집 지도: 앱을 켜 둔 동안 한 번만 만들고 계속 다시 씀
 function makeMap(el, opt = {}) {
   el.innerHTML = "";
+  if (!opt.mini && wantNaver()) {
+    if (NV.state === "ready") {
+      const pk = opt.pool && opt.pool + "-nv";
+      if (pk && MAP_POOL[pk]) { MAP_POOL[pk].attach(el); return MAP_POOL[pk]; }
+      if (nvCanUse()) { try { const a = naverAdapter(el, opt); nvCount(); if (pk) MAP_POOL[pk] = a; return a; } catch (e) {} }
+    } else if (NV.state === "idle" || NV.state === "loading") { loadNaverMaps().then(() => { if (S.ready) rebuildMaps(); }); return null; }
+  }
   if (opt.pool && MAP_POOL[opt.pool] && GM.state === "ready") { MAP_POOL[opt.pool].attach(el); return MAP_POOL[opt.pool]; }
   // 입력 창 안의 작은 지도는 항상 무료 지도 (구글 사용량 아끼기)
   if (!opt.mini && GM.state === "ready" && window.google && google.maps && canUse("maps")) {
@@ -2263,11 +2348,12 @@ const pinIcon = (label, cls = "") => L.divIcon({ className: "pin " + cls, html: 
 function initMap() {
   const el = $("#map"); if (!el) return;
   S.map = makeMap(el, { pool: "main" });
+  if (!S.map && wantNaver() && (NV.state === "idle" || NV.state === "loading")) { el.innerHTML = '<p class="mapmsg">네이버 지도를 준비하는 중…</p>'; return; }
   if (!S.map) {
     el.innerHTML = '<p class="mapmsg">지도를 준비하는 중…</p>';
     const id = S.tripId;
     ensureLeaflet().then(ok => {
-      if (!$("#map") || S.tripId !== id) return;
+      if (!$("#map") || S.tripId !== id || S.map) return;
       if (!ok) { $("#map").innerHTML = '<p class="mapmsg">지도를 불러오지 못했어요. 인터넷 연결을 확인한 뒤 앱을 다시 열어 주세요.</p>'; return; }
       initMap(); updateTrip(true);
     });
@@ -2378,6 +2464,8 @@ function openTrip(t, from) {
   $("#tName").value = t ? t.title : "";
   $("#tStart").value = t ? t.start : today;
   $("#tEnd").value = t ? t.end : addDays(today, 2);
+  $("#tCountry").innerHTML = `<option value="">자동${t ? " (지금: " + COUNTRIES[tripCountry(Object.assign({}, t, { country: "" }))].name + ")" : ""}</option>` + Object.entries(COUNTRIES).map(([k, v]) => `<option value="${k}">${v.flag} ${v.name}</option>`).join("");
+  $("#tCountry").value = t && t.country ? t.country : "";
   openDlg($("#td"), from);
 }
 $("#tCancel").onclick = () => $("#td").close();
@@ -2391,7 +2479,7 @@ $("#tdForm").onsubmit = async e => {
     const t = trip(TE.id);
     const shift = Math.round((pd(start) - pd(t.start)) / 864e5);
     const len = tripDays({ start, end }).length, oldLen = tripDays(t).length;
-    const fields = { title, start, end };
+    const fields = { title, start, end, country: $("#tCountry").value };
     if (shift !== 0 && len === oldLen) {        // 출발일만 옮긴 경우: 일정과 일차 제목도 함께 옮김
       t.items.forEach(i => setItem(t.id, Object.assign({}, i, { date: addDays(i.date, shift) })));
       const nd = {}; Object.entries(t.days).forEach(([k, v]) => { const date = k.slice(1, 5) + "-" + k.slice(5, 7) + "-" + k.slice(7, 9); nd[dk(addDays(date, shift))] = v; });
@@ -2405,7 +2493,7 @@ $("#tdForm").onsubmit = async e => {
   } else {
     $("#td").close();
     if (!(await askNick())) return;
-    const { code } = createRoom({ title, start, end });
+    const { code } = createRoom({ title, start, end, country: $("#tCountry").value });
     setTimeout(() => openTripView(code), 150);
   }
 };
@@ -2831,7 +2919,7 @@ function renderToday() {
       ${next ? `<section class="tnext"><p class="k">다음 일정</p><div class="tn-main"><span class="time">${esc(next.time || "")}</span><h3>${esc(next.place)}</h3></div>
         ${next.address ? `<div class="addr">${linkify(next.address)}</div>` : ""}
         ${prevIdx >= 0 ? moveHtml(list[prevIdx], next) : ""}
-        <div class="acts">${next.lat != null ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${next.lat},${next.lng}" target="_blank" rel="noopener">구글 길찾기</a><a href="https://map.kakao.com/link/to/${encodeURIComponent(next.place)},${next.lat},${next.lng}" target="_blank" rel="noopener">카카오맵</a>` : ""}<button type="button" data-goplan>오늘 일정 전체</button></div></section>`
+        <div class="acts">${next.lat != null ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${next.lat},${next.lng}" target="_blank" rel="noopener">구글 길찾기</a>${naverA(next.place, next.lat, next.lng, "네이버 지도")}` : ""}<button type="button" data-goplan>오늘 일정 전체</button></div></section>`
         : `<section class="tnext"><p class="k">다음 일정</p><p class="none plain">${list.length ? "오늘 일정을 다 마쳤어요. 수고했어요!" : "오늘 일정이 비어 있어요."}</p></section>`}
       ${list.length ? `<ul class="tlist">${list.map((i, k) => `<li class="${i === next ? "on" : i.time && i.time < now ? "past" : ""}"><span class="time">${esc(i.time || "·")}</span>${esc(i.place)}</li>`).join("")}</ul>` : ""}`;
   } else if (st === "before") {
@@ -2861,7 +2949,7 @@ function bindToday(root) {
 }
 
 /* ---------- 경비·정산 ---------- */
-const CURS = [["KRW", "원", 1], ["JPY", "엔", 100], ["USD", "달러", 1], ["EUR", "유로", 1], ["CNY", "위안", 1], ["TWD", "대만달러", 1], ["HKD", "홍콩달러", 1], ["THB", "바트", 1], ["VND", "동", 1000], ["SGD", "싱가포르달러", 1], ["PHP", "페소", 1], ["GBP", "파운드", 1], ["AUD", "호주달러", 1]];
+const CURS = [["KRW", "원", 1], ["JPY", "엔", 100], ["USD", "달러", 1], ["EUR", "유로", 1], ["CNY", "위안", 1], ["TWD", "대만달러", 1], ["HKD", "홍콩달러", 1], ["THB", "바트", 1], ["VND", "동", 1000], ["SGD", "싱가포르달러", 1], ["PHP", "페소", 1], ["GBP", "파운드", 1], ["AUD", "호주달러", 1], ["MYR", "링깃", 1], ["IDR", "루피아", 1000]];
 const curName = c => (CURS.find(x => x[0] === c) || [c, c])[1];
 const MCATS = [["food", "🍜", "식비"], ["move", "🚃", "교통"], ["stay", "🏨", "숙소"], ["shop", "🛍️", "쇼핑"], ["play", "🎫", "관광"], ["etc", "💡", "기타"]];
 const rateOf = (t, c) => c === "KRW" ? 1 : (t.rates || {})[c] || null;
@@ -2924,7 +3012,7 @@ function renderMoney() {
 let MX = null;
 function openMoney(x) {
   const t = trip(S.tripId); const ppl = people(t);
-  const lastCur = ls.get("tn-cur", "JPY");
+  const lastCur = tripCountry(t) !== "XX" ? tripC().cur : ls.get("tn-cur", "JPY");
   MX = x ? Object.assign({}, x) : { id: uid(), cur: lastCur, cat: "food", payer: S.nick, split: memberList(t).map(m => m.nick), date: tripState(t) === "during" ? fd(new Date()) : "", created: Date.now() };
   $("#mxTitle").textContent = x ? "지출 수정" : "지출 추가";
   $("#mxName").value = MX.name || ""; $("#mxAmt").value = MX.amt != null ? MX.amt : "";
@@ -3163,6 +3251,460 @@ const NAV_ICONS = {
 };
 const navBtn = (m, label, cnt) => `<button type="button" data-mode="${m}" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true">${NAV_ICONS[m]}</svg><span>${label}</span>${cnt ? `<em class="cnt" id="${cnt}" hidden></em>` : ""}</button>`;
 
+/* ---------- 나라 (통화·가게·인기템·현지어 문장) ---------- */
+const COUNTRIES = {
+  KR: { name: "한국", flag: "🇰🇷", cur: "KRW", ask: "이거 있나요?", stores: [["🛒", "마트"], ["🏪", "편의점"], ["🧺", "시장"], ["🎁", "기념품샵"], ["💊", "약국"]],
+    pop: { "🍡 먹거리": [["🥮", "지역 빵"], ["🍊", "귤"], ["🍘", "전통 과자"], ["☕", "로컬 원두"]], "🎁 기념품": [["🧲", "마그넷"], ["💌", "엽서"], ["🧴", "로컬 화장품"]] } },
+  JP: { name: "일본", flag: "🇯🇵", cur: "JPY", ask: "これはありますか？", stores: [["🐧", "돈키호테"], ["💊", "드럭스토어"], ["🏪", "편의점"], ["🏬", "백화점"], ["✈️", "공항"]],
+    pop: { "💊 약": [["🦶", "휴족시간", "休足時間"], ["🩹", "동전파스", "ロイヒつぼ膏"], ["💊", "이브 퀵", "イブクイック"], ["👁️", "로토 안약", "ロート目薬"], ["🧴", "오로나인", "オロナインH軟膏"], ["🧊", "열냉각 시트", "熱さまシート"]],
+      "🍫 간식": [["🍬", "곤약젤리", "こんにゃくゼリー"], ["🍟", "자가리코", "じゃがりこ"], ["🍵", "말차 킷캣", "キットカット 抹茶"], ["🍪", "시로이 코이비토", "白い恋人"], ["🍌", "도쿄 바나나", "東京ばな奈"], ["🍫", "블랙썬더", "ブラックサンダー"]],
+      "💄 화장품": [["🧴", "비오레 선크림", "ビオレ UV"], ["✨", "멜라노CC", "メラノCC"], ["💧", "하다라보 로션", "肌ラボ 極潤"], ["💄", "캔메이크", "キャンメイク"], ["👁️", "키스미 마스카라", "キスミー マスカラ"]],
+      "🎁 기념품": [["🍶", "사케", "日本酒"], ["🧣", "손수건", "ハンカチ"], ["🥢", "젓가락", "お箸"], ["🍵", "말차 가루", "抹茶"]] },
+    tax: "2026년 11월부터 일본 면세는 ‘환급 방식’이에요. 가게에서 세금 포함 가격으로 사고, 출국할 때 공항 세관 키오스크에서 여권을 찍어 확인받은 뒤 돌려받아요. 면세로 산 소모품은 출국 전에 뜯으면 안 되고, 같은 영수증의 물건 하나라도 확인이 안 되면 그 영수증 전체가 환급되지 않아요." },
+  TW: { name: "대만", flag: "🇹🇼", cur: "TWD", ask: "請問有這個嗎？", stores: [["🛒", "까르푸"], ["💊", "왓슨스"], ["🏪", "편의점"], ["🏮", "야시장"], ["✈️", "공항"]],
+    pop: { "🍪 간식": [["🥮", "펑리수", "鳳梨酥"], ["🍬", "누가크래커", "牛軋糖餅乾"], ["🍯", "대만 밀크티", "奶茶"], ["🥭", "건망고", "芒果乾"]], "🍵 차": [["🍵", "우롱차", "烏龍茶"], ["🫖", "고산차", "高山茶"]], "🎁 기념품": [["🧲", "마그넷"], ["👜", "에코백"]] } },
+  HK: { name: "홍콩", flag: "🇭🇰", cur: "HKD", ask: "請問有冇呢個？", stores: [["💊", "왓슨스"], ["💊", "마닝스"], ["🛒", "슈퍼마켓"], ["✈️", "공항"]],
+    pop: { "🍪 간식": [["🍪", "제니 쿠키", "珍妮曲奇"], ["🥠", "에그롤", "蛋卷"], ["🍵", "밀크티 티백", "奶茶"]], "💊 생활": [["🐯", "타이거밤", "虎標萬金油"]] } },
+  CN: { name: "중국", flag: "🇨🇳", cur: "CNY", ask: "请问有这个吗？", stores: [["🛒", "마트"], ["🏪", "편의점"], ["🍵", "차 가게"], ["✈️", "공항"]],
+    pop: { "🍵 차·간식": [["🍵", "보이차", "普洱茶"], ["🍵", "롱징차", "龙井茶"], ["🍬", "월병", "月饼"]] } },
+  TH: { name: "태국", flag: "🇹🇭", cur: "THB", ask: "มีอันนี้ไหม", stores: [["🛒", "빅씨"], ["💊", "부츠"], ["🏪", "세븐일레븐"], ["🏮", "야시장"], ["✈️", "공항"]],
+    pop: { "💊 생활": [["👃", "야돔", "ยาดม"], ["🐯", "타이거밤"], ["🌿", "그린밤", "ยาหม่อง"], ["🐍", "쿨링 파우더", "Snake Brand"]], "🍪 간식": [["🥭", "건망고"], ["🥥", "코코넛 칩"], ["🌿", "김과자 (타오케노이)", "Tao Kae Noi"], ["🍜", "똠얌 컵라면"]], "🎁 기념품": [["👖", "코끼리 바지"], ["👜", "나라야 가방", "NaRaYa"]] } },
+  VN: { name: "베트남", flag: "🇻🇳", cur: "VND", ask: "Có cái này không?", stores: [["🛒", "롯데마트"], ["🛒", "윈마트"], ["🏪", "편의점"], ["🧺", "시장"], ["✈️", "공항"]],
+    pop: { "☕ 커피·간식": [["☕", "G7 커피"], ["🐿️", "콘삭 커피", "Cà phê Con Sóc"], ["🥥", "코코넛 캔디", "Kẹo dừa"], ["🥭", "건과일 믹스"]], "🎁 기념품": [["👜", "라탄 가방"], ["🧲", "마그넷"]] } },
+  PH: { name: "필리핀", flag: "🇵🇭", cur: "PHP", ask: "Do you have this?", stores: [["🛒", "SM 마켓"], ["💊", "약국"], ["🏪", "편의점"], ["✈️", "공항"]],
+    pop: { "🍪 간식": [["🥭", "건망고 (7D)", "7D Dried Mangoes"], ["🍫", "초콜릿"], ["☕", "바라코 커피"]] } },
+  SG: { name: "싱가포르", flag: "🇸🇬", cur: "SGD", ask: "Do you have this?", stores: [["🛒", "무스타파"], ["🛒", "페어프라이스"], ["💊", "가디언"], ["✈️", "공항"]],
+    pop: { "☕ 차·간식": [["☕", "바샤커피", "Bacha Coffee"], ["🍵", "TWG 티"], ["🍞", "카야잼", "Kaya Jam"], ["🥚", "솔티드에그 칩", "Irvins"]], "💊 생활": [["🐯", "타이거밤"]] } },
+  MY: { name: "말레이시아", flag: "🇲🇾", cur: "MYR", ask: "Do you have this?", stores: [["🛒", "마트"], ["💊", "왓슨스"], ["✈️", "공항"]], pop: { "☕ 간식": [["☕", "화이트 커피"], ["🍫", "보이스 초콜릿", "Beryl's"]] } },
+  ID: { name: "인도네시아", flag: "🇮🇩", cur: "IDR", ask: "Apakah ada ini?", stores: [["🛒", "마트"], ["🏪", "편의점"], ["🧺", "시장"], ["✈️", "공항"]], pop: { "☕ 간식": [["☕", "루왁 커피"], ["🍫", "실버퀸 초콜릿"]] } },
+  US: { name: "미국", flag: "🇺🇸", cur: "USD", ask: "Do you have this?", stores: [["🎯", "타겟"], ["🛒", "월마트"], ["🌻", "트레이더조"], ["💊", "CVS"], ["🛍️", "아울렛"]],
+    pop: { "💊 생활": [["💊", "영양제"], ["💋", "버츠비 립밤"]], "🍫 간식": [["🍫", "기라델리 초콜릿"], ["🥜", "견과류"]], "🎁 기념품": [["👜", "트레이더조 에코백"], ["🧲", "마그넷"]] } },
+  GU: { name: "괌·사이판", flag: "🏝️", cur: "USD", ask: "Do you have this?", stores: [["🛍️", "아울렛"], ["🛒", "K마트"], ["💊", "약국"], ["✈️", "공항"]], pop: { "💊 생활": [["💊", "영양제"], ["🧴", "선크림"]], "🍫 간식": [["🍫", "마카다미아 초콜릿"]] } },
+  EU: { name: "유럽", flag: "🇪🇺", cur: "EUR", ask: "Do you have this?", stores: [["💊", "약국"], ["🛒", "마트"], ["🎁", "기념품샵"], ["✈️", "공항"]],
+    pop: { "💊 약국 화장품": [["🧴", "약국 크림"], ["💋", "립밤"]], "🍫 간식": [["🍫", "초콜릿"], ["🍷", "와인"], ["☕", "커피·차"]], "🎁 기념품": [["🧲", "마그넷"], ["💌", "엽서"]] } },
+  GB: { name: "영국", flag: "🇬🇧", cur: "GBP", ask: "Do you have this?", stores: [["💊", "부츠"], ["🛒", "마트"], ["🎁", "기념품샵"], ["✈️", "공항"]], pop: { "🍵 차·간식": [["🍵", "홍차"], ["🍪", "쇼트브레드"]] } },
+  AU: { name: "호주", flag: "🇦🇺", cur: "AUD", ask: "Do you have this?", stores: [["💊", "약국"], ["🛒", "울워스"], ["🎁", "기념품샵"], ["✈️", "공항"]], pop: { "💊 생활": [["🧴", "포포크림", "Lucas' Papaw"], ["💊", "영양제"]], "🍪 간식": [["🍪", "팀탐", "Tim Tam"]] } },
+  XX: { name: "기타", flag: "🌏", cur: "USD", ask: "Do you have this?", stores: [["🛒", "마트"], ["💊", "약국"], ["🏪", "편의점"], ["🎁", "기념품샵"], ["✈️", "공항"]], pop: { "🎁 기념품": [["🧲", "마그넷"], ["💌", "엽서"], ["🍫", "현지 과자"], ["☕", "커피·차"]] } }
+};
+const inBox = (p, a, b, c, d) => p.lat >= a && p.lat <= b && p.lng >= c && p.lng <= d;
+function countryOf(p) {
+  if (inBox(p, 33, 38.7, 124.5, 129.6) || inBox(p, 37.4, 37.6, 130.7, 131)) return "KR";
+  if (inBox(p, 22.15, 22.57, 113.8, 114.45) || inBox(p, 22.1, 22.22, 113.52, 113.6)) return "HK";
+  if (inBox(p, 21.8, 25.4, 119.9, 122.1)) return "TW";
+  if (inBox(p, 24, 46, 122.9, 146)) return "JP";
+  if (inBox(p, 1.15, 1.48, 103.6, 104.1)) return "SG";
+  if (inBox(p, 13.2, 15.3, 144.6, 145.9)) return "GU";
+  if (inBox(p, 4.5, 21.2, 116.9, 126.7)) return "PH";
+  if (inBox(p, 8.4, 23.4, 105.2, 110) || inBox(p, 9.9, 10.5, 103.8, 104.1)) return "VN";
+  if (inBox(p, 5.6, 20.5, 97.3, 105.7)) return "TH";
+  if (inBox(p, 0.8, 7.4, 99.6, 119.3)) return "MY";
+  if (inBox(p, -11, 6, 95, 141)) return "ID";
+  if (inBox(p, 18, 53.6, 73, 135)) return "CN";
+  if (inBox(p, 49.8, 59, -8.7, 1.8)) return "GB";
+  if (inBox(p, 35, 71, -11, 40)) return "EU";
+  if (inBox(p, 18, 72, -170, -66)) return "US";
+  if (inBox(p, -44, -10, 112, 154)) return "AU";
+  return "XX";
+}
+function tripCountry(t) {
+  if (!t) return "XX";
+  if (t.country && COUNTRIES[t.country]) return t.country;
+  const pts = t.items.filter(i => i.lat != null).concat((S.food.get(t.id) || []).filter(f => f.lat != null));
+  if (!pts.length) return /한국|국내|서울|부산|제주|강릉|경주|여수|전주|대구|인천|대전|광주/.test(t.title || "") ? "KR" : "XX";
+  const cnt = {}; pts.forEach(p => { const c = countryOf(p); cnt[c] = (cnt[c] || 0) + 1; });
+  return Object.entries(cnt).sort((a, b) => b[1] - a[1])[0][0];
+}
+const tripC = () => COUNTRIES[tripCountry(trip(S.tripId))] || COUNTRIES.XX;
+
+/* ---------- 네이버 지도 ----------
+   1) 길찾기 버튼: 네이버 지도 앱을 바로 엶 (키 필요 없음). 앱이 없으면 네이버 지도 웹으로.
+   2) 국내여행 지도: NAVER_KEY(네이버 클라우드 Maps의 Client ID)를 넣으면 한국 안 여행은 네이버 지도로 보여 줌. */
+const NAVER_KEY = "880g164msx";
+const naverUrl = (name, lat, lng) => `nmap://route/public?dlat=${lat}&dlng=${lng}&dname=${encodeURIComponent(name || "목적지")}&appname=${encodeURIComponent(location.origin || "https://eeeeeunice916.github.io")}`;
+const naverWeb = name => `https://map.naver.com/p/search/${encodeURIComponent(name || "")}`;
+const naverA = (name, lat, lng, label = "네이버 길찾기") => `<a href="${naverUrl(name, lat, lng)}" data-nmap="${esc(name || "")}|${lat}|${lng}" rel="noopener">${label}</a>`;
+document.addEventListener("click", e => {
+  const a = e.target.closest("a[data-nmap]"); if (!a) return;
+  e.preventDefault();
+  const name = a.dataset.nmap.split("|")[0], t0 = Date.now();
+  let left = false; const onHide = () => { left = true; };
+  document.addEventListener("visibilitychange", onHide, { once: true }); window.addEventListener("pagehide", onHide, { once: true });
+  location.href = a.href;
+  setTimeout(() => { if (!left && !document.hidden && Date.now() - t0 < 3000) window.open(naverWeb(name), "_blank", "noopener"); }, 1400);
+});
+const NV = { state: "idle", p: null };
+const NV_DAY_CAP = 300;
+const nvCountKey = () => "tn-nv-" + fd(new Date());
+const nvCanUse = () => (ls.get(nvCountKey(), 0) || 0) < NV_DAY_CAP;
+const nvCount = () => ls.set(nvCountKey(), (ls.get(nvCountKey(), 0) || 0) + 1);
+function wantNaver() { return !!NAVER_KEY && !!S.tripId && tripCountry(trip(S.tripId)) === "KR" && (ls.get("tn-nv-off", 0) || 0) < Date.now(); }
+function loadNaverMaps() {
+  if (NV.p) return NV.p;
+  NV.p = new Promise(res => {
+    if (!NAVER_KEY || !/^https?:$/.test(location.protocol)) { NV.state = "failed"; return res(false); }
+    NV.state = "loading";
+    window.navermap_authFailure = () => { NV.state = "failed"; ls.set("tn-nv-off", Date.now() + 10 * 60e3); toast("네이버 지도 키를 확인해 주세요. 잠시 다른 지도로 보여 줄게요.", 4500); MAP_POOL["main-nv"] = null; MAP_POOL["food-nv"] = null; if (S.ready) rebuildMaps(); };
+    const sc = document.createElement("script");
+    sc.src = "https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=" + encodeURIComponent(NAVER_KEY) + "&submodules=geocoder";
+    sc.async = true;
+    sc.onload = () => { if (window.naver && naver.maps) { NV.state = "ready"; res(true); } else { NV.state = "failed"; res(false); } };
+    sc.onerror = () => { NV.state = "failed"; res(false); };
+    document.head.appendChild(sc);
+    setTimeout(() => { if (NV.state === "loading") { NV.state = "failed"; res(false); } }, 8000);
+  });
+  return NV.p;
+}
+function naverAdapter(el, opt) {
+  const n = naver.maps;
+  const node = document.createElement("div"); node.style.cssText = "width:100%;height:100%"; el.appendChild(node);
+  const map = new n.Map(node, { center: new n.LatLng(36.4, 127.9), zoom: 7, zoomControl: true, zoomControlOptions: { position: n.Position.TOP_RIGHT, style: n.ZoomControlStyle.SMALL },
+    mapDataControl: false, scaleControl: false, logoControlOptions: { position: n.Position.BOTTOM_LEFT } });
+  const info = new n.InfoWindow({ content: "", borderWidth: 0, backgroundColor: "#fff", anchorSize: new n.Size(10, 8), pixelOffset: new n.Point(0, -6) });
+  let objs = [];
+  const A = {
+    kind: "naver",
+    setView(lat, lng, z) { map.setCenter(new n.LatLng(lat, lng)); if (z != null) map.setZoom(z); },
+    zoom() { return map.getZoom() || 7; },
+    fit(pts, maxZoom = 15, pad = 36) {
+      if (!pts.length) return;
+      if (pts.length === 1) { map.setCenter(new n.LatLng(pts[0][0], pts[0][1])); map.setZoom(Math.min(15, maxZoom)); return; }
+      const b = new n.LatLngBounds(new n.LatLng(pts[0][0], pts[0][1]), new n.LatLng(pts[0][0], pts[0][1]));
+      pts.forEach(p => b.extend(new n.LatLng(p[0], p[1])));
+      map.fitBounds(b, { top: pad, right: pad, bottom: pad, left: pad });
+      if (map.getZoom() > maxZoom) map.setZoom(maxZoom);
+    },
+    marker(lat, lng, o = {}) {
+      const [fill, ink] = pinColors(o.kind), label = String(o.label ?? "");
+      const w = label.length > 2 ? 34 : 28;
+      const m = new n.Marker({ position: new n.LatLng(lat, lng), map, zIndex: o.z || 1,
+        icon: { content: `<div style="min-width:${w}px;height:28px;padding:0 6px;border-radius:999px;background:${fill};color:${ink};border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);display:grid;place-items:center;font:800 12px/1 Pretendard,sans-serif;box-sizing:border-box">${label && label !== "●" ? esc(label) : ""}</div>`, anchor: new n.Point(w / 2, 14) } });
+      const h = {
+        pos: () => { const p = m.getPosition(); return [p.lat(), p.lng()]; },
+        move(a, b) { m.setPosition(new n.LatLng(a, b)); }, remove() { m.setMap(null); },
+        open() { if (o.popup) { info.setContent(`<div style="padding:8px 10px;font-size:14px;line-height:1.4;color:#17212A">${o.popup}</div>`); info.open(map, m); } }
+      };
+      if (o.popup) n.Event.addListener(m, "click", h.open);
+      objs.push(m); return h;
+    },
+    line(pts, color) { objs.push(new n.Polyline({ map, path: pts.map(p => new n.LatLng(p[0], p[1])), strokeColor: color, strokeWeight: 3, strokeOpacity: .85, strokeStyle: "shortdash" })); },
+    clear() { objs.forEach(x => x.setMap(null)); objs = []; info.close(); },
+    onClick(fn) { n.Event.addListener(map, "click", e => fn(+e.coord.lat().toFixed(6), +e.coord.lng().toFixed(6))); },
+    refresh() { try { n.Event.trigger(map, "resize"); } catch (e) {} },
+    remove() { A.clear(); if (opt.pool) node.remove(); else el.innerHTML = ""; },
+    attach(target) { A.clear(); target.innerHTML = ""; target.appendChild(node); A.refresh(); }
+  };
+  return A;
+}
+/* 네이버 주소 검색 (주소만 찾을 수 있음 — 가게 이름 검색은 구글로) */
+function naverGeocode(q) {
+  return new Promise(res => {
+    if (NV.state !== "ready" || !naver.maps.Service) return res([]);
+    try {
+      naver.maps.Service.geocode({ query: q }, (status, r) => {
+        if (status !== naver.maps.Service.Status.OK || !r || !r.v2) return res([]);
+        res((r.v2.addresses || []).map(a => ({ name: a.roadAddress || a.jibunAddress, addr: a.jibunAddress || a.roadAddress, lat: +(+a.y).toFixed(6), lng: +(+a.x).toFixed(6) })));
+      });
+    } catch (e) { res([]); }
+  });
+}
+
+/* ---------- 쇼핑리스트 (가게별) ---------- */
+S.shopFilter = "all"; S.shopFold = new Set(); S.shopOpen = new Set();
+const shopAll = () => S.shop.get(S.tripId) || [];
+const shQty = x => Math.max(1, +x.qty || 1);
+const shExpect = x => (+x.price || 0) * shQty(x);
+const shCost = x => x.done && x.paid != null ? +x.paid : shExpect(x);
+const shKRW = (t, x) => { const v = shCost(x); if (!v) return 0; const r = rateOf(t, x.cur || tripC().cur); return r ? v * r : 0; };
+const storeOf = x => x.store || "기타";
+function storeList(t) {
+  const c = tripC(), used = [...new Set(shopAll().map(storeOf))];
+  const order = Array.isArray(t.shopOrder) ? t.shopOrder : [];
+  const base = c.stores.map(s => s[1]);
+  const all = [...new Set(order.concat(used.filter(s => !order.includes(s))))];
+  return { order: all.filter(s => used.includes(s)), suggest: [...new Set(base.concat(all))].filter(s => s !== "기타") };
+}
+const storeIcon = n => (Object.values(COUNTRIES).flatMap(c => c.stores).find(s => s[1] === n) || ["🛍️"])[0];
+const thumb = (x, cls = "pic") => (x.photos || []).length
+  ? `<img class="${cls}" data-pid="${x.photos[0]}" alt=""${S.photos.has(x.photos[0]) ? ` src="${S.photos.get(x.photos[0])}"` : ""}>`
+  : `<span class="${cls}">${x.emo ? esc(x.emo) : esc((x.name || "?").slice(0, 1))}</span>`;
+function parseQuick(v) {
+  const m = v.match(/^(.*?)\s*(?:×|x|X)?\s*(\d{1,3})\s*(개|박스|팩|봉|병|장|통|세트)?$/);
+  return m && m[1].trim() ? { name: m[1].trim(), qty: +m[2] } : { name: v.trim(), qty: 1 };
+}
+function renderShop() {
+  const box = $("#shopBox"); const t = trip(S.tripId); if (!box || !t) return;
+  const c = tripC(), all = shopAll(), f = S.shopFilter;
+  const pass = x => f === "all" ? true : f === "left" ? !x.done : f === "mine" ? x.who === S.nick : f === "gift" ? !!x.gift : f === "tax" ? !!x.tax : true;
+  const spent = all.filter(x => x.done).reduce((s, x) => s + shKRW(t, x), 0), left = all.filter(x => !x.done).reduce((s, x) => s + shKRW(t, x), 0);
+  const budget = +t.shopBudget || 0, scale = Math.max(budget, spent + left, 1);
+  const { order, suggest } = storeList(t);
+  if (!S.shopStore || !suggest.includes(S.shopStore)) S.shopStore = suggest[0] || "기타";
+  const taxDone = all.filter(x => x.tax && x.done);
+  const row = x => `<li class="it${x.done ? " done" : ""}" data-sid="${x.id}">
+      <button type="button" class="ck" data-chk="${x.id}" aria-pressed="${!!x.done}" aria-label="${esc(x.name)} ${x.done ? "구매 취소" : "샀어요"}"></button>
+      <span class="tw" data-sphoto="${(x.photos || [])[0] || ""}">${thumb(x)}</span>
+      <div class="nm" data-sedit="${x.id}"><b>${esc(x.name)}${x.tax ? '<span class="tg tax">면세</span>' : ""}${x.gift ? `<span class="tg gift">${esc(x.gift)}</span>` : ""}</b>
+        <small>${x.who ? `<span class="whoc">${esc(x.who.slice(0, 1))}</span>` : ""}${x.done ? `${esc(x.doneBy || "")} 삼${x.paid != null ? " · " + fmtAmt(+x.paid, x.cur || c.cur) : ""}` : esc(x.memo || (x.who ? x.who + " 담당" : ""))}</small></div>
+      <div class="rt">${x.done ? "" : `<div class="step"><button type="button" data-qty="-1" data-qid="${x.id}" aria-label="하나 빼기">−</button><span>${shQty(x)}</span><button type="button" data-qty="1" data-qid="${x.id}" aria-label="하나 더">+</button></div>`}
+        ${shCost(x) ? `<div class="pz">${fmtAmt(shCost(x), x.cur || c.cur)}${(x.cur || c.cur) !== "KRW" && shKRW(t, x) ? `<small>≈ ${won(shKRW(t, x))}</small>` : ""}</div>` : ""}</div></li>`;
+  const stores = order.map(st => {
+    const its = all.filter(x => storeOf(x) === st), vis = its.filter(pass).sort((a, b) => (a.done - b.done) || (a.created || 0) - (b.created || 0));
+    if (!vis.length && f !== "all") return "";
+    const dn = its.filter(x => x.done).length, allDone = dn === its.length;
+    const folded = S.shopOpen.has(st) ? false : S.shopFold.has(st) || allDone;
+    const loc = (t.shopLocs || {})[st], sum = its.filter(x => !x.done).reduce((s, x) => s + shExpect(x), 0);
+    return `<section class="store${folded ? " folded" : ""}" data-store="${esc(st)}"><div class="sh" data-fold="${esc(st)}"><span class="ic">${storeIcon(st)}</span>
+        <div class="t"><b>${esc(st)}</b><small>${loc && loc.label ? esc(loc.label) + " · " : ""}${allDone ? "다 샀어요 ✓" : `${dn}/${its.length}${sum ? " · " + fmtAmt(sum, c.cur) : ""}`}</small></div>
+        ${loc ? `<a class="go" href="${naverUrl(loc.label || st, loc.lat, loc.lng)}" data-nmap="${esc(loc.label || st)}|${loc.lat}|${loc.lng}">N 길찾기</a>` : ""}
+        <button type="button" class="more" data-stmenu="${esc(st)}" aria-label="${esc(st)} 설정">⋯</button><span class="fold">${folded ? "⌄" : "⌃"}</span></div>
+      <div class="prog"><i style="width:${its.length ? Math.round(dn / its.length * 100) : 0}%"></i></div>
+      ${folded ? "" : `<ul class="items">${vis.map(row).join("")}</ul>
+      ${sum ? `<div class="foot"><span>남은 것 ${its.length - dn}개</span><span>예상 <b>${fmtAmt(sum, c.cur)}${c.cur !== "KRW" && rateOf(t, c.cur) ? " ≈ " + won(sum * rateOf(t, c.cur)) : ""}</b></span></div>` : ""}`}</section>`;
+  }).join("");
+  box.innerHTML = `
+    <section class="ssum" data-budget><div><small>산 돈</small><b>${won(spent)}</b></div><div><small>남은 예상</small><b>${won(left)}</b></div>
+      <div class="bar"><i style="width:${spent / scale * 100}%"></i><i class="plan" style="width:${left / scale * 100}%"></i></div>
+      <div class="lg"><span>${budget ? `예산 ${won(budget)}` : "예산 정하기 ›"}</span><span>${budget ? `${Math.round((spent + left) / budget * 100)}% 쓸 예정` : `${c.flag} ${c.name} · ${curName(c.cur)}`}</span></div></section>
+    <div class="sfilt">${[["all", "전체"], ["left", "남은 것"], ["mine", "내 담당"], ["gift", "🎁 선물"], ["tax", "면세"]].map(([k, n]) => `<button type="button" data-sf="${k}" aria-pressed="${f === k}">${n}</button>`).join("")}</div>
+    <form class="quick" id="shopAdd"><div class="in"><input id="shopIn" placeholder="살 것 (예: 곤약젤리 3개)" autocomplete="off" aria-label="살 것"><button class="btn primary" type="submit">추가</button></div>
+      <div class="qst">${suggest.map(s => `<button type="button" data-qs="${esc(s)}" aria-pressed="${S.shopStore === s}">${storeIcon(s)} ${esc(s)}</button>`).join("")}<button type="button" data-qsnew>＋ 가게</button></div></form>
+    ${taxDone.length ? `<section class="taxbox"><b>🧾 공항 가기 전 체크</b><p>면세로 산 것 ${taxDone.length}개: ${taxDone.map(x => esc(x.name)).join(", ")}</p><p>${esc(c.tax || "나라마다 면세(환급) 조건과 절차가 달라요. 출국 전에 공항 환급 창구 위치와 필요한 영수증을 확인하세요.")}</p></section>` : ""}
+    ${stores || `<div class="none">${birdSvg(all.length ? "bird-happy" : "bird")}<span>${all.length ? "이 조건에 맞는 항목이 없어요." : "살 것을 적고 가게를 골라 추가하세요. ⭐ 인기템으로 한 번에 넣을 수도 있어요."}</span></div>`}
+    <div class="sbtns"><button type="button" class="btn" data-pop>⭐ 인기템</button><button type="button" class="btn" data-show${all.some(x => !x.done) ? "" : " disabled"}>🙋 보여주기</button><button type="button" class="btn primary" data-snew>＋ 자세히</button></div>`;
+  const cnt = $("#shopCnt"); if (cnt) { const n = all.filter(x => !x.done).length; cnt.hidden = !n; cnt.textContent = n; }
+  hydrate(box, S.tripId);
+}
+function bindShop(root) {
+  root.addEventListener("submit", e => {
+    if (e.target.id !== "shopAdd") return; e.preventDefault();
+    const v = $("#shopIn").value.trim(); if (!v) return;
+    const q = parseQuick(v);
+    setShop(S.tripId, { id: uid(), name: q.name, qty: q.qty, store: S.shopStore || "기타", cur: tripC().cur, memo: "", who: "", done: false, created: Date.now(), addedBy: S.nick });
+    renderShop(); const i = $("#shopIn"); if (i) i.focus();
+  });
+  root.addEventListener("click", async e => {
+    const t = trip(S.tripId);
+    if (e.target.closest("[data-nmap]")) return;
+    const sf = e.target.closest("[data-sf]"); if (sf) { S.shopFilter = sf.dataset.sf; renderShop(); return; }
+    const qs = e.target.closest("[data-qs]"); if (qs) { S.shopStore = qs.dataset.qs; root.querySelectorAll("[data-qs]").forEach(b => b.setAttribute("aria-pressed", String(b === qs))); return; }
+    if (e.target.closest("[data-qsnew]")) { const n = await askText("새 가게 이름", "예: 다이소, 무인양품"); if (n) { S.shopStore = n; const o = storeList(t).order; if (!o.includes(n)) updateRoom(S.tripId, { shopOrder: o.concat([n]) }); renderShop(); } return; }
+    if (e.target.closest("[data-budget]")) { openBudget(); return; }
+    if (e.target.closest("[data-pop]")) { openPop(); return; }
+    if (e.target.closest("[data-snew]")) { openShopItem(null); return; }
+    if (e.target.closest("[data-show]")) { openShow(null); return; }
+    const sm = e.target.closest("[data-stmenu]"); if (sm) { openStore(sm.dataset.stmenu); return; }
+    const q = e.target.closest("[data-qty]");
+    if (q) { const x = shopAll().find(y => y.id === q.dataset.qid); if (x) { setShop(S.tripId, Object.assign({}, x, { qty: Math.max(1, shQty(x) + (+q.dataset.qty)) })); renderShop(); } return; }
+    const ck = e.target.closest("[data-chk]");
+    if (ck) { const x = shopAll().find(y => y.id === ck.dataset.chk); if (!x) return;
+      if (x.done) { if (x.moneyId) delSub("money", S.tripId, x.moneyId); setShop(S.tripId, Object.assign({}, x, { done: false, doneBy: "", paid: null, moneyId: "" })); renderShop(); }
+      else openBought(x);
+      return; }
+    const ph = e.target.closest("[data-sphoto]");
+    if (ph) { const img = ph.querySelector("img"); if (ph.dataset.sphoto && img && img.getAttribute("src")) { $("#lbImg").src = img.src; openDlg($("#lb")); } else openShopItem(shopAll().find(x => x.id === ph.closest("[data-sid]").dataset.sid)); return; }
+    const ed = e.target.closest("[data-sedit]"); if (ed) { openShopItem(shopAll().find(x => x.id === ed.dataset.sedit)); return; }
+    const fo = e.target.closest("[data-fold]");
+    if (fo) { const st = fo.dataset.fold, sec = fo.closest(".store"), folded = sec.classList.contains("folded");
+      if (folded) { S.shopFold.delete(st); S.shopOpen.add(st); } else { S.shopFold.add(st); S.shopOpen.delete(st); }
+      renderShop(); }
+  });
+}
+/* 간단한 글자 입력 창 */
+function askText(title, ph, val = "", type = "text") {
+  return new Promise(res => {
+    const d = $("#ask"); $("#askTitle").textContent = title; const i = $("#askIn"); i.placeholder = ph || ""; i.value = val; i.inputMode = type === "number" ? "numeric" : "text";
+    const done = v => { d.onclose = null; $("#askForm").onsubmit = null; $("#askNo").onclick = null; if (d.open) d.close(); res(v); };
+    $("#askForm").onsubmit = e => { e.preventDefault(); done(i.value.trim()); };
+    $("#askNo").onclick = () => done(null); d.onclose = () => done(null);
+    d.showModal();
+  });
+}
+async function openBudget() {
+  const t = trip(S.tripId);
+  const v = await askText("쇼핑 예산 (원)", "예: 300000", t.shopBudget ? String(t.shopBudget) : "", "number");
+  if (v == null) return; const n = parseInt(v.replace(/[^\d]/g, ""), 10) || 0;
+  updateRoom(S.tripId, { shopBudget: n }); renderShop();
+}
+/* 자세히 추가·수정 */
+let SE = null, SP = { photos: [], pend: new Map() };
+function openShopItem(it) {
+  const t = trip(S.tripId), c = tripC();
+  SE = it ? Object.assign({}, it) : { id: uid(), name: "", qty: 1, store: S.shopStore || "기타", cur: c.cur, created: Date.now(), addedBy: S.nick, _new: true };
+  $("#shTitle").textContent = it ? "쇼핑 항목" : "살 것 추가";
+  $("#shName").value = SE.name || ""; $("#shMemo").value = SE.memo || ""; $("#shQty").value = shQty(SE); $("#shPrice").value = SE.price || "";
+  $("#shCur").innerHTML = CURS.map(([k, n]) => `<option value="${k}">${n} ${k}</option>`).join(""); $("#shCur").value = SE.cur || c.cur;
+  $("#shLocal").value = SE.local || ""; $("#shGift").value = SE.gift || ""; $("#shTax").checked = !!SE.tax;
+  const names = memberList(t).map(m => m.nick); if (SE.who && !names.includes(SE.who)) names.push(SE.who);
+  $("#shWho").innerHTML = `<option value="">아무나</option>` + names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join(""); $("#shWho").value = SE.who || "";
+  paintShStores(); paintShTotal();
+  SP = { photos: [...(SE.photos || [])], pend: new Map() }; renderShPhotos();
+  $("#shDel").hidden = !!SE._new; $("#shShow").hidden = !!SE._new;
+  openDlg($("#sh"));
+}
+function paintShStores() {
+  const { suggest } = storeList(trip(S.tripId)); const list = [...new Set(suggest.concat([SE.store || "기타"]))];
+  $("#shStores").innerHTML = list.map(s => `<button type="button" data-shs="${esc(s)}" aria-pressed="${SE.store === s}">${storeIcon(s)} ${esc(s)}</button>`).join("") + `<button type="button" data-shsnew>＋ 새 가게</button>`;
+}
+function paintShTotal() {
+  const t = trip(S.tripId), q = Math.max(1, +$("#shQty").value || 1), p = parseFloat(String($("#shPrice").value).replace(/,/g, "")), cur = $("#shCur").value, r = rateOf(t, cur);
+  $("#shTotal").textContent = p ? `합계 ${fmtAmt(p * q, cur)}${cur !== "KRW" ? (r ? ` ≈ ${won(p * q * r)} (${rateText(t, cur)})` : " · 환율은 경비 탭 ‘환율’에서 정해요") : ""}` : "가격을 적으면 합계와 원화가 보여요.";
+}
+["input", "change"].forEach(ev => { $("#shQty").addEventListener(ev, paintShTotal); $("#shPrice").addEventListener(ev, paintShTotal); $("#shCur").addEventListener(ev, paintShTotal); });
+$("#shQtyM").onclick = () => { $("#shQty").value = Math.max(1, (+$("#shQty").value || 1) - 1); paintShTotal(); };
+$("#shQtyP").onclick = () => { $("#shQty").value = (+$("#shQty").value || 1) + 1; paintShTotal(); };
+$("#shStores").onclick = async e => {
+  const b = e.target.closest("[data-shs]"); if (b) { SE.store = b.dataset.shs; paintShStores(); return; }
+  if (e.target.closest("[data-shsnew]")) { const n = await askText("새 가게 이름", "예: 다이소, 무인양품"); if (n) { SE.store = n; const t = trip(S.tripId), o = storeList(t).order; if (!o.includes(n)) updateRoom(S.tripId, { shopOrder: o.concat([n]) }); paintShStores(); } }
+};
+function renderShPhotos() {
+  $("#shPhotos").innerHTML = SP.photos.map(id => { const src = SP.pend.get(id) || S.photos.get(id);
+    return `<div><img data-pid="${id}" alt=""${src ? ` src="${src}"` : ""}><button type="button" data-srm="${id}" aria-label="사진 빼기">✕</button></div>`; }).join("");
+  hydrate($("#shPhotos"), S.tripId);
+}
+$("#shPhotos").onclick = e => { const b = e.target.closest("[data-srm]"); if (!b) return; SP.photos = SP.photos.filter(x => x !== b.dataset.srm); SP.pend.delete(b.dataset.srm); renderShPhotos(); };
+$("#shFile").onchange = async e => {
+  const files = [...e.target.files]; e.target.value = "";
+  for (const f of files) { try { const d = await photoData(f), id = uid(); SP.pend.set(id, d); SP.photos.push(id); } catch (x) { toast(x.message || "사진을 추가하지 못했어요."); } }
+  renderShPhotos();
+};
+$("#shCancel").onclick = () => $("#sh").close();
+function shFromForm() {
+  const p = parseFloat(String($("#shPrice").value).replace(/,/g, ""));
+  const { _new, ...base } = SE;
+  return Object.assign(base, { name: $("#shName").value.trim(), memo: $("#shMemo").value.trim(), who: $("#shWho").value, qty: Math.max(1, +$("#shQty").value || 1),
+    price: isFinite(p) && p > 0 ? p : null, cur: $("#shCur").value, local: $("#shLocal").value.trim(), gift: $("#shGift").value.trim(), tax: $("#shTax").checked, photos: SP.photos, store: SE.store || "기타" });
+}
+$("#shForm").onsubmit = e => {
+  e.preventDefault(); if (!$("#shName").value.trim()) return;
+  for (const id of SP.photos) if (SP.pend.has(id)) putPhoto(S.tripId, id, SP.pend.get(id));
+  const old = shopAll().find(x => x.id === SE.id);
+  for (const id of ((old && old.photos) || [])) if (!SP.photos.includes(id)) delPhoto(S.tripId, id);
+  const it = shFromForm(); S.shopStore = it.store;
+  setShop(S.tripId, it); $("#sh").close(); renderShop();
+};
+$("#shDel").onclick = async () => {
+  if (!SE || !(await askConfirm(`‘${SE.name}’을(를) 쇼핑리스트에서 지울까요?`, "지우기"))) return;
+  for (const id of (SE.photos || [])) delPhoto(S.tripId, id);
+  if (SE.moneyId) delSub("money", S.tripId, SE.moneyId);
+  delShop(S.tripId, SE.id); $("#sh").close(); renderShop();
+};
+$("#shShow").onclick = () => { const it = shopAll().find(x => x.id === SE.id); $("#sh").close(); setTimeout(() => openShow(it), 0); };
+/* 샀어요 */
+let SB = null;
+function openBought(x) {
+  const t = trip(S.tripId), c = tripC(); SB = x;
+  $("#sbName").textContent = `${x.name}${shQty(x) > 1 ? " ×" + shQty(x) : ""}`; $("#sbStore").textContent = storeOf(x);
+  $("#sbThumb").innerHTML = thumb(x); hydrate($("#sbThumb"), S.tripId);
+  $("#sbAmt").value = shExpect(x) || ""; $("#sbCur").innerHTML = CURS.map(([k, n]) => `<option value="${k}">${n}</option>`).join(""); $("#sbCur").value = x.cur || c.cur;
+  $("#sbMoney").checked = !!shExpect(x); $("#sbTax").checked = !!x.tax;
+  SB.split = [S.nick];
+  $("#sbSplit").innerHTML = people(t).map(n => `<button type="button" data-sbs="${esc(n)}" aria-pressed="${SB.split.includes(n)}">${esc(n)}</button>`).join("");
+  paintSb(); openDlg($("#sb"));
+}
+function paintSb() {
+  const t = trip(S.tripId), a = parseFloat(String($("#sbAmt").value).replace(/,/g, "")), cur = $("#sbCur").value, r = rateOf(t, cur);
+  $("#sbConv").textContent = a && cur !== "KRW" && r ? `≈ ${won(a * r)}` : "";
+  $("#sbSplitBox").hidden = !$("#sbMoney").checked;
+}
+["input", "change"].forEach(ev => { $("#sbAmt").addEventListener(ev, paintSb); $("#sbCur").addEventListener(ev, paintSb); $("#sbMoney").addEventListener(ev, paintSb); });
+$("#sbSplit").onclick = e => { const b = e.target.closest("[data-sbs]"); if (!b) return; const n = b.dataset.sbs; SB.split = SB.split.includes(n) ? SB.split.filter(x => x !== n) : SB.split.concat([n]); b.setAttribute("aria-pressed", String(SB.split.includes(n))); };
+function finishBought(withPrice) {
+  const t = trip(S.tripId), x = SB; if (!x) return;
+  const a = parseFloat(String($("#sbAmt").value).replace(/,/g, "")), cur = $("#sbCur").value;
+  const upd = Object.assign({}, x, { done: true, doneBy: S.nick, tax: $("#sbTax").checked, boughtAt: Date.now() });
+  delete upd.split;
+  if (withPrice && isFinite(a) && a > 0) {
+    upd.paid = a; upd.cur = cur;
+    if ($("#sbMoney").checked) {
+      const mid = x.moneyId || "shop-" + x.id;
+      setSub("money", S.tripId, { id: mid, name: `${x.name}${shQty(x) > 1 ? " ×" + shQty(x) : ""}`, amt: a, cur, cat: "shop", date: tripState(t) === "during" ? fd(new Date()) : "", payer: S.nick, split: SB.split.length ? SB.split : [S.nick], created: Date.now(), fromShop: x.id });
+      upd.moneyId = mid;
+      if (cur !== "KRW" && !rateOf(t, cur)) fetchRates(true);
+    }
+  }
+  setShop(S.tripId, upd); $("#sb").close(); renderShop();
+  if (!shopAll().some(y => storeOf(y) === storeOf(x) && !y.done)) toast(`${storeOf(x)}에서 살 건 다 샀어요! 🎉`);
+}
+$("#sbSkip").onclick = () => finishBought(false);
+$("#sbForm").onsubmit = e => { e.preventDefault(); finishBought(true); };
+/* 가게 설정 (위치·순서) */
+let ST = null;
+function openStore(name) {
+  ST = name; const t = trip(S.tripId), loc = (t.shopLocs || {})[name];
+  $("#stTitle").textContent = name; $("#stQ").value = loc && loc.label ? loc.label : name; $("#stRes").innerHTML = "";
+  $("#stLoc").textContent = loc ? `📍 ${loc.label || name} 위치가 저장돼 있어요.` : "지점 위치를 저장하면 ‘길찾기’ 버튼이 생겨요.";
+  $("#stClear").hidden = !loc; openDlg($("#st"));
+}
+$("#stFind").onclick = async () => {
+  const q = $("#stQ").value.trim(); if (!q) return; $("#stRes").innerHTML = "<p>찾는 중…</p>";
+  try {
+    const t = trip(S.tripId), res = await geocode(q, nearCenter((S.food.get(S.tripId) || []).concat(t.items)));
+    $("#stRes").innerHTML = res.length ? res.slice(0, 6).map((r, i) => `<li><button type="button" data-stp="${i}"><b>${esc(r.name)}</b><small>${esc(r.addr || "")}</small></button></li>`).join("") : "<p>찾지 못했어요. 지점 이름을 더 자세히 적어 보세요.</p>";
+    $("#stRes")._res = res;
+  } catch (x) { $("#stRes").innerHTML = `<p>${esc(x.message || "검색하지 못했어요.")}</p>`; }
+};
+$("#stQ").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("#stFind").click(); } });
+$("#stRes").onclick = e => {
+  const b = e.target.closest("[data-stp]"); if (!b) return; const r = $("#stRes")._res[+b.dataset.stp], t = trip(S.tripId);
+  updateRoom(S.tripId, { shopLocs: Object.assign({}, t.shopLocs || {}, { [ST]: { lat: r.lat, lng: r.lng, label: r.name } }) });
+  $("#st").close(); renderShop(); toast("가게 위치를 저장했어요.");
+};
+$("#stClear").onclick = () => { const t = trip(S.tripId), l = Object.assign({}, t.shopLocs || {}); delete l[ST]; updateRoom(S.tripId, { shopLocs: l }); $("#st").close(); renderShop(); };
+function moveStore(d) {
+  const t = trip(S.tripId), o = storeList(t).order.slice(), i = o.indexOf(ST), j = i + d; if (i < 0 || j < 0 || j >= o.length) return;
+  [o[i], o[j]] = [o[j], o[i]]; updateRoom(S.tripId, { shopOrder: o }); renderShop(); toast(d < 0 ? "위로 옮겼어요." : "아래로 옮겼어요.", 1200);
+}
+$("#stUp").onclick = () => moveStore(-1); $("#stDown").onclick = () => moveStore(1);
+$("#stClose").onclick = () => $("#st").close();
+/* 인기템 */
+let POP = { cat: "", pick: new Set() };
+function openPop() {
+  const c = tripC(), cats = Object.keys(c.pop || {}); POP = { cat: cats[0] || "", pick: new Set() };
+  $("#popTitle").textContent = `⭐ ${c.flag} ${c.name} 인기 쇼핑템`;
+  $("#popCountry").innerHTML = Object.entries(COUNTRIES).map(([k, v]) => `<option value="${k}">${v.flag} ${v.name}</option>`).join(""); $("#popCountry").value = tripCountry(trip(S.tripId));
+  paintPop(); openDlg($("#pop"));
+}
+function popC() { return COUNTRIES[$("#popCountry").value] || tripC(); }
+function paintPop() {
+  const c = popC(), cats = Object.keys(c.pop || {}); if (!cats.includes(POP.cat)) POP.cat = cats[0] || "";
+  const have = new Set(shopAll().map(x => x.name));
+  $("#popCats").innerHTML = cats.map(k => `<button type="button" data-pc="${esc(k)}" aria-pressed="${POP.cat === k}">${esc(k)}</button>`).join("");
+  $("#popGrid").innerHTML = ((c.pop || {})[POP.cat] || []).map(([e, n, l]) => `<button type="button" data-pi="${esc(n)}" aria-pressed="${POP.pick.has(n)}"${have.has(n) ? " disabled" : ""}><span class="pic">${e}</span>${esc(n)}${have.has(n) ? "<small>이미 있음</small>" : ""}</button>`).join("");
+  $("#popInfo").textContent = POP.pick.size ? `${POP.pick.size}개 골랐어요` : "넣고 싶은 걸 눌러 고르세요.";
+  $("#popAdd").textContent = POP.pick.size ? `${POP.pick.size}개 넣기` : "넣기";
+}
+$("#popCountry").onchange = () => { POP.pick.clear(); paintPop(); };
+$("#popCats").onclick = e => { const b = e.target.closest("[data-pc]"); if (b) { POP.cat = b.dataset.pc; paintPop(); } };
+$("#popGrid").onclick = e => { const b = e.target.closest("[data-pi]"); if (!b || b.disabled) return; const n = b.dataset.pi; if (POP.pick.has(n)) POP.pick.delete(n); else POP.pick.add(n); paintPop(); };
+$("#popClose").onclick = () => $("#pop").close();
+$("#popAdd").onclick = () => {
+  const c = popC(), all = Object.entries(c.pop || {}).flatMap(([cat, l]) => l.map(x => [cat, ...x]));
+  let n = 0;
+  POP.pick.forEach(name => { const it = all.find(x => x[2] === name); if (!it) return;
+    const cat = it[0], store = /약|생활|화장품/.test(cat) ? (c.stores.find(s => /드럭|약국|왓슨|부츠|가디언|CVS|마닝/.test(s[1])) || c.stores[0])[1] : /기념품/.test(cat) ? (c.stores.find(s => /공항|기념품|백화점/.test(s[1])) || c.stores[0])[1] : c.stores[0][1];
+    setShop(S.tripId, { id: uid(), name, emo: it[1], local: it[3] || "", qty: 1, store, cur: c.cur, done: false, created: Date.now() + n, addedBy: S.nick }); n++; });
+  $("#pop").close(); if (n) toast(`${n}개를 넣었어요.`); renderShop();
+};
+/* 점원에게 보여주기 */
+let SHW = { list: [], i: 0 };
+function openShow(it) {
+  const list = shopAll().filter(x => !x.done).sort((a, b) => storeOf(a).localeCompare(storeOf(b)) || (a.created || 0) - (b.created || 0));
+  if (it && !list.some(x => x.id === it.id)) list.unshift(it);
+  if (!list.length) return;
+  SHW = { list, i: Math.max(0, list.findIndex(x => it && x.id === it.id)) }; paintShow(); openDlg($("#shw"));
+}
+function paintShow() {
+  const x = SHW.list[SHW.i], c = tripC();
+  $("#shwPic").innerHTML = thumb(x, "pic"); hydrate($("#shwPic"), S.tripId);
+  $("#shwName").textContent = `${x.name}${shQty(x) > 1 ? " ×" + shQty(x) : ""}`;
+  $("#shwLocal").textContent = x.local || ""; $("#shwLocal").hidden = !x.local;
+  $("#shwAsk").textContent = c.ask; $("#shwAskKo").textContent = c.ask === "이거 있나요?" ? "" : "이거 있나요?";
+  $("#shwNum").textContent = `${SHW.i + 1} / ${SHW.list.length}`;
+}
+$("#shwPrev").onclick = () => { SHW.i = (SHW.i - 1 + SHW.list.length) % SHW.list.length; paintShow(); };
+$("#shwNext").onclick = () => { SHW.i = (SHW.i + 1) % SHW.list.length; paintShow(); };
+$("#shwClose").onclick = () => $("#shw").close();
+
 /* ---------- 메모장에서 가져오기 ---------- */
 function parseNotes(text) {
   const out = { notes: [], days: {}, items: [] };
@@ -3286,6 +3828,7 @@ async function googleSearch(q, center) {
   }));
 }
 async function geocode(q, center) {
+  if (wantNaver() && NV.state === "ready") { const r = await naverGeocode(q); if (r.length) return r; }
   if (GOOGLE_KEY && !googleOff && /^https?:$/.test(location.protocol)) {
     if (canUse("search")) { try { countUse("search"); const g = await googleSearch(q, center); if (g.length) return g; } catch (e) {} }
   }
