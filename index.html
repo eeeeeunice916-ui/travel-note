@@ -692,6 +692,54 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
 .shwask b{font-size:20px}
 .shwask small{font-size:13px}
 .shwnav{display:flex;align-items:center;gap:14px;font-weight:700}
+/* ===== 3.9 맛집 메뉴 ===== */
+.gi{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.gi span{font-size:11px;font-weight:700;background:var(--field);border-radius:999px;padding:3px 8px}
+.gi .src{background:#EAF2FF;color:#2B5DB8}
+.gi .link{font-size:12px}
+.gload{font-size:12px;justify-self:start}
+.menu{border-top:1px dashed var(--line);padding-top:8px;margin-top:2px}
+.msec{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+.msec b{font:400 15px var(--round)}
+.msec small{font-size:11px;color:var(--muted)}
+.menu .mrow,.odlist .mrow{display:flex;align-items:center;gap:8px;padding:7px 2px;border-top:1px dashed var(--line)}
+.menu .mrow:first-of-type{border-top:0}
+.mrow .nm{flex:1;min-width:0;cursor:pointer}
+.mrow .nm b{display:block;font-size:14px}
+.mrow .nm small{font-size:11px;color:var(--muted)}
+.mrow .pz{text-align:right;font-size:13px;font-weight:800}
+.mrow .pz small{display:block;font-size:10px;color:var(--muted);font-weight:600}
+.mh{flex:none;font-size:11px;font-weight:800;border:0;border-radius:999px;padding:3px 8px;background:var(--field);color:var(--muted);cursor:pointer}
+.mh.on{background:var(--pink-l);color:var(--heart)}
+.mphotos{display:flex;gap:6px;overflow-x:auto;margin:6px 0}
+.mphotos img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex:none;background:var(--field);cursor:zoom-in}
+.macts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.gplist{display:grid;gap:8px}
+.gplist img{width:100%;border-radius:14px;background:var(--field);min-height:120px}
+.mophotos{display:flex;gap:6px;overflow-x:auto}
+.mophotos img{width:72px;height:72px;border-radius:10px;object-fit:cover}
+.molist{display:grid;gap:4px}
+.mocand{display:flex!important;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px dashed var(--line);font-size:14px!important;color:var(--ink)!important;font-weight:600!important}
+.mocand input[type=checkbox]{width:22px;height:22px;min-height:0;flex:none;accent-color:var(--sky)}
+.mocand .nm{flex:1;min-width:0}
+.mocand .mop{width:96px!important;min-height:36px!important;padding:4px 8px!important;text-align:right}
+.mopaste summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--sky-d)}
+.mopaste{display:grid;gap:8px}
+.odlist .mrow.sel .nm b{color:var(--sky-d)}
+.odlist .step{display:flex;align-items:center;gap:6px;font-weight:800}
+.odlist .step button{width:30px;height:30px;border-radius:9px;border:0;background:var(--field);color:var(--ink);font-weight:800;cursor:pointer}
+.odtotal{display:grid;gap:6px}
+.odtotal div{display:flex;justify-content:space-between;background:var(--sky-l);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:700}
+.odtotal b{color:var(--sky-d)}
+.odtotal div+div{background:var(--field)}
+#ow{width:100%;max-width:100%;height:100%;max-height:100%;border-radius:0;margin:0}
+.owask{margin:0;display:grid;gap:2px}
+.owask b{font-size:28px;line-height:1.4}
+.owask small{font-size:14px;color:var(--muted)}
+.owlist{display:grid;gap:10px;width:100%;max-width:420px}
+.owi{background:var(--sky-l);border-radius:18px;padding:14px 16px}
+.owi b{display:block;font-size:26px;line-height:1.3}
+.owi small{font-size:13px;color:var(--sky-d);font-weight:700}
 </style>
 </head>
 <body>
@@ -1060,6 +1108,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
     <ul id="fdResults" class="results" hidden></ul>
     <div id="fdMap" class="minimap"></div>
     <p class="hint" id="fdLoc"></p>
+    <p class="hint" id="fdGInfo"></p>
     <div class="dfoot">
       <button type="button" class="btn danger" id="fdDel">삭제</button>
       <span class="sp"></span>
@@ -1147,6 +1196,56 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
     <div class="dfoot"><button type="button" class="btn" id="ulReset">기본값으로</button><span class="sp"></span><button type="button" class="btn" id="ulCancel">취소</button><button type="submit" class="btn primary">저장</button></div>
   </form>
 </dialog>
+<dialog id="gp">
+  <form method="dialog" class="stbox">
+    <h2 id="gpTitle">가게 사진</h2>
+    <div id="gpList" class="gplist"></div>
+    <p class="hint">구글 지도 사진이에요. 메뉴판 사진이 섞여 있으면 메뉴를 고를 때 참고하세요.</p>
+    <div class="dfoot"><span class="sp"></span><button type="button" class="btn primary" id="gpClose">닫기</button></div>
+  </form>
+</dialog>
+<dialog id="mi">
+  <form id="miForm" method="dialog">
+    <h2 id="miTitle">메뉴</h2>
+    <label for="miName">메뉴 이름<input id="miName" required placeholder="예: 히츠마부시" autocomplete="off"></label>
+    <label for="miLocal">현지어 이름 (주문할 때 보여 줄 이름)<input id="miLocal" placeholder="예: ひつまぶし" autocomplete="off"></label>
+    <div class="grid2 keep amt"><label for="miPrice">가격<input id="miPrice" inputmode="decimal" placeholder="몰라도 돼요" autocomplete="off"></label><label for="miCur">통화<select id="miCur"></select></label></div>
+    <div class="dfoot"><button type="button" class="btn danger" id="miDel">삭제</button><span class="sp"></span><button type="button" class="btn" id="miCancel">취소</button><button type="submit" class="btn primary">저장</button></div>
+  </form>
+</dialog>
+<dialog id="mo">
+  <form method="dialog" class="stbox">
+    <h2>메뉴판으로 메뉴 채우기</h2>
+    <p class="desc">메뉴판 사진을 찍거나 고르면 글자를 읽어서 ‘이름 + 가격’ 줄을 찾아요. 사진은 이 아이폰 안에서만 읽어요.</p>
+    <label class="btn" for="moFile">📷 메뉴판 사진 찍기·고르기<input type="file" id="moFile" accept="image/*" multiple hidden></label>
+    <div id="moPhotos" class="mophotos"></div>
+    <p class="hint" id="moStatus"></p>
+    <div id="moList" class="molist"></div>
+    <button type="button" class="btn primary" id="moAdd" hidden>넣기</button>
+    <details class="mopaste"><summary>사진 앱에서 글자를 복사해 붙여 넣기 (더 정확해요)</summary>
+      <p class="hint">사진 앱에서 메뉴판 사진을 열고 글자를 길게 눌러 ‘모두 선택 → 복사’ 한 뒤 아래에 붙여 넣으세요.</p>
+      <textarea id="moText" rows="5" placeholder="예:&#10;ひつまぶし 4,600円&#10;うな丼 3,500円"></textarea>
+      <button type="button" class="btn" id="moParse">이 글에서 메뉴 찾기</button></details>
+    <div class="dfoot"><span class="sp"></span><button type="button" class="btn" id="moCancel">닫기</button></div>
+  </form>
+</dialog>
+<dialog id="od">
+  <form method="dialog" class="stbox">
+    <h2 id="odTitle">주문 계획</h2>
+    <p class="desc">먹을 메뉴 개수를 정하면 예상 금액이 나와요. 같이 가는 사람 모두 같은 계획을 봐요.</p>
+    <div id="odList" class="odlist"></div>
+    <div id="odTotal" class="odtotal"></div>
+    <div class="row"><button type="button" class="btn primary" id="odShow">🙋 주문 화면 보여주기</button><button type="button" class="btn" id="odMoney">💰 경비에 기록</button></div>
+    <div class="dfoot"><span class="sp"></span><button type="button" class="btn" id="odClose">닫기</button></div>
+  </form>
+</dialog>
+<dialog id="ow">
+  <form method="dialog" class="shwbox">
+    <p class="owask"><b id="owAsk"></b><small id="owAskKo"></small></p>
+    <div id="owList" class="owlist"></div>
+    <button type="button" class="btn primary" id="owClose">닫기</button>
+  </form>
+</dialog>
 <dialog id="ask">
   <form id="askForm" method="dialog">
     <h2 id="askTitle"></h2>
@@ -1178,7 +1277,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "3.8";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "3.9";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2043,6 +2142,8 @@ function renderFood(fit) {
       ${f.address ? `<div class="addr">${linkify(f.address)}</div>` : ""}
       ${f.memo ? `<div class="fm">${linkify(f.memo)}</div>` : ""}
       ${f.link ? `<div class="addr">${linkify(f.link)}</div>` : ""}
+      ${gInfoHtml(f)}
+      ${menuHtml(f)}
       <div class="fw">${who.length ? `♥ ${who.map(esc).join(", ")} · ` : ""}${f.addedBy ? esc(f.addedBy) + " 추가" : ""}</div>
       <div class="acts"><button type="button" data-toplan="${f.id}">일정에 넣기</button><button type="button" data-visit="${f.id}">${f.visited ? "안 갔어요" : "다녀왔어요"}</button><button type="button" data-fedit="${f.id}">수정</button>
         ${has ? `${naverA(f.name, f.lat, f.lng, "네이버 지도")}<a href="https://www.google.com/maps/search/?api=1&query=${f.lat},${f.lng}" target="_blank" rel="noopener">구글 지도</a>` : ""}</div></li>`;
@@ -2051,6 +2152,7 @@ function renderFood(fit) {
   $("#foodDoneBox").hidden = !done.length; $("#foodDoneSum").textContent = `다녀온 곳 ${done.length}개`;
   $("#foodDone").innerHTML = done.map(card).join("");
   const cnt = $("#foodCnt"); if (cnt) { cnt.hidden = !everything.length; cnt.textContent = everything.length; }
+  hydrate($("#foodView"), S.tripId);
   S.fmarkers = {};
   if (S.fmap) {
     S.fmap.clear(); const pts = [];
@@ -2078,7 +2180,7 @@ function openFood(f) {
   $("#fdCatIn").value = FE.cat && !FOOD_CATS.some(x => x[0] === FE.cat) ? FE.cat : ""; renderFdCats();
   $("#fdTitle").textContent = f ? "맛집 수정" : "맛집 추가";
   $("#fdName").value = f ? f.name : ""; $("#fdMemo").value = f ? f.memo || "" : ""; $("#fdLink").value = f ? f.link || "" : ""; $("#fdAddr").value = f ? f.address || "" : "";
-  $("#fdResults").hidden = true; $("#fdDel").hidden = !f; $("#fdG").value = "";
+  $("#fdResults").hidden = true; $("#fdDel").hidden = !f; $("#fdG").value = ""; $("#fdGInfo").textContent = f && f.g ? "구글 정보가 들어 있어요." : "";
   openDlg($("#fd"));
   setupFoodMiniMap();
 }
@@ -2112,7 +2214,9 @@ $("#fdFind").onclick = async () => {
     if (!res.length) { box.innerHTML = "<li><p>찾지 못했어요. 현지어 이름이나 주소로 다시 검색하거나, 지도를 직접 눌러 위치를 정하세요.</p></li>"; return; }
     box.innerHTML = res.map((r, i) => `<li><button type="button" data-i="${i}"><b>${esc(r.name)}</b><small>${esc(r.addr)}</small></button></li>`).join("");
     box.onclick = e => { const b = e.target.closest("[data-i]"); if (!b) return; const r = res[+b.dataset.i];
-      setFoodLoc(r.lat, r.lng); if (!$("#fdName").value.trim()) $("#fdName").value = r.name; if (!$("#fdAddr").value.trim()) $("#fdAddr").value = r.addr; box.hidden = true; };
+      setFoodLoc(r.lat, r.lng); if (!$("#fdName").value.trim()) $("#fdName").value = r.name; if (!$("#fdAddr").value.trim()) $("#fdAddr").value = r.addr; box.hidden = true;
+      if (r.pid) { FE.pid = r.pid; $("#fdGInfo").textContent = "구글 평점·영업시간 불러오는 중…";
+        googleDetails(r.pid).then(g => { FE.g = g; $("#fdGInfo").textContent = g ? `✅ 구글 정보: ${[g.rating ? "⭐ " + g.rating : "", g.price, g.hours.length ? "영업시간" : "", g.photos.length ? "사진 " + g.photos.length + "장" : ""].filter(Boolean).join(" · ") || "기본 정보"}` : ""; }).catch(() => { $("#fdGInfo").textContent = ""; }); } };
   } catch (err) { box.innerHTML = `<li><p>검색하지 못했어요. 인터넷 연결을 확인해 주세요.</p></li>`; }
 };
 function parseGShare(text) {
@@ -2151,6 +2255,7 @@ $("#fdCancel").onclick = () => $("#fd").close();
 $("#fdForm").onsubmit = e => {
   e.preventDefault(); const name = $("#fdName").value.trim(); if (!name) { $("#fdName").focus(); return; }
   const data = { name, cat: FE.cat || "", memo: $("#fdMemo").value.trim(), link: $("#fdLink").value.trim(), address: $("#fdAddr").value.trim(), lat: FE.lat, lng: FE.lng };
+  if (FE.g) { data.g = FE.g; data.pid = FE.pid || ""; }
   setFood(S.tripId, FE.f ? Object.assign({}, FE.f, data) : Object.assign({ id: uid(), created: Date.now(), addedBy: S.nick, likes: { [C.uid]: S.nick }, visited: false }, data));
   $("#fd").close(); renderFood(!FE.f); toast("저장했어요.");
 };
@@ -3917,6 +4022,192 @@ $("#shwPrev").onclick = () => { SHW.i = (SHW.i - 1 + SHW.list.length) % SHW.list
 $("#shwNext").onclick = () => { SHW.i = (SHW.i + 1) % SHW.list.length; paintShow(); };
 $("#shwClose").onclick = () => $("#shw").close();
 
+/* ---------- 맛집: 구글 정보 · 메뉴 · 메뉴판 글자 읽기 · 주문 ---------- */
+const ORDER_ASK = { KR: ["주문할게요", ""], JP: ["注文お願いします", "주문할게요"], TW: ["我要點這些，謝謝", "이거 주문할게요"], HK: ["唔該，我要呢啲", "이거 주문할게요"], CN: ["我要点这些，谢谢", "이거 주문할게요"],
+  TH: ["ขอสั่งอันนี้ค่ะ/ครับ", "이거 주문할게요"], VN: ["Cho tôi gọi những món này", "이거 주문할게요"], ID: ["Saya mau pesan ini", "이거 주문할게요"] };
+const orderAsk = () => ORDER_ASK[tripCountry(trip(S.tripId))] || ["I'd like to order these, please.", "이거 주문할게요"];
+const OCR_LANG = { KR: "kor+eng", JP: "jpn+eng", TW: "chi_tra+eng", HK: "chi_tra+eng", CN: "chi_sim+eng", TH: "tha+eng", VN: "vie+eng" };
+const PRICE_SYM = { JPY: "¥", USD: "$", EUR: "€", GBP: "£", KRW: "₩", CNY: "¥", TWD: "NT$", HKD: "HK$", THB: "฿", SGD: "S$", AUD: "A$" };
+/* 구글 가게 정보 (평점·가격대·영업시간·사진 이름) — 맛집을 고를 때 한 번만 */
+async function googleDetails(pid) {
+  if (!pid || !GOOGLE_KEY || googleOff || !canUse("search")) return null;
+  countUse("search");
+  const r = await fetch(`https://places.googleapis.com/v1/places/${encodeURIComponent(pid)}?languageCode=ko`, {
+    headers: { "X-Goog-Api-Key": GOOGLE_KEY, "X-Goog-FieldMask": "rating,userRatingCount,priceLevel,priceRange,regularOpeningHours.weekdayDescriptions,photos.name,googleMapsUri" } });
+  if (!r.ok) return null;
+  const j = await r.json();
+  const pr = j.priceRange, money = m => m ? `${PRICE_SYM[m.currencyCode] || ""}${(+m.units || 0).toLocaleString()}${PRICE_SYM[m.currencyCode] ? "" : " " + m.currencyCode}` : "";
+  const lvl = { PRICE_LEVEL_FREE: "무료", PRICE_LEVEL_INEXPENSIVE: "₩", PRICE_LEVEL_MODERATE: "₩₩", PRICE_LEVEL_EXPENSIVE: "₩₩₩", PRICE_LEVEL_VERY_EXPENSIVE: "₩₩₩₩" }[j.priceLevel] || "";
+  return { rating: j.rating || null, count: j.userRatingCount || 0,
+    price: pr && (pr.startPrice || pr.endPrice) ? [money(pr.startPrice), money(pr.endPrice)].filter(Boolean).join("~") : lvl,
+    hours: (j.regularOpeningHours && j.regularOpeningHours.weekdayDescriptions) || [], photos: (j.photos || []).slice(0, 4).map(p => p.name), url: j.googleMapsUri || "", at: Date.now() };
+}
+function gInfoHtml(f) {
+  const g = f.g; if (!g) return f.lat != null && GOOGLE_KEY ? `<button type="button" class="link gload" data-gload="${f.id}">구글 평점·영업시간 불러오기</button>` : "";
+  const today = g.hours.length ? g.hours[(new Date().getDay() + 6) % 7] : "";
+  return `<div class="gi"><span class="src">G</span>${g.rating ? `<span>⭐ ${g.rating} (${(g.count || 0).toLocaleString()})</span>` : ""}${g.price ? `<span>💴 ${esc(g.price)}</span>` : ""}${today ? `<span>🕒 ${esc(today.replace(/^[^:]+:\s*/, "오늘 "))}</span>` : ""}
+    ${g.photos && g.photos.length ? `<button type="button" class="link" data-gphotos="${f.id}">가게 사진 ${g.photos.length}장</button>` : ""}</div>`;
+}
+function menuHtml(f) {
+  const c = tripC(), t = trip(S.tripId), list = f.menu || [];
+  const rows = list.map(m => { const lk = Object.keys(m.likes || {}), mine = !!(m.likes || {})[S.nick], cur = m.cur || c.cur, r = rateOf(t, cur);
+    return `<div class="mrow"><div class="nm" data-medit="${f.id}|${m.id}"><b>${esc(m.name)}</b>${m.local && m.local !== m.name ? `<small>${esc(m.local)}</small>` : ""}</div>
+      ${m.price ? `<div class="pz">${fmtAmt(+m.price, cur)}${cur !== "KRW" && r ? `<small>≈ ${won(m.price * r)}</small>` : ""}</div>` : ""}
+      <button type="button" class="mh${mine ? " on" : ""}" data-mlike="${f.id}|${m.id}">${mine ? "♥" : "♡"} ${lk.length}</button></div>`; }).join("");
+  return `<div class="menu"><div class="msec"><b>메뉴</b>${list.length ? `<small>${list.length}개</small>` : ""}</div>${rows}
+    ${(f.menuPhotos || []).length ? `<div class="mphotos">${f.menuPhotos.map(id => `<img data-pid="${id}" data-photo="${id}" alt="메뉴판"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`).join("")}</div>` : ""}
+    <div class="macts"><button type="button" class="btn sm" data-madd="${f.id}">＋ 메뉴</button><button type="button" class="btn sm" data-mocr="${f.id}">📷 메뉴판으로 채우기</button>${list.some(m => m.price) ? `<button type="button" class="btn sm primary" data-morder="${f.id}">🧾 주문 계획</button>` : ""}</div></div>`;
+}
+const foodById = id => (S.food.get(S.tripId) || []).find(x => x.id === id);
+function saveFood(f) { setFood(S.tripId, f); renderFood(false); }
+document.addEventListener("click", async e => {
+  if (!$("#foodView")) return;
+  const gl = e.target.closest("[data-gload]");
+  if (gl) { const f = foodById(gl.dataset.gload); if (!f) return; gl.textContent = "불러오는 중…";
+    try {
+      let pid = f.pid;
+      if (!pid && canUse("search")) { countUse("search"); const r = await googleSearch(f.name, f.lat != null ? { lat: f.lat, lng: f.lng } : null); pid = r[0] && r[0].pid; }
+      const g = await googleDetails(pid);
+      if (g) saveFood(Object.assign({}, f, { pid, g })); else { gl.textContent = "불러오지 못했어요"; }
+    } catch (x) { gl.textContent = "불러오지 못했어요"; }
+    return; }
+  const mp = e.target.closest("#foodView img[data-photo]");
+  if (mp) { if (mp.getAttribute("src")) { $("#lbImg").src = mp.src; openDlg($("#lb")); } return; }
+  const gp = e.target.closest("[data-gphotos]");
+  if (gp) { const f = foodById(gp.dataset.gphotos); if (!f || !f.g) return;
+    if (!canUse("search")) return; countUse("search");
+    $("#gpList").innerHTML = f.g.photos.map(n => `<img src="https://places.googleapis.com/v1/${n}/media?maxWidthPx=640&key=${GOOGLE_KEY}" alt="가게 사진" loading="lazy">`).join("");
+    $("#gpTitle").textContent = f.name; openDlg($("#gp")); return; }
+  const ml = e.target.closest("[data-mlike]");
+  if (ml) { const [fid, mid] = ml.dataset.mlike.split("|"), f = foodById(fid); if (!f) return;
+    const menu = (f.menu || []).map(m => { if (m.id !== mid) return m; const likes = Object.assign({}, m.likes || {}); if (likes[S.nick]) delete likes[S.nick]; else likes[S.nick] = true; return Object.assign({}, m, { likes }); });
+    saveFood(Object.assign({}, f, { menu })); return; }
+  const me = e.target.closest("[data-medit]"); if (me) { const [fid, mid] = me.dataset.medit.split("|"); openMenuItem(fid, mid); return; }
+  const ma = e.target.closest("[data-madd]"); if (ma) { openMenuItem(ma.dataset.madd, null); return; }
+  const mo = e.target.closest("[data-mocr]"); if (mo) { openMenuOcr(mo.dataset.mocr); return; }
+  const od = e.target.closest("[data-morder]"); if (od) { openOrder(od.dataset.morder); }
+});
+$("#gpClose").onclick = () => $("#gp").close();
+/* 메뉴 하나 추가·수정 */
+let MI = null;
+function openMenuItem(fid, mid) {
+  const f = foodById(fid); if (!f) return; const m = mid ? (f.menu || []).find(x => x.id === mid) : null;
+  MI = { fid, mid };
+  $("#miTitle").textContent = m ? "메뉴 수정" : "메뉴 추가";
+  $("#miName").value = m ? m.name : ""; $("#miLocal").value = m ? m.local || "" : ""; $("#miPrice").value = m && m.price ? m.price : "";
+  $("#miCur").innerHTML = CURS.map(([k, n]) => `<option value="${k}">${n}</option>`).join(""); $("#miCur").value = m ? m.cur || tripC().cur : tripC().cur;
+  $("#miDel").hidden = !m; openDlg($("#mi"));
+}
+$("#miCancel").onclick = () => $("#mi").close();
+$("#miForm").onsubmit = e => {
+  e.preventDefault(); const f = foodById(MI.fid); if (!f) return;
+  const p = parseFloat(String($("#miPrice").value).replace(/[^\d.]/g, ""));
+  const item = { id: MI.mid || uid(), name: $("#miName").value.trim(), local: $("#miLocal").value.trim(), price: isFinite(p) && p > 0 ? p : null, cur: $("#miCur").value };
+  if (!item.name) return;
+  const old = (f.menu || []).find(x => x.id === item.id); if (old) item.likes = old.likes || {};
+  const menu = old ? f.menu.map(x => x.id === item.id ? item : x) : (f.menu || []).concat([item]);
+  saveFood(Object.assign({}, f, { menu })); $("#mi").close();
+};
+$("#miDel").onclick = () => { const f = foodById(MI.fid); if (!f) return; saveFood(Object.assign({}, f, { menu: (f.menu || []).filter(x => x.id !== MI.mid) })); $("#mi").close(); };
+/* 메뉴판 → 메뉴 목록 */
+function parseMenuText(text) {
+  const out = [];
+  String(text || "").split(/\n+/).forEach(line => {
+    const l = line.replace(/[|｜]/g, " ").trim(); if (l.length < 2) return;
+    const m = l.match(/^(.*?\S)[\s.…·・:：\-—_~〜]*(?:[¥￥$€£₩฿]|NT\$|HK\$)?\s*(\d{1,3}(?:[,，.]\d{3})+|\d{2,7})(?:\.\d{1,2})?\s*(円|元|원|บาท|đ|₫|NT|엔|yen|THB|VND)?\s*(?:\(.*\)|（.*）)?$/i);
+    if (!m) return;
+    const name = m[1].replace(/[\s.…·・:：\-—_~〜]+$/, "").replace(/^[\s・•\-*]+/, "").trim();
+    const price = +m[2].replace(/[,，.]/g, "");
+    if (!name || /^\d+$/.test(name) || name.length > 40 || !price) return;
+    out.push({ name, price });
+  });
+  return out;
+}
+let MO = null;
+function openMenuOcr(fid) {
+  MO = { fid, found: [], pick: new Set(), photos: [] };
+  $("#moText").value = ""; $("#moStatus").textContent = ""; $("#moList").innerHTML = ""; $("#moAdd").hidden = true; $("#moPhotos").innerHTML = "";
+  openDlg($("#mo"));
+}
+function paintMo() {
+  $("#moList").innerHTML = MO.found.length ? MO.found.map((x, i) => `<label class="mocand"><input type="checkbox" data-moi="${i}"${MO.pick.has(i) ? " checked" : ""}><span class="nm">${esc(x.name)}</span><input class="mop" data-mop="${i}" inputmode="decimal" value="${x.price}"></label>`).join("")
+    : "";
+  $("#moAdd").hidden = !MO.found.length; $("#moAdd").textContent = `${MO.pick.size}개 메뉴 넣기`;
+}
+$("#moList").addEventListener("change", e => {
+  const c = e.target.closest("[data-moi]"); if (c) { const i = +c.dataset.moi; if (c.checked) MO.pick.add(i); else MO.pick.delete(i); paintMo(); return; }
+  const p = e.target.closest("[data-mop]"); if (p) MO.found[+p.dataset.mop].price = parseFloat(p.value.replace(/[^\d.]/g, "")) || null;
+});
+function setFound(list) {
+  MO.found = list; MO.pick = new Set(list.map((_, i) => i)); paintMo();
+  $("#moStatus").textContent = list.length ? `메뉴처럼 보이는 줄을 ${list.length}개 찾았어요. 아닌 건 체크를 빼세요.` : "이름과 가격이 같이 있는 줄을 찾지 못했어요. 아래 칸에 직접 붙여 넣어 보세요.";
+}
+$("#moParse").onclick = () => setFound(parseMenuText($("#moText").value));
+let ocrLoading = null;
+function loadOcr() {
+  if (window.Tesseract) return Promise.resolve();
+  if (ocrLoading) return ocrLoading;
+  ocrLoading = new Promise((res, rej) => { const s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+    s.onload = res; s.onerror = () => { ocrLoading = null; rej(new Error("글자 읽기 도구를 불러오지 못했어요.")); }; document.head.appendChild(s); });
+  return ocrLoading;
+}
+$("#moFile").onchange = async e => {
+  const files = [...e.target.files]; e.target.value = ""; if (!files.length) return;
+  const st = $("#moStatus");
+  try {
+    for (const file of files) { const d = await photoData(file), id = uid(); MO.photos.push({ id, d }); }
+    $("#moPhotos").innerHTML = MO.photos.map(p => `<img src="${p.d}" alt="">`).join("");
+    st.textContent = "글자 읽기 도구를 준비하는 중… (처음 한 번은 조금 걸려요)";
+    await loadOcr();
+    const lang = OCR_LANG[tripCountry(trip(S.tripId))] || "eng";
+    let text = "";
+    for (let i = 0; i < MO.photos.length; i++) {
+      st.textContent = `메뉴판 ${i + 1}/${MO.photos.length} 읽는 중…`;
+      const r = await Tesseract.recognize(MO.photos[i].d, lang, { logger: m => { if (m.status === "recognizing text") st.textContent = `메뉴판 ${i + 1}/${MO.photos.length} 읽는 중… ${Math.round((m.progress || 0) * 100)}%`; } });
+      text += "\n" + ((r && r.data && r.data.text) || "");
+    }
+    $("#moText").value = text.trim(); setFound(parseMenuText(text));
+  } catch (x) { st.textContent = (x && x.message ? x.message + " " : "") + "사진 앱에서 메뉴판 글자를 길게 눌러 복사한 뒤 아래 칸에 붙여 넣어도 돼요."; }
+};
+$("#moCancel").onclick = () => $("#mo").close();
+$("#moAdd").onclick = () => {
+  const f = foodById(MO.fid); if (!f) return; const cur = tripC().cur;
+  const add = [...MO.pick].sort((a, b) => a - b).map(i => MO.found[i]).map(x => ({ id: uid(), name: x.name, local: x.name, price: x.price || null, cur }));
+  for (const p of MO.photos) putPhoto(S.tripId, p.id, p.d);
+  saveFood(Object.assign({}, f, { menu: (f.menu || []).concat(add), menuPhotos: (f.menuPhotos || []).concat(MO.photos.map(p => p.id)).slice(-6) }));
+  $("#mo").close(); toast(`${add.length}개 메뉴를 넣었어요.`);
+};
+/* 주문 계획 */
+let OD = null;
+function openOrder(fid) {
+  const f = foodById(fid); if (!f) return; OD = { fid, q: Object.assign({}, f.plan || {}) };
+  $("#odTitle").textContent = `${f.name} · 주문 계획`; paintOrder(); openDlg($("#od"));
+}
+function paintOrder() {
+  const f = foodById(OD.fid), t = trip(S.tripId), c = tripC(), list = (f.menu || []).filter(m => m.price);
+  $("#odList").innerHTML = list.map(m => { const q = OD.q[m.id] || 0, lk = Object.keys(m.likes || {});
+    return `<div class="mrow${q ? " sel" : ""}"><div class="nm"><b>${esc(m.name)}</b><small>${fmtAmt(+m.price, m.cur || c.cur)}${lk.length ? " · ♥ " + lk.map(esc).join(", ") : ""}</small></div>
+      <div class="step"><button type="button" data-oq="${m.id}|-1">−</button><span>${q}</span><button type="button" data-oq="${m.id}|1">+</button></div></div>`; }).join("");
+  const sum = list.reduce((s, m) => s + (OD.q[m.id] || 0) * m.price, 0), cur = (list[0] && list[0].cur) || c.cur, r = rateOf(t, cur), n = Math.max(1, memberList(t).length);
+  $("#odTotal").innerHTML = `<div><span>예상 합계</span><b>${fmtAmt(sum, cur)}${cur !== "KRW" && r ? " ≈ " + won(sum * r) : ""}</b></div><div><span>1인당 (${n}명)</span><b>${fmtAmt(sum / n, cur)}${cur !== "KRW" && r ? " ≈ " + won(sum / n * r) : ""}</b></div>`;
+  OD.sum = sum; OD.cur = cur;
+  $("#odShow").disabled = !sum; $("#odMoney").disabled = !sum;
+}
+$("#odList").onclick = e => { const b = e.target.closest("[data-oq]"); if (!b) return; const [id, d] = b.dataset.oq.split("|"); OD.q[id] = Math.max(0, (OD.q[id] || 0) + (+d)); if (!OD.q[id]) delete OD.q[id]; paintOrder(); };
+function saveOrderPlan() { const f = foodById(OD.fid); if (f) setFood(S.tripId, Object.assign({}, f, { plan: OD.q })); }
+$("#odClose").onclick = () => { saveOrderPlan(); $("#od").close(); };
+$("#odShow").onclick = () => {
+  saveOrderPlan(); const f = foodById(OD.fid), [ask, askKo] = orderAsk();
+  $("#owAsk").textContent = ask; $("#owAskKo").textContent = askKo;
+  $("#owList").innerHTML = (f.menu || []).filter(m => OD.q[m.id]).map(m => `<div class="owi"><b>${esc(m.local || m.name)} × ${OD.q[m.id]}</b>${m.local && m.local !== m.name ? `<small>${esc(m.name)} ${OD.q[m.id]}개</small>` : `<small>${OD.q[m.id]}개</small>`}</div>`).join("");
+  openDlg($("#ow"), $("#od"));
+};
+$("#owClose").onclick = () => $("#ow").close();
+$("#odMoney").onclick = () => {
+  saveOrderPlan(); const f = foodById(OD.fid); $("#od").close();
+  setTimeout(() => { openMoney(null); $("#mxName").value = `${f.name} 식사`; $("#mxAmt").value = Math.round(OD.sum * 100) / 100; $("#mxCur").value = OD.cur; MX.cat = "food"; paintMx(); }, 0);
+};
+
 /* ---------- 메모장에서 가져오기 ---------- */
 function parseNotes(text) {
   const out = { notes: [], days: {}, items: [] };
@@ -4029,14 +4320,14 @@ async function googleSearch(q, center) {
   if (center) body.locationBias = { circle: { center: { latitude: center.lat, longitude: center.lng }, radius: 50000 } };
   const r = await fetch("https://places.googleapis.com/v1/places:searchText", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Goog-Api-Key": GOOGLE_KEY, "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.location" },
+    headers: { "Content-Type": "application/json", "X-Goog-Api-Key": GOOGLE_KEY, "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.location" },
     body: JSON.stringify(body)
   });
   if (!r.ok) { if (r.status === 403 || r.status === 400) googleOff = true; throw new Error("google " + r.status); }
   const j = await r.json();
   return (j.places || []).filter(x => x.location).map(x => ({
     name: (x.displayName && x.displayName.text) || q, addr: x.formattedAddress || "",
-    lat: +x.location.latitude.toFixed(6), lng: +x.location.longitude.toFixed(6), src: "구글"
+    lat: +x.location.latitude.toFixed(6), lng: +x.location.longitude.toFixed(6), src: "구글", pid: x.id || ""
   }));
 }
 async function geocode(q, center) {
