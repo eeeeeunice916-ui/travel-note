@@ -464,7 +464,7 @@ input:not([type=file]),select,textarea{border-radius:12px;border-color:transpare
 .pin.edit span{background:var(--sky-d);color:#fff}
 /* ===== 3.3 아래 탭 · 오늘 · 경비 · 짐 · 다이어리 ===== */
 body.in-trip{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
-.bnav{position:fixed;left:0;right:0;bottom:0;z-index:650;display:grid;grid-template-columns:repeat(6,1fr);background:color-mix(in srgb,var(--surface) 94%,transparent);
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:650;display:grid;grid-template-columns:repeat(5,1fr);background:color-mix(in srgb,var(--surface) 94%,transparent);
   -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px max(6px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-right,0px))}
 .bnav button{position:relative;display:grid;justify-items:center;gap:2px;border:0;background:none;color:var(--muted);font:600 11px var(--font);padding:4px 0;cursor:pointer;min-height:48px}
 .bnav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -709,6 +709,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
 .gi span{font-size:11px;font-weight:700;background:var(--field);border-radius:999px;padding:3px 8px}
 .gi .src{background:#EAF2FF;color:#2B5DB8}
 .gi .link{font-size:12px}
+.gi .glink{font-size:12px;font-weight:700;color:#2B5DB8;text-decoration:none}
 .gload{font-size:12px;justify-self:start}
 .menu{border-top:1px dashed var(--line);padding-top:8px;margin-top:2px}
 .msec{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
@@ -769,6 +770,31 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
 .hx .pp{color:#2B7BD8;min-height:12px}
 .hwx-msg{margin:0 2px;font-size:12px;color:var(--muted)}
 .dwxline{margin:2px 0 0;font-size:12px;font-weight:700;color:var(--muted)}
+
+/* ===== 5.1 정리 ===== */
+.whoicon{position:relative;font-size:18px}
+.whoicon em{position:absolute;right:2px;top:2px;min-width:16px;height:16px;border-radius:99px;background:var(--sky);color:#fff;font:800 10px/16px var(--font);font-style:normal;padding:0 4px}
+.whoicon em:empty{display:none}
+.notes .nbtns{display:flex;gap:12px}
+.notes.collapsed{cursor:pointer;padding-bottom:12px}
+.notes.collapsed .txt{max-height:2.9em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.notes.collapsed .stk-layer,.notes.collapsed .tape{display:none}
+.notes.collapsed.has-tape{margin-top:4px}
+#moreBack{margin:0 0 8px}
+.backmore{border:0;background:none;color:var(--sky-d);font:700 14px var(--font);padding:4px 2px;cursor:pointer}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.mtile{display:grid;gap:4px;justify-items:start;text-align:left;padding:14px;border-radius:18px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;box-shadow:var(--shadow);min-height:92px}
+.mtile .ic{font-size:24px;line-height:1}
+.mtile b{font:400 17px var(--round)}
+.mtile small{font-size:11px;color:var(--muted)}
+.mlist2{display:grid;gap:6px;margin-top:14px}
+.mlist2 button{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px var(--font);cursor:pointer;text-align:left}
+.mlist2 button span{font-size:18px}
+.ftog{justify-self:start;border:0;background:var(--field);color:var(--muted);font:700 12px var(--font);border-radius:999px;padding:5px 11px;cursor:pointer}
+.fi.collapsed .menu,.fi.collapsed .mphotos,.fi.collapsed .fm,.fi.collapsed .fw,.fi.collapsed .acts,.fi.collapsed .addr{display:none}
+.fi.collapsed{gap:6px}
+.vcode{letter-spacing:.06em;font-size:22px;white-space:nowrap}
+.empty .btn{margin-top:4px}
 </style>
 </head>
 <body>
@@ -1070,19 +1096,17 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
     <h2>설정</h2>
     <section class="set"><h3>내 닉네임</h3>
       <div class="search"><input id="sNick" maxlength="12" placeholder="닉네임" autocomplete="off" aria-label="내 닉네임"><button type="button" class="btn" id="sNickSave">바꾸기</button></div></section>
+    <section class="set"><h3>🔑 내 복구 코드</h3><div id="vaultBox"></div></section>
     <section class="set"><h3>테마</h3><p class="desc">어울리는 색 조합으로 한 번에 바꿔요. 아래에서 배경·버튼·포인트 색만 따로 바꿀 수도 있어요.</p><div class="themes" id="themeList"></div></section>
     <section class="set"><h3>글씨체</h3><div class="fontlist" id="fontList"></div></section>
     <section class="set"><h3>배경색</h3><div class="sw" id="swBg"></div></section>
     <section class="set"><h3>버튼·탭 색</h3><p class="desc">버튼과 선택한 일차 탭의 색이에요.</p><div class="sw" id="swTab"></div></section>
     <section class="set"><h3>포인트 색</h3><p class="desc">시간, 링크, 지도 경로의 색이에요.</p><div class="sw" id="swAcc"></div></section>
-    <section class="set"><h3>네이버 지도 점검</h3><p class="desc">국내여행 지도가 안 나올 때 눌러 보세요. 두 가지 방식으로 시험해서 결과를 보여 줘요.</p>
-      <div class="row"><button type="button" class="btn sm" id="nvDiagBtn">점검하기</button></div>
-      <div id="nvDiagMap" style="height:180px;border-radius:12px;background:var(--field)" hidden></div><pre id="nvDiagLog" style="white-space:pre-wrap;font-size:12px;margin:0;background:var(--field);border-radius:12px;padding:10px" hidden></pre></section>
     <section class="set"><h3>지도 사용량</h3><p class="desc" id="useState"></p>
       <p class="desc">한도에 닿으면 기본 지도와 기본 검색으로 자동으로 바뀌어서 요금이 나오지 않아요.</p>
       <label class="tgl"><span>여행을 열면 지도도 바로 열기</span><input type="checkbox" id="autoMap"></label>
       <p class="desc" style="margin-top:-4px">끄면 ‘지도 보기’를 눌렀을 때만 지도를 불러와서 사용량이 크게 줄어요.</p></section>
-    <section class="set"><h3>관리자</h3><div id="adminBox"></div><p class="desc">앱 관리자는 사용자 닉네임, 마지막 접속 날짜, 여행 수, 지도·검색 사용 횟수를 볼 수 있어요. 관리자 화면에는 여행 내용(일정·사진·경비)이 나오지 않아요.</p></section>
+    <section class="set"><h3>관리자</h3><div id="adminEntry"></div><p class="desc">앱 관리자는 사용자 닉네임, 마지막 접속 날짜, 여행 수, 지도·검색 사용 횟수를 볼 수 있어요. 관리자 화면에는 여행 내용(일정·사진·경비)이 나오지 않아요.</p></section>
     <section class="set"><h3>삭제 비밀번호</h3><p class="desc" id="pwState"></p>
       <div class="row"><button type="button" class="btn sm" id="pwSet">비밀번호 정하기</button></div></section>
     <section class="set"><h3>미리보기</h3>
@@ -1279,6 +1303,16 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
     <button type="button" class="btn primary" id="owClose">닫기</button>
   </form>
 </dialog>
+<dialog id="adm">
+  <form method="dialog" style="display:grid;gap:14px;padding:20px">
+    <h2>관리자 페이지</h2>
+    <section class="set"><div id="adminBox"></div></section>
+    <section class="set"><h3>네이버 지도 점검</h3><p class="desc">국내여행 지도가 안 나올 때 눌러 보세요. 두 가지 방식으로 시험해서 결과를 보여 줘요.</p>
+      <div class="row"><button type="button" class="btn sm" id="nvDiagBtn">점검하기</button></div>
+      <div id="nvDiagMap" style="height:180px;border-radius:12px;background:var(--field)" hidden></div><pre id="nvDiagLog" style="white-space:pre-wrap;font-size:12px;margin:0;background:var(--field);border-radius:12px;padding:10px" hidden></pre></section>
+    <div class="dfoot"><span class="sp"></span><button type="button" class="btn primary" id="admClose">닫기</button></div>
+  </form>
+</dialog>
 <dialog id="ask">
   <form id="askForm" method="dialog">
     <h2 id="askTitle"></h2>
@@ -1310,7 +1344,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "5.0";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "5.1";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -1592,9 +1626,9 @@ async function cloudInit() {
   });
   C.uid = user.uid;
 }
-function addCode(code) { if (!S.codes.includes(code)) { S.codes.push(code); ls.set("tn-rooms", S.codes); } }
+function addCode(code) { if (!S.codes.includes(code)) { S.codes.push(code); ls.set("tn-rooms", S.codes); vaultSync(); } }
 function removeCode(code) {
-  S.codes = S.codes.filter(c => c !== code); ls.set("tn-rooms", S.codes);
+  S.codes = S.codes.filter(c => c !== code); ls.set("tn-rooms", S.codes); vaultSync();
   S.rooms.delete(code); S.items.delete(code);
   if (C.unsub["r:" + code]) { C.unsub["r:" + code](); delete C.unsub["r:" + code]; }
 }
@@ -1810,7 +1844,7 @@ function loadSettings() {
   if (!PAL[v.theme]) v.theme = "peach";
   return Object.assign({}, DEF_SET, v, { ov: v.ov || {} });
 }
-function saveSettings() { ls.set("tn-settings", S.set); }
+function saveSettings() { ls.set("tn-settings", S.set); if (typeof vaultSync === "function") vaultSync(); }
 function applySettings() {
   const p = curPal(), ov = S.set.ov || {}, r = document.documentElement.style;
   const bg = ov.bg || p.bg, dark = lum(bg) < .2, flip = !!ov.bg && dark !== !!p.dark;
@@ -1844,7 +1878,7 @@ function swatches(key) {
     + `<div class="swi"><label aria-label="직접 고르기" ${inPreset ? "" : `style="background:${cur};box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink)"`}>+<input type="color" data-k="${key}" value="${cur.toLowerCase()}"></label><small>직접</small></div>`;
 }
 function renderSettings() {
-  renderThemes(); renderUsage(); loadUsage(true).then(renderUsage);
+  renderThemes(); renderUsage(); loadUsage(true).then(renderUsage); renderVault();
   $("#autoMap").checked = !!S.set.autoMap;
   $("#sNick").value = S.nick;
   renderFonts();
@@ -1869,7 +1903,7 @@ $("#sNickSave").onclick = () => {
   S.codes.forEach(code => { if (S.rooms.has(code)) fire(roomRef(code).update({ ["members." + C.uid + ".nick"]: n })); });
   toast("닉네임을 바꿨어요.");
 };
-function setNick(n) { S.nick = n; ls.set("tn-nick", n); touchUser(true); }
+function setNick(n) { S.nick = n; ls.set("tn-nick", n); touchUser(true); vaultSync(); }
 
 /* ---------- 삭제 비밀번호 ---------- */
 async function hashPw(p) {
@@ -2030,7 +2064,8 @@ function renderList() {
       <div class="row"><button class="icon" id="openSet" aria-label="설정" title="설정">⚙︎</button><button class="btn primary" id="newTrip">+ 새 여행</button></div></header>
     ${legacy}
     <div class="row" style="margin-bottom:14px"><button class="btn sm" id="joinBtn">코드로 입장</button>${S.nick ? `<span class="meta" style="align-self:center">내 닉네임: ${esc(S.nick)}</span>` : ""}</div>
-    ${ddayCard(loaded)}<section class="trips">${loaded.map(card).join("")}${waiting.map(wait).join("")}${loaded.length || waiting.length ? "" : `<div class="empty">${birdSvg("bird-sleep")}<div>아직 여행이 없어요.<br>‘새 여행’을 만들거나, 친구에게 받은 코드로 입장하세요.</div></div>`}</section>
+    ${loaded.length && !ls.get("tn-vault", "") && !ls.get("tn-vault-later", 0) ? `<div class="banner vban"><p>🔑 <b>복구 코드</b>를 만들어 두면 앱을 다시 깔거나 기기를 바꿔도 여행을 한 번에 되살릴 수 있어요.</p><div class="row"><button class="btn primary sm" id="vbMake">지금 만들기</button><button class="btn sm" id="vbLater">나중에</button></div></div>` : ""}
+    ${ddayCard(loaded)}<section class="trips">${loaded.map(card).join("")}${waiting.map(wait).join("")}${loaded.length || waiting.length ? "" : `<div class="empty">${birdSvg("bird-sleep")}<div>아직 여행이 없어요.<br>‘새 여행’을 만들거나, 친구에게 받은 코드로 입장하세요.</div><button type="button" class="btn sm" id="vaultRestoreList">🔑 예전 여행 복구 코드로 되살리기</button></div>`}</section>
     ${loaded.length ? '<p class="lphint">여행을 3초 동안 누르고 있으면 삭제하거나 방에서 나갈 수 있어요.</p>' : ""}
     <p class="lphint">앱 버전 ${APP_VERSION}</p>`;
   $("#newTrip").onclick = () => openTrip(null);
@@ -2039,6 +2074,8 @@ function renderList() {
   const mg = $("#migrate"); if (mg) mg.onclick = migrateLegacy;
   const mn = $("#migrateNo"); if (mn) mn.onclick = () => { ls.set("tn-migrated", true); renderList(); };
   bindLongPress($(".trips")); touchUser();
+  const vm = $("#vbMake"); if (vm) vm.onclick = () => { openSettings(); setTimeout(() => { const b = $("#vaultMake"); if (b) b.click(); }, 150); };
+  const vl = $("#vbLater"); if (vl) vl.onclick = () => { ls.set("tn-vault-later", 1); renderList(); };
   const dd = $(".dd"); if (dd) dd.onclick = e => { e.preventDefault(); openTripView(dd.dataset.dd); };
 }
 
@@ -2067,16 +2104,17 @@ function renderTrip() {
   $("#app").innerHTML = `
     <header class="bar"><a class="icon" href="#" id="back" aria-label="여행 목록으로">←</a>
       <div class="bt"><h1 id="tTitle"></h1><p id="tRange"></p></div>
+      <button class="icon whoicon" id="whoBtn" aria-label="함께하는 사람·초대">👥<em id="whoCnt"></em></button>
       <button class="icon" id="menu" aria-label="여행 메뉴">⋯</button></header>
-    <nav class="bnav" aria-label="보기 전환">${navBtn("today", "오늘")}${navBtn("plan", "일정")}${navBtn("food", "맛집", "foodCnt")}${navBtn("shop", "쇼핑", "shopCnt")}${navBtn("money", "경비")}${navBtn("pack", "짐")}</nav>
+    <nav class="bnav" aria-label="보기 전환">${navBtn("today", "오늘")}${navBtn("plan", "일정")}${navBtn("food", "맛집", "foodCnt")}${navBtn("shop", "쇼핑", "shopCnt")}${navBtn("more", "더보기")}</nav>
+    <div id="moreBack" hidden><button type="button" class="backmore" data-tomore>‹ 더보기</button></div>
+    <div id="moreView" hidden></div>
     <div id="todayView" hidden></div>
     <div id="moneyView" hidden></div>
     <div id="packView" hidden></div>
     <div id="diaryView" hidden></div>
     <div id="planView">
-      <div class="who" id="who"></div>
       <div id="notesBox"></div>
-      <div id="bkBox"></div>
       <nav class="tabs" role="tablist" id="tabs"></nav>
       <div class="maptool"><button type="button" class="link" data-mapfold>지도 접기 ▲</button></div>
       <div id="map" class="map"></div>
@@ -2115,8 +2153,10 @@ function renderTrip() {
   $("#back").onclick = goList;
   $("#menu").onclick = () => openDlg($("#md"));
   $("#add").onclick = () => openItem(trip(S.tripId), null);
-  $("#who").onclick = e => { if (e.target.closest("#inviteBtn")) openInvite(); };
+  $("#whoBtn").onclick = () => openInvite();
   $("#notesBox").onclick = e => {
+    if (e.target.closest("[data-notestog]")) { S.notesOpen = !S.notesOpen; updateTrip(false); return; }
+    if (e.target.closest(".notes.collapsed") && !e.target.closest("a,button")) { S.notesOpen = true; updateTrip(false); return; }
     if (e.target.closest("#notesEdit")) openNotes(trip(S.tripId));
     if (e.target.closest("#quickImport")) openImport();
   };
@@ -2130,8 +2170,8 @@ function renderTrip() {
     if (e.target.closest("a")) return;
     const card = e.target.closest(".item"); if (card) focusItem(card.dataset.id);
   };
-  bindReorder($("#items")); bindCards($("#bkBox")); bindToday($("#todayView")); bindMoney($("#moneyView")); bindPack($("#packView")); bindDiary($("#diaryView"));
-  $("#bkBox").addEventListener("click", e => { const cp = e.target.closest("[data-copy]"); if (cp) copyText(cp.dataset.copy); });
+  bindReorder($("#items")); bindMore($("#moreView")); bindToday($("#todayView")); bindMoney($("#moneyView")); bindPack($("#packView")); bindDiary($("#diaryView"));
+  $("#moreBack").onclick = () => { setMode("more"); window.scrollTo(0, 0); };
   document.querySelectorAll(".bnav button").forEach(b => b.onclick = () => { setMode(b.dataset.mode); window.scrollTo(0, 0); });
   document.body.classList.add("in-trip");
   initMap();
@@ -2141,8 +2181,11 @@ function renderTrip() {
 /* ---------- 쇼핑리스트 ---------- */
 function setMode(m) {
   S.mode = m;
-  document.querySelectorAll(".bnav button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === m)));
-  ["plan", "shop", "food", "today", "money", "pack", "diary"].forEach(v => { const el = $("#" + v + "View"); if (el) el.hidden = m !== v; });
+  const navM = ["money", "pack", "diary"].includes(m) ? "more" : m;
+  document.querySelectorAll(".bnav button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === navM)));
+  ["plan", "shop", "food", "today", "money", "pack", "diary", "more"].forEach(v => { const el = $("#" + v + "View"); if (el) el.hidden = m !== v; });
+  const mb = $("#moreBack"); if (mb) mb.hidden = !["money", "pack", "diary"].includes(m);
+  if (m === "more") renderMore();
   if (m === "today") renderToday(); if (m === "money") renderMoney(); if (m === "pack") renderPack(); if (m === "diary") renderDiary();
   if (m === "plan" && S.map) setTimeout(() => S.map && S.map.refresh(), 50);
   if (m === "food") { if (!S.fmap) initFoodMap(); else setTimeout(() => S.fmap && S.fmap.refresh(), 50); renderFood(true); }
@@ -2171,18 +2214,20 @@ function renderFood(fit) {
   const card = f => {
     const n = likeCount(f), mine = !!(f.likes || {})[C.uid], has = f.lat != null;
     const who = Object.values(f.likes || {});
-    return `<li class="fi${f.visited ? " done" : ""}">
+    const open = S.foodOpen && S.foodOpen.has(f.id);
+    return `<li class="fi${f.visited ? " done" : ""}${open ? "" : " collapsed"}">
       <div class="ftop"><span class="fnum${has ? "" : " off"}${!f.visited && num.get(f.id) === 1 && n > 0 ? " top1" : ""}" data-ffocus="${f.id}">${num.get(f.id)}</span><h3 data-ffocus="${f.id}">${f.cat ? `<span class="fcat">${esc(catLabel(f.cat))}</span>` : ""}${esc(f.name)}</h3>
         <button type="button" class="like" data-like="${f.id}" aria-pressed="${mine}" aria-label="가고 싶어요">♥ ${n}</button></div>
       ${f.address ? `<div class="addr">${linkify(f.address)}</div>` : ""}
       ${f.memo ? `<div class="fm">${linkify(f.memo)}</div>` : ""}
       ${f.link ? `<div class="addr">${linkify(f.link)}</div>` : ""}
+      <button type="button" class="ftog" data-ftog="${f.id}">${open ? "접기 ▲" : `자세히 ▼${(f.menu || []).length ? ` · 메뉴 ${f.menu.length}` : ""}${(f.photos || []).length ? ` · 사진 ${f.photos.length}` : ""}`}</button>
       ${(f.photos || []).length ? `<div class="mphotos">${f.photos.map(id => `<img data-pid="${id}" data-photo="${id}" alt="${esc(f.name)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`).join("")}</div>` : ""}
       ${gInfoHtml(f)}
       ${menuHtml(f)}
       <div class="fw">${who.length ? `♥ ${who.map(esc).join(", ")} · ` : ""}${f.addedBy ? esc(f.addedBy) + " 추가" : ""}</div>
       <div class="acts"><button type="button" data-toplan="${f.id}">일정에 넣기</button><button type="button" data-visit="${f.id}">${f.visited ? "안 갔어요" : "다녀왔어요"}</button><button type="button" data-fedit="${f.id}">수정</button>
-        ${has ? `${naverA(f.name, f.lat, f.lng, "네이버 지도")}${gA({ kind: "food", ref: f.id, name: f.name, addr: f.address, lat: f.lat, lng: f.lng, pid: f.pid }, "구글 지도")}` : ""}</div></li>`;
+        ${has ? `${naverA(f.name, f.lat, f.lng, "네이버 지도")}` : ""}</div></li>`;
   };
   $("#foodList").innerHTML = todo.length ? todo.map(card).join("") : `<li class="none">${birdSvg(done.length ? "bird-happy" : "bird")}<span>${done.length ? "모두 다녀왔어요!" : S.foodCat !== "all" ? "이 종류의 맛집이 없어요." : "가고 싶은 맛집을 ‘+ 맛집 추가’로 모아 보세요. 같이 가는 사람 모두에게 보여요."}</span></li>`;
   $("#foodDoneBox").hidden = !done.length; $("#foodDoneSum").textContent = `다녀온 곳 ${done.length}개`;
@@ -2265,8 +2310,7 @@ $("#fdFind").onclick = async () => {
     box.innerHTML = res.map((r, i) => `<li><button type="button" data-i="${i}"><b>${esc(r.name)}</b><small>${esc(r.addr)}</small></button></li>`).join("");
     box.onclick = e => { const b = e.target.closest("[data-i]"); if (!b) return; const r = res[+b.dataset.i];
       setFoodLoc(r.lat, r.lng); if (!$("#fdName").value.trim()) $("#fdName").value = r.name; if (!$("#fdAddr").value.trim()) $("#fdAddr").value = r.addr; box.hidden = true;
-      if (r.pid) { FE.pid = r.pid; $("#fdGInfo").textContent = "구글 평점·영업시간 불러오는 중…";
-        googleDetails(r.pid).then(g => { FE.g = g; $("#fdGInfo").textContent = g ? `✅ 구글 정보: ${[g.rating ? "⭐ " + g.rating : "", g.price, g.hours.length ? "영업시간" : ""].filter(Boolean).join(" · ") || "기본 정보"}` : ""; }).catch(() => { $("#fdGInfo").textContent = ""; }); } };
+      if (r.pid) FE.pid = r.pid; };
   } catch (err) { box.innerHTML = `<li><p>검색하지 못했어요. 인터넷 연결을 확인해 주세요.</p></li>`; }
 };
 function parseGShare(text) {
@@ -2320,15 +2364,12 @@ $("#fdDel").onclick = async () => {
 };
 function updateTrip(fit) {
   const t = trip(S.tripId); if (!t || !$("#tabs")) return;
-  setTimeout(() => { renderShop(); renderFood(false); if (!$("#todayView")) return; const m = S.mode; if (m === "today") renderToday(); if (m === "money") renderMoney(); if (m === "pack") renderPack(); if (m === "diary") renderDiary(); }, 0);
-  $("#bkBox").innerHTML = cardsOf(t).length ? cardsStrip(t, true) : `<div class="notes-add"><button type="button" class="btn sm" data-bkadd>+ 항공·숙소</button></div>`;
+  setTimeout(() => { renderShop(); renderFood(false); if (!$("#todayView")) return; const m = S.mode; if (m === "today") renderToday(); if (m === "money") renderMoney(); if (m === "pack") renderPack(); if (m === "diary") renderDiary(); if (m === "more") renderMore(); }, 0);
   const days = tripDays(t);
   if (S.day !== "all" && !days.includes(S.day)) S.day = "all";
   $("#tTitle").textContent = t.title;
   $("#tRange").textContent = rangeText(t) + (t.updatedBy ? ` · ${t.updatedBy} 수정 ${ago(t.updatedAt)}` : "");
-  $("#who").innerHTML = `<span class="lab">함께</span>` + memberList(t).map(m =>
-    `<span class="mem-chip"><span class="av">${esc(m.nick.slice(0, 1))}</span>${esc(m.nick)}${m.me ? "<small>(나)</small>" : ""}${m.owner ? "<small>방장</small>" : ""}</span>`).join("")
-    + `<button type="button" class="invite-btn" id="inviteBtn">+ 초대</button>`;
+  { const n = memberList(t).length; $("#whoCnt").textContent = n > 1 ? n : ""; }
   $("#notesBox").innerHTML = t.notes
     ? notesHtml(t, false)
     : `<div class="notes-add"><button type="button" class="btn sm" id="notesEdit">+ 여행 준비 메모</button>${t.items.length ? "" : '<button type="button" class="btn sm" id="quickImport">메모장에서 가져오기</button>'}</div>`;
@@ -2581,7 +2622,7 @@ const nvCount = () => countUse("maps", true);
 function renderUsage() {
   const el = $("#useState"); if (!el) return;
   const m = usageOf("maps"), q = usageOf("search"), n = x => x == null ? "–" : x.toLocaleString(), L = U.lim;
-  if (!U.ok) { el.innerHTML = `이 기기 오늘 사용: 지도 ${m.dev} · 검색 ${q.dev}<br>사용량을 서버에서 세려면 Firebase 규칙을 새로 넣어 주세요.`; return; }
+  if (!U.ok) { el.innerHTML = `이 기기 오늘 사용: 지도 ${m.dev} · 검색 ${q.dev}<br>사용량을 서버에서 세려면 Firebase 규칙을 새로 넣어 주세요.`; renderAdmin(); return; }
   el.innerHTML = S.admin
     ? `<b>관리자</b> · 나는 사람마다 한도 없이 써요.<br>오늘 내 사용: 지도 <b>${n(m.uDay)}</b> · 검색 <b>${n(q.uDay)}</b>`
     : `오늘 내가 쓴 양: 지도 <b>${n(m.uDay)}</b> / ${L.userMapsDay} · 검색 <b>${n(q.uDay)}</b> / ${L.userSearchDay}<br>이번 달: 지도 <b>${n(m.uMonth)}</b> / ${L.userMapsMonth} · 검색 <b>${n(q.uMonth)}</b> / ${L.userSearchMonth}`;
@@ -2589,7 +2630,10 @@ function renderUsage() {
 }
 async function renderAdmin() {
   const box = $("#adminBox"); if (!box) return;
-  if (!S.admin) { box.innerHTML = `<p class="desc">관리자는 지도·검색 한도 없이 쓰고, 한 달 사용량을 볼 수 있어요.</p><div class="row"><button type="button" class="btn sm" id="adminIn">관리자 코드 입력</button><button type="button" class="btn sm" id="adminId">내 기기 ID 보기</button></div>`; return; }
+  const ent = $("#adminEntry");
+  if (ent) ent.innerHTML = S.admin ? `<p class="desc">✅ 이 기기는 관리자예요.</p><div class="row"><button type="button" class="btn sm primary" id="admOpen">관리자 페이지 열기</button></div>`
+    : `<div class="row"><button type="button" class="btn sm" id="adminIn">관리자 코드 입력</button><button type="button" class="btn sm" id="adminId">내 기기 ID 보기</button></div>`;
+  if (!S.admin) { box.innerHTML = ""; return; }
   const months = [0, 1, 2].map(i => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - i); return fd(d).slice(0, 7); });
   let rows = "";
   try {
@@ -2615,10 +2659,10 @@ document.addEventListener("click", async e => {
   if (e.target.closest("#adminId")) { copyText(C.uid || "", "기기 ID를 복사했어요."); return; }
   if (e.target.closest("#adminIn")) {
     const code = await askText("관리자 코드", "Firebase에 적어 둔 코드"); if (!code) return;
-    try { await C.db.collection("admins").doc(C.uid).set({ code, nick: S.nick || "", at: Date.now() }); S.admin = true; U.warned = false; await loadUsage(true); renderUsage(); }
+    try { await C.db.collection("admins").doc(C.uid).set({ code, nick: S.nick || "", at: Date.now() }); ls.set("tn-ac", code); vaultSync(); S.admin = true; U.warned = false; await loadUsage(true); renderUsage(); }
     catch (x) {
       const msg = x && x.code === "permission-denied" ? "❌ 관리자 등록이 안 됐어요. ① 코드가 Firebase의 secret → admin → code 값과 똑같은지 (대소문자·띄어쓰기 포함) ② Firestore 규칙을 새로 게시했는지 확인해 주세요." : "❌ " + errMsg(x);
-      const box = $("#adminBox"); if (box) { let p = box.querySelector(".adminerr"); if (!p) { p = document.createElement("p"); p.className = "warn adminerr"; box.appendChild(p); } p.textContent = msg; }
+      const box = $("#adminEntry"); if (box) { let p = box.querySelector(".adminerr"); if (!p) { p = document.createElement("p"); p.className = "warn adminerr"; box.appendChild(p); } p.textContent = msg; }
     }
     return;
   }
@@ -2634,6 +2678,7 @@ document.addEventListener("click", async e => {
     catch (x) { toast(errMsg(x), 4500); }
   }
 });
+document.addEventListener("click", e => { if (e.target.closest("#admOpen")) { renderAdmin(); openDlg($("#adm")); } if (e.target.closest("#admClose")) $("#adm").close(); });
 document.addEventListener("change", e => { if (e.target.id === "adminOver") { ls.set("tn-admin-over", e.target.checked); U.warned = false; } });
 const MAP_POOL = {};   // 여행 지도·맛집 지도: 앱을 켜 둔 동안 한 번만 만들고 계속 다시 씀
 function makeMap(el, opt = {}) {
@@ -2724,7 +2769,7 @@ const mapGate = (el, onOpen) => {
   el.querySelector(".mapgate").onclick = () => { el.classList.remove("gated"); S.mapOn = true; onOpen(); };
 };
 /* 지도 접기·펼치기: 접어도 지도는 그대로 두고 숨기기만 해서 다시 펼칠 때 사용량이 늘지 않음 */
-S.mapFold = !!ls.get("tn-map-fold", false);
+S.mapFold = !!ls.get("tn-map-fold", true);   // 기본은 접힌 상태
 function applyMapFold() {
   document.querySelectorAll("#map,#fmap").forEach(el => el.classList.toggle("folded", S.mapFold));
   document.querySelectorAll("[data-mapfold]").forEach(b => { b.textContent = S.mapFold ? "🗺️ 지도 펼치기 ▼" : "지도 접기 ▲"; b.closest(".maptool").classList.toggle("on", S.mapFold); });
@@ -2959,8 +3004,8 @@ function notesHtml(t, edit) {
   const dc = cleanDeco(t.notesDeco), dfont = MEMO_FONTS.find(f => f[0] === dc.font);
   if (dfont) loadFonts([dfont]);
   const st = ` style="${nc ? `--memo:${nc};--memo-ink:${mix(nc, "#000000", .55)};` : ""}${dfont ? `font-family:${esc(dfont[2])},${esc(FONT_BASE)}` : ""}"`;
-  return `<section class="notes${nc ? " custom" : ""}${dc.paper ? " paper-" + dc.paper : ""}${dc.tape ? " has-tape" : ""}"${st}>${dc.tape ? `<span class="tape" style="background:${tapeBg(dc.tape)}"></span>` : ""}
-    <h2>여행 준비 메모${edit ? "" : '<button type="button" class="link" id="notesEdit">수정</button>'}</h2>${t.notesHtml ? `<div class="txt rich">${richHtml(t.notesHtml)}</div>` : `<div class="txt">${linkify(t.notes)}</div>`}${stkHtml(edit ? ND.stickers : dc.stickers, edit)}</section>`;
+  return `<section class="notes${!edit && !S.notesOpen ? " collapsed" : ""}${nc ? " custom" : ""}${dc.paper ? " paper-" + dc.paper : ""}${dc.tape ? " has-tape" : ""}"${st}>${dc.tape ? `<span class="tape" style="background:${tapeBg(dc.tape)}"></span>` : ""}
+    <h2>여행 준비 메모${edit ? "" : `<span class="nbtns"><button type="button" class="link" data-notestog>${S.notesOpen ? "접기 ▲" : "펼치기 ▼"}</button><button type="button" class="link" id="notesEdit">수정</button></span>`}</h2>${t.notesHtml ? `<div class="txt rich">${richHtml(t.notesHtml)}</div>` : `<div class="txt">${linkify(t.notes)}</div>`}${stkHtml(edit ? ND.stickers : dc.stickers, edit)}</section>`;
 }
 let NE = null;
 const MEMO_COLORS = [["", "기본"], ["#FDE2E4", "분홍"], ["#FFE5CC", "주황"], ["#E2F5E1", "연두"], ["#DCEEFF", "하늘"], ["#ECE4FB", "보라"], ["#EEEEEE", "회색"], ["#FFFFFF", "흰색"]];
@@ -3647,7 +3692,8 @@ const NAV_ICONS = {
   food: '<path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2.5 1.5-3.5 4-3.5 8h3.5"/>',
   shop: '<path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
   money: '<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18"/><circle cx="16" cy="14.5" r="1.4"/>',
-  pack: '<rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 7V4.5h6V7M4 12h16"/>'
+  pack: '<rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 7V4.5h6V7M4 12h16"/>',
+  more: '<circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/><rect x="2.5" y="5" width="19" height="14" rx="4"/>'
 };
 const navBtn = (m, label, cnt) => `<button type="button" data-mode="${m}" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true">${NAV_ICONS[m]}</svg><span>${label}</span>${cnt ? `<em class="cnt" id="${cnt}" hidden></em>` : ""}</button>`;
 
@@ -4198,10 +4244,10 @@ async function googleDetails(pid) {
     hours: (j.regularOpeningHours && j.regularOpeningHours.weekdayDescriptions) || [], photos: [], url: j.googleMapsUri || "", at: Date.now() };
 }
 function gInfoHtml(f) {
-  const g = f.g; if (!g) return f.lat != null && GOOGLE_KEY ? `<button type="button" class="link gload" data-gload="${f.id}">구글 평점·영업시간 불러오기</button>` : "";
-  const today = g.hours.length ? g.hours[(new Date().getDay() + 6) % 7] : "";
-  return `<div class="gi"><span class="src">G</span>${g.rating ? `<span>⭐ ${g.rating} (${(g.count || 0).toLocaleString()})</span>` : ""}${g.price ? `<span>💴 ${esc(g.price)}</span>` : ""}${today ? `<span>🕒 ${esc(today.replace(/^[^:]+:\s*/, "오늘 "))}</span>` : ""}
-</div>`;
+  const g = f.g;   // 예전에 불러온 평점이 있으면 그대로 보여 줌 (새로 불러오지는 않음 — 구글 비싼 단계라서)
+  const chips = g ? `${g.rating ? `<span>⭐ ${g.rating}</span>` : ""}${g.price ? `<span>💴 ${esc(g.price)}</span>` : ""}` : "";
+  const link = f.lat != null ? gA({ kind: "food", ref: f.id, name: f.name, addr: f.address, lat: f.lat, lng: f.lng, pid: f.pid }, "구글 지도에서 평점·영업시간 보기 ›") : "";
+  return chips || link ? `<div class="gi">${chips}${link ? link.replace("<a ", '<a class="glink" ') : ""}</div>` : "";
 }
 function menuHtml(f) {
   const c = tripC(), t = trip(S.tripId), list = f.menu || [];
@@ -4233,6 +4279,8 @@ document.addEventListener("click", async e => {
     if (!canUse("search") || !entCanUse(f.g.photos.length)) return; f.g.photos.forEach(() => countUse("search")); entCount(f.g.photos.length);   // 구글은 사진 한 장마다 따로 셈
     $("#gpList").innerHTML = f.g.photos.map(n => `<img src="https://places.googleapis.com/v1/${n}/media?maxWidthPx=640&key=${GOOGLE_KEY}" alt="가게 사진" loading="lazy">`).join("");
     $("#gpTitle").textContent = f.name; openDlg($("#gp")); return; }
+  const tg = e.target.closest("[data-ftog]");
+  if (tg) { S.foodOpen = S.foodOpen || new Set(); const id = tg.dataset.ftog; if (S.foodOpen.has(id)) S.foodOpen.delete(id); else S.foodOpen.add(id); renderFood(false); return; }
   const ml = e.target.closest("[data-mlike]");
   if (ml) { const [fid, mid] = ml.dataset.mlike.split("|"), f = foodById(fid); if (!f) return;
     const menu = (f.menu || []).map(m => { if (m.id !== mid) return m; const likes = Object.assign({}, m.likes || {}); if (likes[S.nick]) delete likes[S.nick]; else likes[S.nick] = true; return Object.assign({}, m, { likes }); });
@@ -4427,6 +4475,116 @@ function fillWx() {
   });
 }
 
+/* ---------- 내 복구 코드 ----------
+   기기가 바뀌거나 앱을 다시 깔아도, 복구 코드 하나로 여행 목록·닉네임·관리자·비밀번호·꾸미기를 되살림.
+   vault/{코드} 문서에 저장 (코드를 아는 사람만 읽을 수 있음, 목록 보기는 막힘) */
+const VAULT_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const vaultFmt = c => c.replace(/(.{4})(?=.)/g, "$1-");
+const vaultNorm = c => String(c || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+function newVaultCode() { const r = crypto.getRandomValues(new Uint32Array(12)); return [...r].map(x => VAULT_CHARS[x % VAULT_CHARS.length]).join(""); }
+const vref = c => C.db.collection("vault").doc(c);
+function vaultData() {
+  const set = {}; ["theme", "ov", "font", "autoMap"].forEach(k => { if (S.set[k] != null) set[k] = S.set[k]; });
+  const old = ls.get("tn-vault-uids", []) || [];
+  return { codes: S.codes.slice(0, 200), nick: S.nick || "", pw: S.set.pw || "", set, ac: ls.get("tn-ac", "") || "", uids: [...new Set(old.concat([C.uid]))].slice(-20), at: Date.now() };
+}
+let vaultTimer = null;
+function vaultSync(now) {
+  const code = ls.get("tn-vault", ""); if (!code || !C.db || !C.uid) return;
+  clearTimeout(vaultTimer);
+  vaultTimer = setTimeout(() => { const d = vaultData(); ls.set("tn-vault-uids", d.uids); vref(code).set(d).catch(() => {}); }, now ? 0 : 1500);
+}
+async function makeVault() {
+  let code = ls.get("tn-vault", "");
+  if (!code) { code = newVaultCode(); ls.set("tn-vault", code); }
+  const d = vaultData(); ls.set("tn-vault-uids", d.uids);
+  await vref(code).set(d);
+  return code;
+}
+async function restoreVault(raw) {
+  const code = vaultNorm(raw); if (code.length !== 12) throw new Error("복구 코드는 12자리예요. 예: KX7Q-29MD-P4RA");
+  const snap = await vref(code).get(); if (!snap.exists) throw new Error("이 복구 코드를 찾지 못했어요. 다시 확인해 주세요.");
+  const v = snap.data();
+  if (v.nick) setNick(v.nick);
+  if (v.set) { Object.assign(S.set, v.set); }
+  if (v.pw) S.set.pw = v.pw;
+  saveSettings(); applySettings();
+  ls.set("tn-vault", code);
+  const olds = (v.uids || []).filter(u => u !== C.uid);
+  ls.set("tn-vault-uids", [...new Set((v.uids || []).concat([C.uid]))]);
+  let ok = 0, gone = 0;
+  for (const c of (v.codes || [])) {
+    try {
+      await joinRoom(c, S.nick || v.nick || "나");
+      // 예전 기기가 방장이었으면 방장을 이 기기로 옮기고, 예전 기기는 명단에서 뺌
+      const r = S.rooms.get(c), upd = {};
+      if (r) {
+        if (olds.includes(r.owner)) upd.owner = C.uid;
+        olds.forEach(u => { if (r.members && r.members[u]) upd["members." + u] = firebase.firestore.FieldValue.delete(); });
+        if (Object.keys(upd).length) await roomRef(c).update(upd);
+      }
+      ok++;
+    } catch (x) { gone++; }
+  }
+  if (v.ac) { try { await C.db.collection("admins").doc(C.uid).set({ code: v.ac, nick: S.nick || "", at: Date.now() }); ls.set("tn-ac", v.ac); S.admin = true; } catch (x) {} }
+  vaultSync(true);
+  return { ok, gone, admin: S.admin };
+}
+function renderVault() {
+  const box = $("#vaultBox"); if (!box) return;
+  const code = ls.get("tn-vault", "");
+  box.innerHTML = code
+    ? `<p class="desc">이 코드만 있으면 새 기기나 다시 깐 앱에서 여행 목록·닉네임·관리자·삭제 비밀번호·꾸미기를 되살릴 수 있어요. <b>메모장이나 사진으로 꼭 저장해 두세요.</b> 남에게 알려 주면 안 돼요.</p>
+       <div class="code vcode" id="vaultCode">${S.vaultShow ? vaultFmt(code) : "••••-••••-••••"}</div>
+       <div class="row"><button type="button" class="btn sm" id="vaultShow">${S.vaultShow ? "가리기" : "보기"}</button><button type="button" class="btn sm primary" id="vaultCopy">복사</button><button type="button" class="btn sm" id="vaultRestore">다른 복구 코드로 되살리기</button></div>`
+    : `<p class="desc">홈 화면 앱을 지웠다 다시 깔거나 기기를 바꾸면 여행 목록이 사라질 수 있어요. 복구 코드를 만들어 두면 코드 하나로 다 되살릴 수 있어요.</p>
+       <div class="row"><button type="button" class="btn sm primary" id="vaultMake">복구 코드 만들기</button><button type="button" class="btn sm" id="vaultRestore">복구 코드로 되살리기</button></div>`;
+}
+async function doRestore(fromList) {
+  const raw = await askText("복구 코드 입력", "예: KX7Q-29MD-P4RA"); if (!raw) return;
+  toast("되살리는 중…", 3000);
+  try {
+    const r = await restoreVault(raw);
+    toast(`되살렸어요! 여행 ${r.ok}개${r.gone ? ` (없어진 여행 ${r.gone}개)` : ""}${r.admin ? " · 관리자 ✅" : ""}`, 5000);
+    if ($("#sd").open) { renderSettings(); }
+    if (!S.tripId) renderList();
+  } catch (x) { toast(x.message || errMsg(x), 5000); }
+}
+document.addEventListener("click", async e => {
+  if (e.target.closest("#vaultMake")) { try { await makeVault(); S.vaultShow = true; renderVault(); toast("복구 코드를 만들었어요. 꼭 저장해 두세요!", 4000); } catch (x) { toast(x && x.code === "permission-denied" ? "Firestore 규칙에 복구 코드 부분을 넣어 주세요." : errMsg(x), 5000); } return; }
+  if (e.target.closest("#vaultShow")) { S.vaultShow = !S.vaultShow; renderVault(); return; }
+  if (e.target.closest("#vaultCopy")) { copyText(vaultFmt(ls.get("tn-vault", "")), "복구 코드를 복사했어요. 메모장에 붙여 넣어 두세요."); return; }
+  if (e.target.closest("#vaultRestore") || e.target.closest("#vaultRestoreList")) { doRestore(); }
+});
+
+/* ---------- 더보기 ---------- */
+function renderMore() {
+  const box = $("#moreView"), t = trip(S.tripId); if (!box || !t) return;
+  const money = subList("money"), spent = money.reduce((a, x) => a + (toKRW(x, t) || 0), 0);
+  const packs = subList("pack"), pd2 = packs.filter(packMine).length, dy = subList("diary").filter(x => x.text || (x.photos || []).length).length;
+  box.innerHTML = `<h3 class="sech" style="margin-top:4px">항공·숙소</h3>${cardsStrip(t, true)}
+    <div class="mgrid">
+      <button type="button" class="mtile" data-gomode="money"><span class="ic">💰</span><b>경비·정산</b><small>${money.length ? `${won(spent)} · ${money.length}건` : "기록 시작하기"}</small></button>
+      <button type="button" class="mtile" data-gomode="pack"><span class="ic">🧳</span><b>짐 챙기기</b><small>${packs.length ? `${pd2}/${packs.length} 챙김` : "목록 만들기"}</small></button>
+      <button type="button" class="mtile" data-gomode="diary"><span class="ic">📔</span><b>여행 다이어리</b><small>${dy ? `${dy}일 기록` : "날마다 한 줄"}</small></button>
+      <button type="button" class="mtile" data-act="invite"><span class="ic">👥</span><b>함께·초대</b><small>${memberList(t).map(m => esc(m.nick)).join(", ")}</small></button>
+    </div>
+    <div class="mlist2">
+      <button type="button" data-act="notes"><span>📝</span>여행 준비 메모</button>
+      <button type="button" data-act="edit"><span>✏️</span>여행 이름·날짜·나라 수정</button>
+      <button type="button" data-act="import"><span>📋</span>메모장에서 가져오기</button>
+      <button type="button" data-act="set"><span>⚙️</span>설정</button>
+    </div>`;
+}
+function bindMore(root) {
+  bindCards(root);
+  root.addEventListener("click", e => {
+    if (e.target.closest("[data-copy]")) { copyText(e.target.closest("[data-copy]").dataset.copy); return; }
+    const m = e.target.closest("[data-gomode]"); if (m) { setMode(m.dataset.gomode); window.scrollTo(0, 0); return; }
+    const a = e.target.closest("[data-act]"); if (!a) return; const t = trip(S.tripId);
+    ({ invite: () => openInvite(), notes: () => openNotes(t), edit: () => openTrip(t), import: () => openImport(), set: () => openSettings() })[a.dataset.act]();
+  });
+}
 /* ---------- 메모장에서 가져오기 ---------- */
 function parseNotes(text) {
   const out = { notes: [], days: {}, items: [] };
