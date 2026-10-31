@@ -3343,7 +3343,7 @@ function loadNaverMaps() {
   NV.p = new Promise(res => {
     if (!NAVER_KEY || !/^https?:$/.test(location.protocol)) { NV.state = "failed"; return res(false); }
     NV.state = "loading";
-    window.navermap_authFailure = () => { NV.state = "failed"; ls.set("tn-nv-off", Date.now() + 10 * 60e3); toast("네이버 지도 키를 확인해 주세요. 잠시 다른 지도로 보여 줄게요.", 4500); MAP_POOL["main-nv"] = null; MAP_POOL["food-nv"] = null; if (S.ready) rebuildMaps(); };
+    window.navermap_authFailure = () => { NV.state = "failed"; ls.set("tn-nv-off", Date.now() + 60e3); toast(`네이버 지도 인증 실패 (주소: ${location.origin}). 1분 뒤 다시 시도해요. 그동안 다른 지도로 보여 줄게요.`, 6000); MAP_POOL["main-nv"] = null; MAP_POOL["food-nv"] = null; if (S.ready) rebuildMaps(); };
     const sc = document.createElement("script");
     sc.src = "https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=" + encodeURIComponent(NAVER_KEY) + "&submodules=geocoder";
     sc.async = true;
