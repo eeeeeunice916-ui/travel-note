@@ -1277,7 +1277,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "3.9";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "4.0";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2017,7 +2017,7 @@ function itemHtml(it, n) {
     return `<button type="button" class="chip" data-copy="${esc(code)}">${label ? esc(label) + " " : ""}<b>${esc(code)}</b><small>복사</small></button>`; }).join("");
   const memo = it.memoHtml ? "" : lines(it.memo).map(l => /^(→|->|=>)/.test(l) ? `<li class="arrow">${linkify(l.replace(/^(->|=>)/, "→"))}</li>` : `<li>${linkify(l)}</li>`).join("");
   const nav = has ? `${naverA(it.place, it.lat, it.lng)}
-    <a href="https://www.google.com/maps/dir/?api=1&destination=${it.lat},${it.lng}" target="_blank" rel="noopener">구글 길찾기</a>` : "";
+    <a href="${gDirUrl(it.place, it.lat, it.lng, it.pid)}" target="_blank" rel="noopener">구글 길찾기</a>` : "";
   const edited = it.updatedBy ? `<span class="edited">${esc(it.updatedBy)} · ${ago(it.updatedAt)}</span>` : "";
   return `<article class="item" data-id="${it.id}"><div class="num${has ? "" : " off"}">${n}</div><div class="body">
     <div class="head">${it.time ? `<span class="time">${esc(it.time)}</span>` : ""}<h3 class="place">${esc(it.place)}</h3>${it.duration ? `<span class="dur">${esc(it.duration)}</span>` : ""}</div>
@@ -2070,7 +2070,7 @@ function renderTrip() {
     const vd = e.target.closest("[data-visit]");
     if (vd) { const f = find(vd.dataset.visit); if (f) { setFood(S.tripId, Object.assign({}, f, { visited: !f.visited })); renderFood(false); } return; }
     const pl = e.target.closest("[data-toplan]");
-    if (pl) { const f = find(pl.dataset.toplan); if (f) openItem(trip(S.tripId), null, { place: f.name, address: f.address, lat: f.lat, lng: f.lng, memo: [f.memo, f.link].filter(Boolean).join("\n") }); return; }
+    if (pl) { const f = find(pl.dataset.toplan); if (f) openItem(trip(S.tripId), null, { place: f.name, address: f.address, lat: f.lat, lng: f.lng, pid: f.pid || "", memo: [f.memo, f.link].filter(Boolean).join("\n") }); return; }
     const fe = e.target.closest("[data-fedit]"); if (fe) { openFood(find(fe.dataset.fedit)); return; }
     const fc = e.target.closest("[data-ffocus]");
     if (fc && S.fmarkers[fc.dataset.ffocus] && S.fmap) { const mk = S.fmarkers[fc.dataset.ffocus], q = mk.pos(); S.fmap.setView(q[0], q[1], 16); mk.open(); $("#fmap").scrollIntoView({ behavior: "smooth", block: "center" }); }
@@ -2146,7 +2146,7 @@ function renderFood(fit) {
       ${menuHtml(f)}
       <div class="fw">${who.length ? `♥ ${who.map(esc).join(", ")} · ` : ""}${f.addedBy ? esc(f.addedBy) + " 추가" : ""}</div>
       <div class="acts"><button type="button" data-toplan="${f.id}">일정에 넣기</button><button type="button" data-visit="${f.id}">${f.visited ? "안 갔어요" : "다녀왔어요"}</button><button type="button" data-fedit="${f.id}">수정</button>
-        ${has ? `${naverA(f.name, f.lat, f.lng, "네이버 지도")}<a href="https://www.google.com/maps/search/?api=1&query=${f.lat},${f.lng}" target="_blank" rel="noopener">구글 지도</a>` : ""}</div></li>`;
+        ${has ? `${naverA(f.name, f.lat, f.lng, "네이버 지도")}<a href="${gPlaceUrl(f.name, f.address, f.lat, f.lng, f.pid)}" target="_blank" rel="noopener">구글 지도</a>` : ""}</div></li>`;
   };
   $("#foodList").innerHTML = todo.length ? todo.map(card).join("") : `<li class="none">${birdSvg(done.length ? "bird-happy" : "bird")}<span>${done.length ? "모두 다녀왔어요!" : S.foodCat !== "all" ? "이 종류의 맛집이 없어요." : "가고 싶은 맛집을 ‘+ 맛집 추가’로 모아 보세요. 같이 가는 사람 모두에게 보여요."}</span></li>`;
   $("#foodDoneBox").hidden = !done.length; $("#foodDoneSum").textContent = `다녀온 곳 ${done.length}개`;
@@ -2176,7 +2176,7 @@ $("#fdCats").addEventListener("click", e => {
 $("#fdCatIn").addEventListener("input", e => { FE.cat = e.target.value.trim().slice(0, 12); renderFdCats(); });
 let FE = null, foodMap = null, foodMarker = null;
 function openFood(f) {
-  FE = { f, lat: f ? f.lat : null, lng: f ? f.lng : null, cat: f ? f.cat || "" : (S.foodCat !== "all" ? S.foodCat : "") };
+  FE = { f, pid: f ? (f.pid ?? null) : null, lat: f ? f.lat : null, lng: f ? f.lng : null, cat: f ? f.cat || "" : (S.foodCat !== "all" ? S.foodCat : "") };
   $("#fdCatIn").value = FE.cat && !FOOD_CATS.some(x => x[0] === FE.cat) ? FE.cat : ""; renderFdCats();
   $("#fdTitle").textContent = f ? "맛집 수정" : "맛집 추가";
   $("#fdName").value = f ? f.name : ""; $("#fdMemo").value = f ? f.memo || "" : ""; $("#fdLink").value = f ? f.link || "" : ""; $("#fdAddr").value = f ? f.address || "" : "";
@@ -2192,7 +2192,7 @@ function setupFoodMiniMap() {
     if (FE.lat != null) foodMap.setView(FE.lat, FE.lng, 15);
     else if (others.length) foodMap.fit(others.map(x => [x.lat, x.lng]), 13, 24);
     else foodMap.setView(36.4, 127.9, 6);
-    foodMap.onClick((a, b) => setFoodLoc(a, b, false));
+    foodMap.onClick((a, b) => { FE.pid = ""; setFoodLoc(a, b, false); });
     setTimeout(() => foodMap && foodMap.refresh(), 60);
   } else $("#fdMap").innerHTML = '<p class="mapmsg">지도를 불러오지 못했어요.</p>';
   setFoodLoc(FE.lat, FE.lng, false);
@@ -2255,7 +2255,8 @@ $("#fdCancel").onclick = () => $("#fd").close();
 $("#fdForm").onsubmit = e => {
   e.preventDefault(); const name = $("#fdName").value.trim(); if (!name) { $("#fdName").focus(); return; }
   const data = { name, cat: FE.cat || "", memo: $("#fdMemo").value.trim(), link: $("#fdLink").value.trim(), address: $("#fdAddr").value.trim(), lat: FE.lat, lng: FE.lng };
-  if (FE.g) { data.g = FE.g; data.pid = FE.pid || ""; }
+  if (FE.g) data.g = FE.g;
+  if (FE.pid != null) data.pid = FE.pid;
   setFood(S.tripId, FE.f ? Object.assign({}, FE.f, data) : Object.assign({ id: uid(), created: Date.now(), addedBy: S.nick, likes: { [C.uid]: S.nick }, visited: false }, data));
   $("#fd").close(); renderFood(!FE.f); toast("저장했어요.");
 };
@@ -3192,7 +3193,7 @@ function renderToday() {
         ${next.address ? `<div class="addr">${linkify(next.address)}</div>` : ""}
         ${prevIdx >= 0 ? `<div class="mvlab">이전 일정에서</div>` + moveHtml(list[prevIdx], next) : ""}
         ${next.lat != null ? (S.myPos && Date.now() - S.myPos.at < 10 * 60e3 ? `<div class="mvlab">지금 내 위치에서</div>` + (moveHtml(S.myPos, next) || '<div class="move"><span>📍 거의 다 왔어요!</span></div>') : `<button type="button" class="btn sm mybtn" data-fromme>📍 내 위치에서 걸리는 시간 보기</button>`) : ""}
-        <div class="acts">${next.lat != null ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${next.lat},${next.lng}" target="_blank" rel="noopener">구글 길찾기</a>${naverA(next.place, next.lat, next.lng, "네이버 지도")}` : ""}<button type="button" data-goplan>오늘 일정 전체</button></div></section>`
+        <div class="acts">${next.lat != null ? `<a href="${gDirUrl(next.place, next.lat, next.lng, next.pid)}" target="_blank" rel="noopener">구글 길찾기</a>${naverA(next.place, next.lat, next.lng, "네이버 지도")}` : ""}<button type="button" data-goplan>오늘 일정 전체</button></div></section>`
         : `<section class="tnext"><p class="k">다음 일정</p><p class="none plain">${list.length ? "오늘 일정을 다 마쳤어요. 수고했어요!" : "오늘 일정이 비어 있어요."}</p></section>`}
       ${list.length ? `<ul class="tlist">${list.map((i, k) => `<li class="${i === next ? "on" : i.time && i.time < now ? "past" : ""}"><span class="time">${esc(i.time || "·")}</span>${esc(i.place)}</li>`).join("")}</ul>` : ""}`;
   } else if (st === "before") {
@@ -3601,6 +3602,10 @@ const tripC = () => COUNTRIES[tripCountry(trip(S.tripId))] || COUNTRIES.XX;
    1) 길찾기 버튼: 네이버 지도 앱을 바로 엶 (키 필요 없음). 앱이 없으면 네이버 지도 웹으로.
    2) 국내여행 지도: NAVER_KEY(네이버 클라우드 Maps의 Client ID)를 넣으면 한국 안 여행은 네이버 지도로 보여 줌. */
 const NAVER_KEY = "880g164msx";
+const gPlaceUrl = (name, addr, lat, lng, pid) => pid ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name || addr || `${lat},${lng}`)}&query_place_id=${encodeURIComponent(pid)}`
+  : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name && addr ? name + " " + addr : `${lat},${lng}`)}`;
+const gDirUrl = (name, lat, lng, pid) => pid ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(name || `${lat},${lng}`)}&destination_place_id=${encodeURIComponent(pid)}`
+  : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 const naverUrl = (name, lat, lng) => `nmap://route/public?dlat=${lat}&dlng=${lng}&dname=${encodeURIComponent(name || "목적지")}&appname=${encodeURIComponent(location.origin || "https://eeeeeunice916.github.io")}`;
 const naverWeb = name => `https://map.naver.com/p/search/${encodeURIComponent(name || "")}`;
 const naverA = (name, lat, lng, label = "네이버 길찾기") => `<a href="${naverUrl(name, lat, lng)}" data-nmap="${esc(name || "")}|${lat}|${lng}" rel="noopener">${label}</a>`;
@@ -4272,6 +4277,7 @@ $("#idForm").onsubmit = e => {
 let E = null, miniMap = null, miniMarker = null;
 function openItem(t, it, pre) {
   E = { code: t.id, t, it, lat: it ? it.lat : (pre && pre.lat != null ? pre.lat : null), lng: it ? it.lng : (pre && pre.lng != null ? pre.lng : null), photos: it ? [...(it.photos || [])] : [], pend: new Map() };
+  if (pre && pre.pid) E.pid = pre.pid;
   $("#edTitle").textContent = it ? "일정 수정" : "일정 추가";
   const days = tripDays(t);
   $("#fDate").innerHTML = days.map((d, i) => `<option value="${d}">${i + 1}일차 · ${dlabel(d)}</option>`).join("");
@@ -4304,7 +4310,7 @@ function setupMiniMap() {
   if (E.lat != null) miniMap.setView(E.lat, E.lng, 15);
   else if (others.length) miniMap.fit(others.map(i => [i.lat, i.lng]), 13, 24);
   else miniMap.setView(36.4, 127.9, 6);
-  miniMap.onClick((a, b) => setLoc(a, b, false));
+  miniMap.onClick((a, b) => { E.pid = ""; setLoc(a, b, false); });
   setLoc(E.lat, E.lng, false);
   setTimeout(() => miniMap && miniMap.refresh(), 60);
 }
@@ -4354,7 +4360,7 @@ $("#fFind").onclick = async () => {
     box.innerHTML = res.map((r, i) => `<li><button type="button" data-i="${i}"><b>${esc(r.name)}</b><small>${esc(r.addr)}</small></button></li>`).join("");
     box.onclick = e => {
       const b = e.target.closest("[data-i]"); if (!b) return; const r = res[+b.dataset.i];
-      setLoc(r.lat, r.lng); if (!$("#fPlace").value.trim()) $("#fPlace").value = r.name;
+      setLoc(r.lat, r.lng); E.pid = r.pid || ""; if (!$("#fPlace").value.trim()) $("#fPlace").value = r.name;
       box.hidden = true;
     };
   } catch (err) { box.innerHTML = `<li><p>검색하지 못했어요. 인터넷 연결을 확인해 주세요. (${esc(err.message)})</p></li>`; }
@@ -4406,6 +4412,7 @@ $("#edForm").onsubmit = e => {
   if (E.it) for (const id of (E.it.photos || [])) if (!E.photos.includes(id)) delPhoto(code, id);
   const data = { date: $("#fDate").value, time: normTime($("#fTime").value), place, duration: $("#fDur").value.trim(), booking: $("#fBook").value.trim(),
     address: $("#fAddr").value.trim(), memo: richOut($("#fMemoRich")).text, memoHtml: richOut($("#fMemoRich")).html, lat: E.lat, lng: E.lng, photos: E.photos };
+  if (E.pid != null) data.pid = E.pid;
   setItem(code, E.it ? Object.assign({}, E.it, data) : Object.assign({ id: uid(), created: Date.now() }, data));
   const keepDay = S.day === "all" || S.day === data.date ? S.day : data.date;
   if (S.mode !== "plan" && !E.it) setTimeout(() => setMode("plan"), 0);
