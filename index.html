@@ -1300,7 +1300,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "4.5";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "4.6";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -4585,16 +4585,27 @@ $("#fDel").onclick = async () => {
 $("#lb").onclick = () => $("#lb").close();
 
 /* ---------- 여행을 서버로 올리기 (백업 가져오기, 이 기기 기록 옮기기 공용) ---------- */
+const ROOM_EXTRA = ["notesDeco", "country", "cards", "rates", "ratesAt", "shopBudget", "shopOrder", "shopLocs", "wx"];
+const SUBS = ["food", "shop", "money", "pack", "diary"];
 function uploadTrip(t, photoMap) {
   const days = {};
   Object.entries(t.days || {}).forEach(([k, v]) => { days[/^\d{4}-\d{2}-\d{2}$/.test(k) ? dk(k) : k] = v; });
-  const { code } = createRoom({ title: t.title, start: t.start, end: t.end, notes: t.notes || "", notesHtml: t.notesHtml || "", notesColor: t.notesColor || "", days });
+  const base = { title: t.title, start: t.start, end: t.end, notes: t.notes || "", notesHtml: t.notesHtml || "", notesColor: t.notesColor || "", days };
+  const { code } = createRoom(base);
+  const extra = {}; ROOM_EXTRA.forEach(k => { if (t[k] != null) extra[k] = t[k]; });
+  if (Object.keys(extra).length) updateRoom(code, extra);
+  const pmap = new Map();
+  const movePhotos = list => (list || []).map(pid => { if (pmap.has(pid)) return pmap.get(pid); const data = photoMap.get(pid); if (!data) return null; const nid = uid(); pmap.set(pid, nid); putPhoto(code, nid, data); return nid; }).filter(Boolean);
   (t.items || []).forEach((it, k) => {
-    const photos = [];
-    (it.photos || []).forEach(pid => { const data = photoMap.get(pid); if (data) { const nid = uid(); photos.push(nid); putPhoto(code, nid, data); } });
     setItem(code, { id: uid(), created: it.created || Date.now() + k, date: it.date, time: it.time || "", place: it.place || "일정", duration: it.duration || "",
-      booking: it.booking || "", address: it.address || "", memo: it.memo || "", memoHtml: it.memoHtml || "", lat: it.lat ?? null, lng: it.lng ?? null, photos });
+      booking: it.booking || "", address: it.address || "", memo: it.memo || "", memoHtml: it.memoHtml || "", lat: it.lat ?? null, lng: it.lng ?? null, pid: it.pid || "", photos: movePhotos(it.photos) });
   });
+  SUBS.forEach(name => (t[name] || []).forEach(x => {
+    const { id, ...d } = x; const nx = Object.assign({}, d, { id: name === "diary" ? id : id || uid() });
+    if (nx.photos) nx.photos = movePhotos(nx.photos);
+    if (nx.menuPhotos) nx.menuPhotos = movePhotos(nx.menuPhotos);
+    const ref = roomRef(code).collection(name).doc(nx.id); const { id: _i, ...data } = nx; fire(ref.set(data));
+  }));
   return code;
 }
 function readLegacy() {
@@ -4623,16 +4634,23 @@ async function migrateLegacy() {
 }
 async function exportBackup() {
   toast("백업 파일을 만드는 중이에요…");
-  const trips = [], photos = [];
+  const trips = [], photos = [], seen = new Set();
+  const addPhotos = async (code, list) => { for (const pid of (list || [])) { if (seen.has(pid)) continue; seen.add(pid); const d = await loadPhoto(code, pid); if (d) photos.push({ id: pid, data: d }); } };
   for (const code of S.codes) {
     const t = trip(code); if (!t) continue;
     let items = S.items.get(code);
-    if (!items) { const qs = await roomRef(code).collection("items").get(); items = qs.docs.map(d => Object.assign({ id: d.id }, d.data())); }
-    for (const it of items) for (const pid of (it.photos || [])) { const d = await loadPhoto(code, pid); if (d) photos.push({ id: pid, data: d }); }
+    if (!items || S.itemsCode !== code) { const qs = await roomRef(code).collection("items").get(); items = qs.docs.map(d => Object.assign({ id: d.id }, d.data())); }
+    for (const it of items) await addPhotos(code, it.photos);
     const days = {}; Object.entries(t.days).forEach(([k, v]) => { days[k.slice(1, 5) + "-" + k.slice(5, 7) + "-" + k.slice(7, 9)] = v; });
-    trips.push({ id: code, title: t.title, start: t.start, end: t.end, notes: t.notes, notesHtml: t.notesHtml || "", notesColor: t.notesColor || "", days, items });
+    const out = { id: code, title: t.title, start: t.start, end: t.end, notes: t.notes, notesHtml: t.notesHtml || "", notesColor: t.notesColor || "", days, items };
+    ROOM_EXTRA.forEach(k => { if (t[k] != null) out[k] = t[k]; });
+    for (const name of SUBS) {
+      try { const qs = await roomRef(code).collection(name).get(); out[name] = qs.docs.map(d => Object.assign({ id: d.id }, d.data())); } catch (e) { out[name] = []; }
+      for (const x of out[name]) { await addPhotos(code, x.photos); await addPhotos(code, x.menuPhotos); }
+    }
+    trips.push(out);
   }
-  const blob = new Blob([JSON.stringify({ app: "travel-note", version: 3, exportedAt: new Date().toISOString(), trips, photos })], { type: "application/json" });
+  const blob = new Blob([JSON.stringify({ app: "travel-note", version: 4, exportedAt: new Date().toISOString(), trips, photos })], { type: "application/json" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
   a.download = `여행노트-백업-${fd(new Date())}.json`; document.body.appendChild(a); a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
@@ -4644,8 +4662,16 @@ async function importBackup(file) {
     if (j.app !== "travel-note" || !Array.isArray(j.trips)) throw new Error();
     if (!(await askNick())) return;
     const pm = new Map((j.photos || []).map(p => [p.id, p.data]));
-    j.trips.forEach(t => uploadTrip(t, pm));
-    toast(`여행 ${j.trips.length}개를 새 방으로 만들었어요.`); $("#sd").close();
+    let back = 0, made = 0, had = 0;
+    for (const t of j.trips) {
+      if (t.id && S.codes.includes(t.id) && S.rooms.has(t.id)) { had++; continue; }
+      let exists = false;
+      try { if (t.id) exists = (await roomRef(t.id).get()).exists; } catch (x) {}
+      if (exists) { try { await joinRoom(t.id, S.nick); back++; continue; } catch (x) {} }
+      uploadTrip(t, pm); made++;
+    }
+    toast([back ? `원래 방 ${back}개에 다시 들어갔어요` : "", made ? `${made}개는 백업으로 새로 만들었어요` : "", had ? `${had}개는 이미 있어요` : ""].filter(Boolean).join(" · ") || "가져올 여행이 없어요.", 5000);
+    $("#sd").close(); renderList();
   } catch (e) { toast("여행 노트 백업 파일이 아니에요. 백업으로 저장한 .json 파일을 골라 주세요.", 4000); }
 }
 $("#exp").onclick = exportBackup;
