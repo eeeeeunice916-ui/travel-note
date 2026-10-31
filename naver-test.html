@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>네이버 지도 점검</title>
+<style>body{font:16px/1.5 -apple-system,sans-serif;margin:0;padding:16px;background:#FFFBF7;color:#3E2C27}h1{font-size:20px}#map{height:260px;border-radius:14px;background:#eee;margin:12px 0}pre{white-space:pre-wrap;background:#fff;border-radius:12px;padding:12px;font-size:13px;border:1px solid #eee}button{font:inherit;padding:10px 14px;border-radius:999px;border:0;background:#3E2C27;color:#fff;margin:4px 4px 0 0}</style></head>
+<body><h1>네이버 지도 점검</h1><p>아래 버튼을 하나씩 눌러 보세요. 결과 글자를 캡처해서 보내 주면 돼요.</p>
+<button onclick="go('ncpKeyId')">1. ncpKeyId로 시험</button><button onclick="go('ncpClientId')">2. ncpClientId로 시험</button>
+<div id="map"></div><pre id="log"></pre>
+<script>
+const KEY = "880g164msx", log = m => document.getElementById("log").textContent += m + "\n";
+log("페이지 주소: " + location.href); log("origin: " + location.origin); log("referrer 정책: " + (document.referrer ? "있음" : "없음(정상)"));
+function go(p) {
+  document.getElementById("map").innerHTML = ""; try { delete window.naver; } catch (e) {}
+  let failed = false;
+  window.navermap_authFailure = () => { failed = true; log("❌ " + p + ": 인증 실패"); };
+  const s = document.createElement("script");
+  s.src = "https://oapi.map.naver.com/openapi/v3/maps.js?" + p + "=" + KEY;
+  s.onload = () => {
+    if (!window.naver || !naver.maps) { log("❌ " + p + ": 스크립트는 받았지만 지도 기능 없음"); return; }
+    try { new naver.maps.Map("map", { center: new naver.maps.LatLng(36.3276, 127.4272), zoom: 15 }); } catch (e) { log("❌ " + p + ": " + e.message); return; }
+    setTimeout(() => { if (!failed) log("✅ " + p + ": 지도 생성 성공 (위에 지도가 보이면 성공)"); }, 2500);
+  };
+  s.onerror = () => log("❌ " + p + ": 스크립트를 받지 못함 (인터넷 또는 차단)");
+  document.head.appendChild(s); log("… " + p + " 시험 중");
+}
+</script></body></html>

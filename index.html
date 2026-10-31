@@ -3338,14 +3338,30 @@ const nvCountKey = () => "tn-nv-" + fd(new Date());
 const nvCanUse = () => (ls.get(nvCountKey(), 0) || 0) < NV_DAY_CAP;
 const nvCount = () => ls.set(nvCountKey(), (ls.get(nvCountKey(), 0) || 0) + 1);
 function wantNaver() { return !!NAVER_KEY && !!S.tripId && tripCountry(trip(S.tripId)) === "KR" && (ls.get("tn-nv-off", 0) || 0) < Date.now(); }
+/* 네이버 키 이름이 콘솔 버전에 따라 ncpKeyId(새) / ncpClientId(예전)로 달라서, 하나가 인증에 실패하면 다른 이름으로 한 번 더 시도 */
+const NV_PARAMS = ["ncpKeyId", "ncpClientId"];
 function loadNaverMaps() {
   if (NV.p) return NV.p;
   NV.p = new Promise(res => {
     if (!NAVER_KEY || !/^https?:$/.test(location.protocol)) { NV.state = "failed"; return res(false); }
     NV.state = "loading";
-    window.navermap_authFailure = () => { NV.state = "failed"; ls.set("tn-nv-off", Date.now() + 60e3); toast(`네이버 지도 인증 실패 (주소: ${location.origin}). 1분 뒤 다시 시도해요. 그동안 다른 지도로 보여 줄게요.`, 6000); MAP_POOL["main-nv"] = null; MAP_POOL["food-nv"] = null; if (S.ready) rebuildMaps(); };
+    const param = ls.get("tn-nv-param", NV_PARAMS[0]);
+    window.navermap_authFailure = () => {
+      const tried = NV.tried || (NV.tried = new Set()); tried.add(param);
+      const next = NV_PARAMS.find(x => !tried.has(x));
+      MAP_POOL["main-nv"] = null; MAP_POOL["food-nv"] = null;
+      if (next) {   // 다른 이름으로 다시
+        ls.set("tn-nv-param", next); NV.p = null; NV.state = "idle";
+        try { delete window.naver; } catch (e) { window.naver = undefined; }
+        if (S.ready) setTimeout(rebuildMaps, 0);
+        return;
+      }
+      NV.state = "failed"; NV.tried = null; ls.set("tn-nv-param", NV_PARAMS[0]); ls.set("tn-nv-off", Date.now() + 60e3);
+      toast(`네이버 지도 인증 실패 (주소: ${location.origin}). 1분 뒤 다시 시도해요. 그동안 다른 지도로 보여 줄게요.`, 6000);
+      if (S.ready) rebuildMaps();
+    };
     const sc = document.createElement("script");
-    sc.src = "https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=" + encodeURIComponent(NAVER_KEY) + "&submodules=geocoder";
+    sc.src = "https://oapi.map.naver.com/openapi/v3/maps.js?" + param + "=" + encodeURIComponent(NAVER_KEY) + "&submodules=geocoder";
     sc.async = true;
     sc.onload = () => { if (window.naver && naver.maps) { NV.state = "ready"; res(true); } else { NV.state = "failed"; res(false); } };
     sc.onerror = () => { NV.state = "failed"; res(false); };
