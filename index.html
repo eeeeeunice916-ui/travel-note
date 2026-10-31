@@ -2342,8 +2342,11 @@ document.addEventListener("click", async e => {
   if (e.target.closest("#adminId")) { copyText(C.uid || "", "기기 ID를 복사했어요."); return; }
   if (e.target.closest("#adminIn")) {
     const code = await askText("관리자 코드", "Firebase에 적어 둔 코드"); if (!code) return;
-    try { await C.db.collection("admins").doc(C.uid).set({ code, nick: S.nick || "", at: Date.now() }); S.admin = true; toast("관리자가 되었어요 ✅"); U.warned = false; renderUsage(); }
-    catch (x) { toast(x && x.code === "permission-denied" ? "코드가 맞지 않거나, Firebase 규칙·코드 문서가 아직 없어요." : errMsg(x), 4500); }
+    try { await C.db.collection("admins").doc(C.uid).set({ code, nick: S.nick || "", at: Date.now() }); S.admin = true; U.warned = false; await loadUsage(true); renderUsage(); }
+    catch (x) {
+      const msg = x && x.code === "permission-denied" ? "❌ 관리자 등록이 안 됐어요. ① 코드가 Firebase의 secret → admin → code 값과 똑같은지 (대소문자·띄어쓰기 포함) ② Firestore 규칙을 새로 게시했는지 확인해 주세요." : "❌ " + errMsg(x);
+      const box = $("#adminBox"); if (box) { let p = box.querySelector(".adminerr"); if (!p) { p = document.createElement("p"); p.className = "warn adminerr"; box.appendChild(p); } p.textContent = msg; }
+    }
     return;
   }
   if (e.target.closest("#adminOut")) {
