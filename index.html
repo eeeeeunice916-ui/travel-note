@@ -1300,7 +1300,7 @@ html.dk .taxbox{background:#183326;border-color:#28543d;color:#BFE8CF}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "4.3";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "4.4";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2394,15 +2394,18 @@ const DEF_LIMITS = { userMapsDay: 20, userMapsMonth: 200, userSearchDay: 30, use
 const U = { ok: false, day: {}, month: {}, nvDay: {}, nvMonth: {}, uDay: {}, uMonth: {}, lim: Object.assign({}, DEF_LIMITS), at: 0, warned: false };
 const dayKey = () => fd(new Date()), monthKey = () => fd(new Date()).slice(0, 7);
 const uref = id => C.db.collection("usage").doc(id);
+/* 앱을 지웠다 다시 깔면 기기 ID가 바뀌므로, 닉네임으로도 같이 셈 (둘 중 큰 값으로 한도 확인) */
+const nickKey = () => { let h = 5381; for (const ch of (S.nick || "").trim()) h = ((h << 5) + h + ch.codePointAt(0)) | 0; return "n-" + (h >>> 0).toString(36); };
 S.admin = false;
 async function loadUsage(force) {
   if (!C.db || (!force && Date.now() - U.at < 5 * 60e3)) return;
   U.at = Date.now();
   try {
-    const me = C.uid, ids = ["d-" + dayKey(), "m-" + monthKey(), "nv-d-" + dayKey(), "nv-m-" + monthKey(), `u-${me}-d-${dayKey()}`, `u-${me}-m-${monthKey()}`];
+    const me = C.uid, nk = nickKey(), ids = ["d-" + dayKey(), "m-" + monthKey(), "nv-d-" + dayKey(), "nv-m-" + monthKey(), `u-${me}-d-${dayKey()}`, `u-${me}-m-${monthKey()}`, `${nk}-d-${dayKey()}`, `${nk}-m-${monthKey()}`];
     const snaps = await Promise.all(ids.map(id => uref(id).get()));
-    const [d, m, nd, nm, ud, um] = snaps.map(s => s.exists ? s.data() : {});
-    Object.assign(U, { day: d, month: m, nvDay: nd, nvMonth: nm, uDay: ud, uMonth: um, ok: true });
+    const [d, m, nd, nm, ud, um, kd, km] = snaps.map(s => s.exists ? s.data() : {});
+    const mx = (a, b) => ({ maps: Math.max(a.maps || 0, S.nick ? b.maps || 0 : 0), search: Math.max(a.search || 0, S.nick ? b.search || 0 : 0) });
+    Object.assign(U, { day: d, month: m, nvDay: nd, nvMonth: nm, uDay: mx(ud, kd), uMonth: mx(um, km), ok: true });
   } catch (e) { U.ok = false; }
   try { const c = await C.db.collection("config").doc("limits").get(); if (c.exists) U.lim = Object.assign({}, DEF_LIMITS, c.data()); } catch (e) {}
   U.base = Object.assign({}, U.lim);
@@ -2445,6 +2448,7 @@ function countUse(kind, nv) {
   const me = C.uid;
   U.uDay[kind] = (U.uDay[kind] || 0) + 1; U.uMonth[kind] = (U.uMonth[kind] || 0) + 1;
   bump(`u-${me}-d-${dayKey()}`, kind); bump(`u-${me}-m-${monthKey()}`, kind);
+  if (S.nick) { const nk = nickKey(); bump(`${nk}-d-${dayKey()}`, kind); bump(`${nk}-m-${monthKey()}`, kind); }
   if (nv) { U.nvDay.maps = (U.nvDay.maps || 0) + 1; U.nvMonth.maps = (U.nvMonth.maps || 0) + 1; bump("nv-d-" + dayKey(), "maps"); bump("nv-m-" + monthKey(), "maps"); return; }
   U.day[kind] = (U.day[kind] || 0) + 1; U.month[kind] = (U.month[kind] || 0) + 1;
   bump("d-" + dayKey(), kind); bump("m-" + monthKey(), kind);
@@ -2469,7 +2473,7 @@ async function showUsers() {
     const now = Date.now(), active = list.filter(u => now - (u.lastSeen || 0) < 30 * 864e5).length;
     box.innerHTML = `<p class="desc">전체 <b>${list.length}</b>명 · 최근 30일 사용 <b>${active}</b>명</p>
       <div class="tw2"><table class="adm"><tr><th>닉네임</th><th>마지막 접속</th><th>여행</th><th>이번 달 지도/검색</th><th>한도</th></tr>
-      ${list.map((u, i) => `<tr><td>${esc(u.nick || "(이름 없음)")}${u.id === C.uid ? " (나)" : ""}<br><small style="color:var(--muted)">${esc(u.id.slice(-4))}</small></td><td>${u.lastSeen ? ago(u.lastSeen) : "–"}</td><td>${u.trips ?? "–"}</td><td>${use[i].maps || 0} / ${use[i].search || 0}</td><td><button type="button" class="link" data-ulim="${esc(u.id)}" data-unick="${esc(u.nick || "")}">${(U.userLim || {})[u.id] ? `지도 ${U.userLim[u.id].userMapsDay}/일 ✎` : "기본 ✎"}</button></td></tr>`).join("")}</table></div>
+      ${list.map((u, i) => `<tr><td>${esc(u.nick || "(이름 없음)")}${u.id === C.uid ? " (나)" : ""}<br><small style="color:var(--muted)">${esc(u.id.slice(-4))}</small></td><td>${u.lastSeen ? ago(u.lastSeen) : "–"}</td><td>${u.trips ?? "–"}</td><td>${use[i].maps || 0} / ${use[i].search || 0}${u.id !== C.uid ? `<br><button type="button" class="link" data-uclean="${esc(u.id)}" data-unick="${esc(u.nick || "")}" style="color:var(--danger);font-size:11px">정리</button>` : ""}</td><td><button type="button" class="link" data-ulim="${esc(u.id)}" data-unick="${esc(u.nick || "")}">${(U.userLim || {})[u.id] ? `지도 ${U.userLim[u.id].userMapsDay}/일 ✎` : "기본 ✎"}</button></td></tr>`).join("")}</table></div>
       <p class="desc">같은 사람이 아이폰 사파리와 홈 화면 앱처럼 여러 기기로 쓰면 따로 나와요 (아래 작은 글자가 기기 끝 번호).</p>`;
   } catch (x) {
     box.innerHTML = `<p class="warn">${x && x.code === "permission-denied" ? "목록을 볼 권한이 없어요. Firestore 규칙에 사용자 목록 부분을 넣어 주세요." : esc(errMsg(x))}</p>`;
@@ -2477,8 +2481,24 @@ async function showUsers() {
 }
 document.addEventListener("click", e => {
   if (e.target.closest("#userList")) { showUsers(); return; }
-  const b = e.target.closest("[data-ulim]"); if (b) openUserLimit(b.dataset.ulim, b.dataset.unick);
+  const b = e.target.closest("[data-ulim]"); if (b) { openUserLimit(b.dataset.ulim, b.dataset.unick); return; }
+  const c = e.target.closest("[data-uclean]"); if (c) cleanUser(c.dataset.uclean, c.dataset.unick);
 });
+/* 앱을 지운 기기 정리: 그 기기가 들어 있던 여행에서 빼고(방장이면 나에게 넘김), 사용자 목록에서 지움 */
+async function cleanUser(id, nick) {
+  if (!(await askConfirm(`‘${nick || "이름 없음"}’ (${id.slice(-4)}) 기기를 정리할까요? 이 기기가 들어 있던 여행에서 빠지고, 방장이었던 여행은 내가 방장이 돼요. 여행 내용은 그대로 남아요.`, "정리"))) return;
+  let n = 0;
+  try {
+    for (const [code, r] of S.rooms) {
+      if (!r.members || !r.members[id]) continue;
+      const upd = { ["members." + id]: firebase.firestore.FieldValue.delete() };
+      if (r.owner === id) upd.owner = C.uid;
+      await roomRef(code).update(upd); n++;
+    }
+    await C.db.collection("users").doc(id).delete();
+    toast(`정리했어요.${n ? ` 여행 ${n}개에서 뺐어요.` : ""}`); showUsers();
+  } catch (x) { toast(x && x.code === "permission-denied" ? "권한이 없어요. Firestore 규칙을 새 버전(관리자 정리 포함)으로 게시해 주세요." : errMsg(x), 5000); }
+}
 let ULU = null;
 function openUserLimit(id, nick) {
   ULU = id; const L = Object.assign({}, U.base || DEF_LIMITS, (U.userLim || {})[id] || {});
@@ -2825,7 +2845,7 @@ function bindLongPress(box) {
 function openLongMenu(id) {
   lpId = id; const t = trip(id); if (!t) return;
   $("#lpTitle").textContent = t.title;
-  $("#lpDel").textContent = isOwner(t) ? "삭제하기" : "방 나가기";
+  $("#lpDel").textContent = isOwner(t) ? "삭제하기" : S.admin ? "삭제하기 (관리자)" : "방 나가기";
   openDlg($("#lp"));
 }
 $("#lpNo").onclick = () => $("#lp").close();
@@ -2833,7 +2853,7 @@ $("#lpDel").onclick = async () => {
   const t = trip(lpId), lp = $("#lp");
   const pushed = lp._pushed; lp._pushed = false; lp.close();   // 뒤로가기 기록을 다음 창으로 넘김
   if (!t) { if (pushed) backSelf(); return; }
-  if (isOwner(t)) {
+  if (isOwner(t) || S.admin) {
     $("#pw")._pushed = pushed;
     const others = memberList(t).filter(m => !m.me).length;
     if (!(await checkPassword(`‘${t.title}’ 여행과 모든 일정, 사진이 삭제돼요.${others ? ` 함께하는 ${others}명에게서도 사라져요.` : ""} 삭제하면 되돌릴 수 없어요.`))) return;
