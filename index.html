@@ -1157,6 +1157,9 @@ a.ab{display:inline-block;text-decoration:none}
 .saddbar .more2{justify-self:end;border:0;background:none;color:var(--muted);font:600 11.5px var(--font);padding:0 4px;cursor:pointer}
 #shopView{padding-bottom:96px}
 
+.wdots{display:flex;gap:3px;flex:none}
+.wdots button{width:24px;height:24px;border-radius:99px;border:1.5px dashed var(--line);background:var(--surface);color:var(--muted);font:800 11px var(--font);padding:0;cursor:pointer;filter:brightness(.95)}
+.wdots button.on{border-style:solid;border-color:var(--lime);background:var(--lime);color:#fff;filter:none}
 .pbtns{display:flex;gap:8px;flex-wrap:wrap}
 .isgrid{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;max-height:52vh;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:6px 0}
 .isgrid button{position:relative;flex:0 0 calc((100% - 12px) / 3);height:0;padding:0 0 calc((100% - 12px) / 3);border:0;background:var(--field);border-radius:10px;overflow:hidden;cursor:pointer}
@@ -1273,7 +1276,7 @@ a.ab{display:inline-block;text-decoration:none}
   <form id="pkForm" method="dialog">
     <h2>챙길 것</h2>
     <label for="pkName">이름<input id="pkName" required autocomplete="off"></label>
-    <label for="pkScopeE">누가 챙기나요<select id="pkScopeE"><option value="each">각자 하나씩</option><option value="shared">공용 (한 명만)</option></select></label>
+    <div><span class="lab">누가 챙기나요 <small style="color:var(--muted);font-weight:500">여러 명 고를 수 있어요 · 고른 사람이 모두 챙겨야 끝나요</small></span><div class="cats" id="pkWho" style="margin-top:6px"></div></div>
     <div class="dfoot"><button type="button" class="btn danger" id="pkDel">삭제</button><span class="sp"></span>
       <button type="button" class="btn" id="pkCancel">취소</button><button type="submit" class="btn primary">저장</button></div>
   </form>
@@ -1575,7 +1578,7 @@ a.ab{display:inline-block;text-decoration:none}
     <label class="tgl"><span>면세로 살 거예요</span><input type="checkbox" id="shTax"></label>
     <div><span class="lab">사진 예시</span><p class="hint" style="margin:2px 0 0">찾을 상품 사진이나 캡처를 넣어 두면 가게에서 보여 주기 좋아요.</p>
       <div id="shPhotos" class="pgrid"></div>
-      <label class="btn ghost" for="shFile">사진 추가<input type="file" id="shFile" accept="image/*" multiple hidden></label></div>
+      <div class="pbtns"><label class="btn ghost" for="shFile">사진 추가<input type="file" id="shFile" accept="image/*" multiple hidden></label><button type="button" class="btn ghost" data-isr="shop">사진 검색</button></div></div>
     <div class="dfoot">
       <button type="button" class="btn danger" id="shDel">삭제</button>
       <button type="button" class="btn ghost" id="shShow">🙋 보여주기</button>
@@ -1828,7 +1831,7 @@ a.ab{display:inline-block;text-decoration:none}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "2.0";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "2.1";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2793,7 +2796,7 @@ document.addEventListener("click", e => {
   const b = e.target.closest("[data-isr]"); if (!b) return;
   if (!KAKAO_KEY) { toast("사진 검색은 카카오 키를 넣은 뒤에 쓸 수 있어요."); return; }
   IS.to = b.dataset.isr; IS.docs = []; IS.pick.clear(); IS.end = true;
-  $("#isQ").value = IS.to === "food" ? $("#fdName").value.trim() : $("#fPlace") ? $("#fPlace").value.trim() : "";
+  $("#isQ").value = IS.to === "food" ? $("#fdName").value.trim() : IS.to === "shop" ? $("#shName").value.trim() : $("#fPlace") ? $("#fPlace").value.trim() : "";
   $("#isGrid").innerHTML = ""; $("#isMore").hidden = true; isPickUpd();
   $("#isMsg").textContent = "카카오톡 #검색처럼 다음에서 사진을 찾아요. 마음에 드는 사진을 눌러 고른 뒤 ‘넣기’를 누르세요.";
   $("#isr").showModal();
@@ -2836,8 +2839,8 @@ $("#isAdd").onclick = async () => {
   $("#isAdd").disabled = true; $("#isAdd").textContent = "가져오는 중…";
   let ok = 0;
   for (const d of picks) { const data = await isFetch(d); if (!data) continue; const id = uid(); ok++;
-    if (IS.to === "food") { FP.pend.set(id, data); FP.photos.push(id); } else { E.pend.set(id, data); E.photos.push(id); } }
-  if (IS.to === "food") renderFdPhotos(); else renderEdPhotos();
+    if (IS.to === "food") { FP.pend.set(id, data); FP.photos.push(id); } else if (IS.to === "shop") { SP.pend.set(id, data); SP.photos.push(id); } else { E.pend.set(id, data); E.photos.push(id); } }
+  if (IS.to === "food") renderFdPhotos(); else if (IS.to === "shop") renderShPhotos(); else renderEdPhotos();
   $("#isr").close();
   toast(ok === picks.length ? `사진 ${ok}장을 넣었어요. 저장을 눌러야 남아요.` : ok ? `${ok}장만 넣었어요. 나머지는 사이트에서 막혀 있어요.` : "이 사진들은 사이트에서 막혀 있어서 가져올 수 없어요. 다른 사진을 골라 주세요.", 3500);
 };
@@ -4126,32 +4129,39 @@ function bindMoney(root) {
 /* ---------- 짐 체크리스트 ---------- */
 const PACK_PRESET = ["여권", "항공권·e티켓", "이심·유심", "휴대폰 충전기", "보조배터리", "멀티 어댑터 (돼지코)", "상비약", "현금 (환전)", "트래블카드", "세면도구", "잠옷", "우산"];
 const packDoneBy = p => Object.keys(p.done || {});
-const packMine = p => p.scope === "shared" ? packDoneBy(p).length > 0 : !!(p.done || {})[S.nick];
+/* v2.1 담당자 여러 명: who = [이름…]. 비어 있으면 예전 방식 (각자 = 모두 / 공용 = 아무나 한 명) */
+const tripPpl = () => { const t = trip(S.tripId); return t ? memberList(t).map(m => m.nick) : [S.nick]; };
+const packWho = p => Array.isArray(p.who) && p.who.length ? p.who : p.scope === "shared" ? null : tripPpl();
+const packAll = p => { const w = packWho(p), d = p.done || {}; return w ? w.every(n => d[n]) : packDoneBy(p).length > 0; };   // 담당 모두 챙겨야 끝
+const packMine = p => { const w = packWho(p), d = p.done || {}; return !w ? packDoneBy(p).length > 0 : w.includes(S.nick) ? !!d[S.nick] : true; };
+const todoWho = x => Array.isArray(x.who) ? (x.who.length ? x.who : null) : x.who === "all" ? tripPpl() : x.who ? [x.who] : null;
+const todoDones = x => x.dones || (x.done && x.done.by ? { [x.done.by]: x.done.at || 1 } : {});
+/* 이름 첫 글자 동그라미 (누르면 그 사람 체크) */
+const whoDots = (names, doneMap, attr) => names && names.length ? `<span class="wdots">${names.map(n => `<button type="button" class="${doneMap[n] ? "on" : ""}" ${attr}="${esc(n)}" title="${esc(n)}${doneMap[n] ? " 완료" : ""}">${esc(String(n).slice(0, 1))}</button>`).join("")}</span>` : "";
 function renderPack() {
   const box = $("#packView"); const t = trip(S.tripId); if (!box || !t) return;
   const all = subList("pack").slice().sort((a, b) => (a.created || 0) - (b.created || 0));
-  const each = all.filter(p => p.scope !== "shared"), shared = all.filter(p => p.scope === "shared");
+  const open = all.filter(p => !packAll(p)), fin = all.filter(packAll);
   const done = all.filter(packMine).length;
   const ppl = memberList(t).map(m => m.nick);
-  const row = p => { const who = packDoneBy(p), mine = packMine(p);
-    const info = p.scope === "shared" ? (who.length ? `${esc(who[0])}가 챙김` : "아직 아무도 안 챙김")
-      : ppl.length > 1 ? `<span class="pkwho">${ppl.map(n => `<i class="${(p.done || {})[n] ? "on" : ""}" title="${esc(n)}">${esc(n.slice(0, 1))}</i>`).join("")}</span>` : "";
-    return `<li class="shopi${mine ? " done" : ""}"><button type="button" class="chk" data-pk="${p.id}" aria-pressed="${mine}" aria-label="${esc(p.name)} ${mine ? "취소" : "챙김"}">✓</button>
-      <div class="sb" data-pkedit="${p.id}"><div class="sn">${esc(p.name)}</div>${info ? `<div class="sm">${info}</div>` : ""}</div></li>`; };
+  const row = p => { const who = packDoneBy(p), w = packWho(p), mine = packMine(p), complete = packAll(p);
+    const info = !w ? (who.length ? `${esc(who[0])}가 챙김` : "아무나 한 명") : w.length === 1 ? `${esc(w[0])} 담당` : `${w.filter(n => (p.done || {})[n]).length}/${w.length}명 챙김`;
+    return `<li class="shopi${complete ? " done" : ""}"><button type="button" class="chk" data-pk="${p.id}" aria-pressed="${complete || (w && w.includes(S.nick) && mine)}" aria-label="${esc(p.name)} ${mine ? "취소" : "챙김"}">✓</button>
+      <div class="sb" data-pkedit="${p.id}"><div class="sn">${esc(p.name)}</div><div class="sm">${info}</div></div>${w && (ppl.length > 1 || w.length > 1) ? whoDots(w, p.done || {}, `data-pkp="${p.id}" data-n`) : ""}</li>`; };
   box.innerHTML = `
     ${all.length ? `<div class="sprog"><span>내가 챙길 짐 ${done}/${all.length}</span><span class="bar2"><i style="width:${Math.round(done / all.length * 100)}%"></i></span></div>` : ""}
     <form class="shopadd" id="pkAdd"><input id="pkIn" placeholder="챙길 것 (예: 여권)" autocomplete="off" aria-label="챙길 것">
-      <select id="pkScope" aria-label="누가 챙기나요" class="pksel"><option value="each">각자</option><option value="shared">공용</option></select><button class="btn primary" type="submit">추가</button></form>
+      <select id="pkScope" aria-label="누가 챙기나요" class="pksel"><option value="each">모두 각자</option><option value="shared">아무나 한 명</option><option value="me">나만</option></select><button class="btn primary" type="submit">추가</button></form>
     <div class="row" style="margin:-4px 0 14px"><button type="button" class="btn sm" id="pkPreset">기본 목록 넣기</button><button type="button" class="btn sm" id="pkCopy">다른 여행에서 가져오기</button></div>
-    ${each.length ? `<h3 class="sech">각자 챙길 것</h3><ul class="shop">${each.map(row).join("")}</ul>` : ""}
-    ${shared.length ? `<h3 class="sech">공용 <small>한 명만 챙기면 돼요</small></h3><ul class="shop">${shared.map(row).join("")}</ul>` : ""}
+    ${open.length ? `<h3 class="sech">챙길 것 <small>담당한 사람이 모두 챙기면 끝나요</small></h3><ul class="shop">${open.map(row).join("")}</ul>` : ""}
+    ${fin.length ? `<details class="shopdone"><summary>다 챙긴 것 ${fin.length}개</summary><ul class="shop">${fin.map(row).join("")}</ul></details>` : ""}
     ${all.length ? "" : `<div class="none">${birdSvg("bird")}<span>챙길 짐을 적어 보세요. ‘기본 목록 넣기’를 누르면 여권, 충전기 같은 필수품이 한 번에 들어가요.</span></div>`}`;
 }
 let PK = null;
 function addPack(name, scope) {
   const n = name.trim(); if (!n) return false;
   if (subList("pack").some(p => p.name === n)) return false;
-  setSub("pack", S.tripId, { id: uid(), name: n, scope: scope === "shared" ? "shared" : "each", done: {}, created: Date.now() + Math.random() });
+  setSub("pack", S.tripId, Object.assign({ id: uid(), name: n, scope: scope === "shared" ? "shared" : "each", done: {}, created: Date.now() + Math.random() }, scope === "me" ? { who: [S.nick] } : {}));
   return true;
 }
 function bindPack(root) {
@@ -4166,16 +4176,28 @@ function bindPack(root) {
     if (e.target.closest("#pkCopy")) { openPackCopy(); return; }
     const c = e.target.closest("[data-pk]");
     if (c) { const p = subList("pack").find(x => x.id === c.dataset.pk); if (!p) return;
-      const done = Object.assign({}, p.done || {});
-      if (p.scope === "shared") { if (Object.keys(done).length) { for (const k of Object.keys(done)) delete done[k]; } else done[S.nick] = true; }
-      else { if (done[S.nick]) delete done[S.nick]; else done[S.nick] = true; }
+      const done = Object.assign({}, p.done || {}), w = packWho(p);
+      if (!w) { if (Object.keys(done).length) { for (const k of Object.keys(done)) delete done[k]; } else done[S.nick] = true; }
+      else if (w.includes(S.nick)) { if (done[S.nick]) delete done[S.nick]; else done[S.nick] = true; }
+      else { toast(`${w.join(", ")} 담당이에요. 이름 동그라미를 누르면 대신 체크할 수 있어요.`, 3000); return; }
       setSub("pack", S.tripId, Object.assign({}, p, { done })); renderPack(); renderToday(); return; }
+    const pp = e.target.closest("[data-pkp]");
+    if (pp) { const p = subList("pack").find(x => x.id === pp.dataset.pkp); if (!p) return; const n = pp.dataset.n, done = Object.assign({}, p.done || {});
+      if (done[n]) delete done[n]; else done[n] = true; setSub("pack", S.tripId, Object.assign({}, p, { done })); renderPack(); renderToday(); return; }
     const ed = e.target.closest("[data-pkedit]");
-    if (ed) { PK = subList("pack").find(x => x.id === ed.dataset.pkedit); if (!PK) return; $("#pkName").value = PK.name; $("#pkScopeE").value = PK.scope === "shared" ? "shared" : "each"; openDlg($("#pk")); }
+    if (ed) { PK = subList("pack").find(x => x.id === ed.dataset.pkedit); if (!PK) return; $("#pkName").value = PK.name; PK = Object.assign({}, PK, { who: packWho(PK) ? [...packWho(PK)] : [] }); paintPkWho(); openDlg($("#pk")); }
   });
 }
 $("#pkCancel").onclick = () => $("#pk").close();
-$("#pkForm").onsubmit = e => { e.preventDefault(); if (!PK) return; setSub("pack", S.tripId, Object.assign({}, PK, { name: $("#pkName").value.trim() || PK.name, scope: $("#pkScopeE").value })); $("#pk").close(); renderPack(); };
+function paintPkWho() {
+  const ppl = tripPpl(); (PK.who || []).forEach(n => { if (!ppl.includes(n)) ppl.push(n); });
+  $("#pkWho").innerHTML = ppl.map(n => `<button type="button" class="cat" data-pkw="${esc(n)}" aria-pressed="${(PK.who || []).includes(n)}">${esc(n === nickOf() ? n + " (나)" : n)}</button>`).join("")
+    + `<button type="button" class="cat" data-pkw="" aria-pressed="${!(PK.who || []).length}">아무나 한 명</button>`;
+}
+$("#pkWho").onclick = e => { const b = e.target.closest("[data-pkw]"); if (!b || !PK) return; const n = b.dataset.pkw;
+  if (!n) PK.who = []; else { const w = new Set(PK.who || []); if (w.has(n)) w.delete(n); else w.add(n); PK.who = [...w]; } paintPkWho(); };
+$("#pkForm").onsubmit = e => { e.preventDefault(); if (!PK) return; const w = PK.who || [];
+  setSub("pack", S.tripId, Object.assign({}, PK, { name: $("#pkName").value.trim() || PK.name, who: w, scope: w.length ? "each" : "shared" })); $("#pk").close(); renderPack(); };
 $("#pkDel").onclick = () => { if (!PK) return; trashPut("pack", PK); delSub("pack", S.tripId, PK.id); $("#pk").close(); renderPack(); };
 function openPackCopy() {
   const others = S.codes.filter(c => c !== S.tripId && S.rooms.has(c)).map(trip);
@@ -5913,16 +5935,17 @@ const todoDue = (t, x) => x.date || (x.off != null && t.start ? addDays(t.start,
 function addTodo(o) {
   const t = trip(S.tripId); if (!t || !o.title) return false;
   if (subList("todo").some(x => !x.done && x.title === o.title)) return false;
-  setSub("todo", t.id, Object.assign({ id: uid(), cat: "etc", who: "", done: null, created: Date.now() + Math.random(), by: nickOf() }, o));
+  setSub("todo", t.id, Object.assign({ id: uid(), cat: "etc", who: [], done: null, created: Date.now() + Math.random(), by: nickOf() }, o));
   return true;
 }
 function todoRow(t, x) {
   const due = todoDue(t, x), c = todoCat(x.cat), urgent = !x.done && due && dLeft(due) <= 3;
-  const who = x.who === "all" ? "모두" : x.who || "";
+  const w = todoWho(x), dn = todoDones(x), mineDone = w && w.includes(nickOf()) ? !!dn[nickOf()] : !!x.done;
   const ref = x.ref ? (x.ref.kind === "food" ? "🍜 맛집에서" : x.ref.kind === "item" ? "🗓️ 일정에서" : "✈️ 항공·숙소에서") : "";
-  return `<li class="shopi tdo${x.done ? " done" : ""}"><button type="button" class="chk" data-tdo="${x.id}" aria-pressed="${!!x.done}" aria-label="${esc(x.title)} ${x.done ? "취소" : "완료"}">✓</button>
-    <div class="sb" data-tdedit="${x.id}"><div class="sn">${esc(x.title)}</div><div class="sm"><span class="ttag t-${x.cat || "etc"}">${c[1]} ${c[2]}</span>${ref ? ref + " · " : ""}${x.link ? "🔗 링크 · " : ""}${x.memo ? esc(x.memo.slice(0, 30)) : ""}${x.done ? ` ✓ ${esc(x.done.by || "")}` : ""}</div></div>
-    ${due && !x.done ? `<span class="due${urgent ? " red" : ""}">${dLabel(due)}</span>` : ""}${who ? `<span class="av" title="${esc(who)}">${esc(who.slice(0, 1))}</span>` : ""}</li>`;
+  const prog = w && w.length > 1 && !x.done ? ` · ${w.filter(n => dn[n]).length}/${w.length}명 완료` : "";
+  return `<li class="shopi tdo${x.done ? " done" : ""}"><button type="button" class="chk" data-tdo="${x.id}" aria-pressed="${!!x.done || mineDone}" aria-label="${esc(x.title)} ${mineDone ? "취소" : "완료"}">✓</button>
+    <div class="sb" data-tdedit="${x.id}"><div class="sn">${esc(x.title)}</div><div class="sm"><span class="ttag t-${x.cat || "etc"}">${c[1]} ${c[2]}</span>${ref ? ref + " · " : ""}${x.link ? "🔗 링크 · " : ""}${x.memo ? esc(x.memo.slice(0, 30)) : ""}${x.done ? ` ✓ ${esc(w ? w.join(", ") : x.done.by || "")}` : prog}</div></div>
+    ${due && !x.done ? `<span class="due${urgent ? " red" : ""}">${dLabel(due)}</span>` : ""}${w ? whoDots(w, dn, `data-tdp="${x.id}" data-n`) : ""}</li>`;
 }
 function todoHtml(t) {
   const all = subList("todo").slice(), open = all.filter(x => !x.done), done = all.filter(x => x.done);
@@ -5943,7 +5966,7 @@ function todoHtml(t) {
 }
 let TD = null;
 function openTodo(x) {
-  const t = trip(S.tripId); TD = x ? Object.assign({}, x) : { id: uid(), cat: "book", who: "", off: 7, created: Date.now() };
+  const t = trip(S.tripId); TD = x ? Object.assign({}, x) : { id: uid(), cat: "book", who: [], off: 7, created: Date.now() };
   $("#toTitleH").textContent = x ? "할 일 수정" : "할 일 추가";
   $("#toName").value = TD.title || ""; $("#toLink").value = TD.link || ""; $("#toMemo").value = TD.memo || "";
   $("#toDate").value = todoDue(t, TD) || ""; $("#toDel").hidden = !x;
@@ -5954,24 +5977,39 @@ function paintTodo() {
   $("#toCats").innerHTML = TODO_CATS.map(([id, ic, nm]) => `<button type="button" class="cat" data-tc="${id}" aria-pressed="${TD.cat === id}">${ic} ${nm}</button>`).join("");
   $("#toOffs").innerHTML = [30, 14, 7, 3, 1].map(n => `<button type="button" class="cat" data-toff="${n}" aria-pressed="${TD.off === n && !TD.date}">${n === 1 ? "하루 전" : n + "일 전"}</button>`).join("") + `<button type="button" class="cat" data-toff="" aria-pressed="${TD.off == null && !TD.date}">기한 없음</button>`;
   const ppl = memberList(t).map(m => m.nick);
-  $("#toWho").innerHTML = [...ppl.map(n => [n, n === nickOf() ? n + " (나)" : n]), ["all", "모두"], ["", "아무나"]].map(([v, l]) => `<button type="button" class="cat" data-twho="${esc(v)}" aria-pressed="${(TD.who || "") === v}">${esc(l)}</button>`).join("");
+  if (!Array.isArray(TD.who)) TD.who = todoWho(TD) ? [...todoWho(TD)] : [];
+  TD.who.forEach(n => { if (!ppl.includes(n)) ppl.push(n); });
+  $("#toWho").innerHTML = ppl.map(n => `<button type="button" class="cat" data-twho="${esc(n)}" aria-pressed="${TD.who.includes(n)}">${esc(n === nickOf() ? n + " (나)" : n)}</button>`).join("")
+    + `<button type="button" class="cat" data-twho="__all" aria-pressed="false">모두 고르기</button><button type="button" class="cat" data-twho="" aria-pressed="${!TD.who.length}">아무나 한 명</button>`;
   $("#toDate").value = todoDue(t, TD) || "";
 }
 $("#toCats").onclick = e => { const b = e.target.closest("[data-tc]"); if (b) { TD.cat = b.dataset.tc; paintTodo(); } };
 $("#toOffs").onclick = e => { const b = e.target.closest("[data-toff]"); if (!b) return; TD.date = ""; TD.off = b.dataset.toff === "" ? null : +b.dataset.toff; paintTodo(); };
-$("#toWho").onclick = e => { const b = e.target.closest("[data-twho]"); if (b) { TD.who = b.dataset.twho; paintTodo(); } };
+$("#toWho").onclick = e => { const b = e.target.closest("[data-twho]"); if (!b) return; const n = b.dataset.twho;
+  if (n === "__all") TD.who = tripPpl(); else if (!n) TD.who = []; else { const w = new Set(TD.who || []); if (w.has(n)) w.delete(n); else w.add(n); TD.who = [...w]; } paintTodo(); };
 $("#toDate").onchange = e => { TD.date = e.target.value; if (TD.date) TD.off = null; paintTodo(); };
 $("#toCancel").onclick = () => $("#to").close();
 $("#toForm").onsubmit = e => {
   e.preventDefault(); const name = $("#toName").value.trim(); if (!name) { $("#toName").focus(); return; }
   const o = Object.assign({}, TD, { title: name, link: $("#toLink").value.trim(), memo: $("#toMemo").value.trim() });
   if (!o.date) delete o.date; if (o.off == null) delete o.off;
+  Object.assign(o, todoState(o, todoDones(o)));
   setSub("todo", S.tripId, o); $("#to").close(); renderPack();
 };
 $("#toDel").onclick = () => { if (!TD) return; const x = subList("todo").find(y => y.id === TD.id); if (x) { trashPut("todo", x); delSub("todo", S.tripId, x.id); } $("#to").close(); renderPack(); };
-function toggleTodo(id) {
+/* 담당한 사람이 모두 체크해야 done (끝난 것으로 내려감) */
+function todoState(x, dones) {
+  const w = todoWho(x), ks = Object.keys(dones);
+  const all = w ? w.every(n => dones[n]) : ks.length > 0;
+  return { dones, done: all ? { by: w ? w.join(", ") : ks[0], at: Date.now() } : null };
+}
+function toggleTodo(id, who) {
   const x = subList("todo").find(y => y.id === id); if (!x) return;
-  setSub("todo", S.tripId, Object.assign({}, x, { done: x.done ? null : { by: nickOf(), at: Date.now() } }));
+  const w = todoWho(x), me = who || nickOf(), d = Object.assign({}, todoDones(x));
+  if (!w) { if (Object.keys(d).length) { for (const k of Object.keys(d)) delete d[k]; } else d[me] = Date.now(); }
+  else if (w.includes(me)) { if (d[me]) delete d[me]; else d[me] = Date.now(); }
+  else { toast(`${w.join(", ")} 담당이에요. 이름 동그라미를 누르면 대신 체크할 수 있어요.`, 3000); return; }
+  setSub("todo", S.tripId, Object.assign({}, x, todoState(x, d)));
   renderPack(); if (S.mode === "today") renderToday();
 }
 /* 짐 화면을 '준비' 화면(할 일 / 짐)으로 */
@@ -5986,6 +6024,7 @@ document.addEventListener("click", e => {
   if (!e.target.closest("#packView")) return;
   const tb = e.target.closest("[data-prep]"); if (tb) { S.prepTab = tb.dataset.prep; renderPack(); return; }
   const c = e.target.closest("[data-tdo]"); if (c) { toggleTodo(c.dataset.tdo); return; }
+  const tp = e.target.closest("[data-tdp]"); if (tp) { toggleTodo(tp.dataset.tdp, tp.dataset.n); return; }
   const ed = e.target.closest("[data-tdedit]"); if (ed) { openTodo(subList("todo").find(x => x.id === ed.dataset.tdedit)); return; }
   if (e.target.closest("#tdoMore")) { openTodo(null); const v = $("#tdoIn") && $("#tdoIn").value.trim(); if (v) $("#toName").value = v; return; }
   const sg = e.target.closest("[data-sug]"); if (sg) { const s = todoSug(trip(S.tripId)).find(x => x[0] === sg.dataset.sug); if (s) addTodo(sugTodo(s)); renderPack(); return; }
@@ -6048,7 +6087,7 @@ function homeDiary(t, d) {
     <div class="hb"><p class="hk"><span>${k}</span>${e.mood && STK[e.mood] ? `<span class="hmd">${stkSvg(e.mood)}</span>` : ""}</p>
     ${e.text ? `<p class="htx">${esc(e.text)}</p>` : ""}${stat ? `<p class="hst">${stat}</p>` : ""}</div></article>`;
 }
-function myTodos(t) { return subList("todo").filter(x => !x.done && (x.who === nickOf() || x.who === "all")).sort((a, b) => (todoDue(t, a) || "9").localeCompare(todoDue(t, b) || "9")); }
+function myTodos(t) { return subList("todo").filter(x => { const w = todoWho(x); return !x.done && w && w.includes(nickOf()) && !todoDones(x)[nickOf()]; }).sort((a, b) => (todoDue(t, a) || "9").localeCompare(todoDue(t, b) || "9")); }
 /* ---------- 홈 (v2.0): 맨 위 카드 + 바로가기 · 공지 · 시기별 ---------- */
 function hmTiles(t, st) {
   const td = today(), money = subList("money"), K = x => toKRW(x, t) || 0;
