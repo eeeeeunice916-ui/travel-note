@@ -924,6 +924,12 @@ a.ab{display:inline-block;text-decoration:none}
 .mvmodes{display:flex;gap:5px;width:100%;padding:4px 0 2px}
 .mvmodes button{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 12px var(--font);border-radius:999px;padding:5px 11px;cursor:pointer}
 .fgh.todo{margin:8px 0 0;list-style:none}
+.pbtns{display:flex;gap:8px;flex-wrap:wrap}
+.isgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:52vh;overflow-y:auto;margin:6px 0}
+.isgrid button{position:relative;border:0;padding:0;background:var(--field);border-radius:10px;aspect-ratio:1;overflow:hidden;cursor:pointer}
+.isgrid img{width:100%;height:100%;object-fit:cover;display:block}
+.isgrid button[aria-pressed=true]{outline:3px solid #2E8B4E;outline-offset:-3px}
+.isgrid button[aria-pressed=true]::after{content:"✓";position:absolute;right:5px;top:5px;width:22px;height:22px;border-radius:99px;background:#2E8B4E;color:#fff;font:800 13px/22px var(--font);text-align:center}
 .fgh.todo:first-child{margin-top:0}
 .mvmodes button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 </style>
@@ -1088,7 +1094,7 @@ a.ab{display:inline-block;text-decoration:none}
     <div>
       <span class="lab">사진·캡처</span>
       <div id="fPhotos" class="pgrid"></div>
-      <label class="btn ghost" for="fFile">사진 추가<input type="file" id="fFile" accept="image/*" multiple hidden></label>
+      <div class="pbtns"><label class="btn ghost" for="fFile">사진 추가<input type="file" id="fFile" accept="image/*" multiple hidden></label><button type="button" class="btn ghost" data-isr="item">사진 검색</button></div>
     </div>
     <div class="dfoot">
       <button type="button" class="btn danger" id="fDel">삭제</button>
@@ -1297,7 +1303,7 @@ a.ab{display:inline-block;text-decoration:none}
     </label>
     <div><span class="lab">사진</span><p class="hint" style="margin:2px 0 0">음식·가게·메뉴판 사진을 직접 넣어 두세요.</p>
       <div id="fdPhotos" class="pgrid"></div>
-      <label class="btn ghost" for="fdFile">사진 추가<input type="file" id="fdFile" accept="image/*" multiple hidden></label></div>
+      <div class="pbtns"><label class="btn ghost" for="fdFile">사진 추가<input type="file" id="fdFile" accept="image/*" multiple hidden></label><button type="button" class="btn ghost" data-isr="food">사진 검색</button></div></div>
     <ul id="fdResults" class="results" hidden></ul>
     <div id="fdMap" class="minimap"></div>
     <p class="hint" id="fdLoc"></p>
@@ -1388,6 +1394,17 @@ a.ab{display:inline-block;text-decoration:none}
       <label for="ulSD">검색 하루<input id="ulSD" inputmode="numeric"></label><label for="ulSM">검색 한 달<input id="ulSM" inputmode="numeric"></label></div>
     <p class="hint">0으로 하면 그 사람은 구글·네이버 지도 대신 기본 지도만 써요.</p>
     <div class="dfoot"><button type="button" class="btn" id="ulReset">기본값으로</button><span class="sp"></span><button type="button" class="btn" id="ulCancel">취소</button><button type="submit" class="btn primary">저장</button></div>
+  </form>
+</dialog>
+<!-- 사진 검색 (카카오 다음 이미지 검색) -->
+<dialog id="isr">
+  <form method="dialog" class="stbox">
+    <h2>사진 검색</h2>
+    <div class="search"><input id="isQ" type="search" placeholder="#가게 이름" autocomplete="off" enterkeyhint="search"><button type="button" class="btn" id="isGo">검색</button></div>
+    <p class="hint" id="isMsg">카카오톡 #검색처럼 다음에서 사진을 찾아요. 마음에 드는 사진을 눌러 고른 뒤 ‘넣기’를 누르세요.</p>
+    <div id="isGrid" class="isgrid"></div>
+    <button type="button" class="btn ghost" id="isMore" hidden>더 보기</button>
+    <div class="dfoot"><button type="button" class="btn" id="isNo">닫기</button><span class="sp"></span><button type="button" class="btn primary" id="isAdd" disabled>넣기</button></div>
   </form>
 </dialog>
 <dialog id="gp">
@@ -1570,7 +1587,7 @@ a.ab{display:inline-block;text-decoration:none}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.3";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.4.1";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2509,6 +2526,59 @@ $("#fdFile").onchange = async e => {
   const files = [...e.target.files]; e.target.value = "";
   for (const f of files) { try { const d = await photoData(f), id = uid(); FP.pend.set(id, d); FP.photos.push(id); } catch (x) { toast(x.message || "사진을 추가하지 못했어요."); } }
   renderFdPhotos();
+};
+/* ---------- 사진 검색: 카카오(다음) 이미지 검색 · 하루 30,000번 무료, 넘으면 그날만 멈춤 (요금 없음) ---------- */
+const KAKAO_KEY = "7614aa376c6c60ab5ac6ae40b9fbdaab";   // Kakao Developers › 내 앱 › 플랫폼 키 › REST API 키
+const IS = { to: null, q: "", page: 1, end: true, docs: [], pick: new Set() };
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-isr]"); if (!b) return;
+  if (!KAKAO_KEY) { toast("사진 검색은 카카오 키를 넣은 뒤에 쓸 수 있어요."); return; }
+  IS.to = b.dataset.isr; IS.docs = []; IS.pick.clear(); IS.end = true;
+  $("#isQ").value = IS.to === "food" ? $("#fdName").value.trim() : $("#fPlace") ? $("#fPlace").value.trim() : "";
+  $("#isGrid").innerHTML = ""; $("#isMore").hidden = true; isPickUpd();
+  $("#isMsg").textContent = "카카오톡 #검색처럼 다음에서 사진을 찾아요. 마음에 드는 사진을 눌러 고른 뒤 ‘넣기’를 누르세요.";
+  $("#isr").showModal();
+  if ($("#isQ").value) isSearch(true);
+});
+async function isSearch(fresh) {
+  const q = $("#isQ").value.replace(/#/g, " ").trim(); if (!q) { $("#isQ").focus(); return; }
+  if (fresh) { IS.q = q; IS.page = 1; IS.docs = []; IS.pick.clear(); $("#isGrid").innerHTML = ""; }
+  $("#isMsg").textContent = "찾는 중…"; $("#isMore").hidden = true;
+  try {
+    const r = await fetch(`https://dapi.kakao.com/v2/search/image?query=${encodeURIComponent(IS.q)}&size=30&page=${IS.page}`, { headers: { Authorization: "KakaoAK " + KAKAO_KEY } });
+    if (r.status === 429) throw new Error("오늘 사진 검색을 너무 많이 했어요. 내일 다시 쓸 수 있어요.");
+    if (!r.ok) throw new Error("사진을 찾지 못했어요. (" + r.status + ")");
+    const j = await r.json(), docs = j.documents || [];
+    IS.end = !!(j.meta && j.meta.is_end) || IS.page >= 15;
+    const start = IS.docs.length; IS.docs.push(...docs);
+    $("#isGrid").insertAdjacentHTML("beforeend", docs.map((d, i) => `<button type="button" data-isp="${start + i}" aria-pressed="false" aria-label="사진 고르기"><img src="${esc(d.thumbnail_url)}" alt="" loading="lazy" referrerpolicy="no-referrer"></button>`).join(""));
+    $("#isMsg").textContent = IS.docs.length ? `‘${IS.q}’ 사진이에요. 눌러서 고르세요.` : "사진이 없어요. 다른 말로 찾아보세요.";
+    $("#isMore").hidden = IS.end || !docs.length;
+  } catch (x) { $("#isMsg").textContent = x.message || "사진을 찾지 못했어요."; }
+}
+function isPickUpd() { const n = IS.pick.size; $("#isAdd").disabled = !n; $("#isAdd").textContent = n ? `${n}장 넣기` : "넣기"; }
+$("#isGo").onclick = () => isSearch(true);
+$("#isQ").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); isSearch(true); } });
+$("#isMore").onclick = () => { IS.page++; isSearch(false); };
+$("#isGrid").onclick = e => { const b = e.target.closest("[data-isp]"); if (!b) return; const i = +b.dataset.isp;
+  if (IS.pick.has(i)) IS.pick.delete(i); else IS.pick.add(i); b.setAttribute("aria-pressed", String(IS.pick.has(i))); isPickUpd(); };
+$("#isNo").onclick = () => $("#isr").close();
+/* 고른 사진을 받아서 앱 안에 저장 (원래 글이 지워져도 남도록). 큰 사진이 막혀 있으면 미리보기 크기로 */
+async function isFetch(d) {
+  for (const u of [d.image_url, d.thumbnail_url]) {
+    try { const r = await fetch(u, { referrerPolicy: "no-referrer" }); if (!r.ok) continue; const bl = await r.blob(); if (!/^image\//.test(bl.type)) continue; return await photoData(bl); } catch (x) {}
+  }
+  return null;
+}
+$("#isAdd").onclick = async () => {
+  const picks = [...IS.pick].map(i => IS.docs[i]); if (!picks.length) return;
+  $("#isAdd").disabled = true; $("#isAdd").textContent = "가져오는 중…";
+  let ok = 0;
+  for (const d of picks) { const data = await isFetch(d); if (!data) continue; const id = uid(); ok++;
+    if (IS.to === "food") { FP.pend.set(id, data); FP.photos.push(id); } else { E.pend.set(id, data); E.photos.push(id); } }
+  if (IS.to === "food") renderFdPhotos(); else renderEdPhotos();
+  $("#isr").close();
+  toast(ok === picks.length ? `사진 ${ok}장을 넣었어요. 저장을 눌러야 남아요.` : ok ? `${ok}장만 넣었어요. 나머지는 사이트에서 막혀 있어요.` : "이 사진들은 사이트에서 막혀 있어서 가져올 수 없어요. 다른 사진을 골라 주세요.", 3500);
 };
 function setupFoodMiniMap() {
   if (foodMap) { foodMap.remove(); foodMap = null; foodMarker = null; }
