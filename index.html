@@ -924,11 +924,12 @@ a.ab{display:inline-block;text-decoration:none}
 .mvmodes{display:flex;gap:5px;width:100%;padding:4px 0 2px}
 .mvmodes button{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 12px var(--font);border-radius:999px;padding:5px 11px;cursor:pointer}
 .fgh.todo{margin:8px 0 0;list-style:none}
+.cdur{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:-4px}
 .pbtns{display:flex;gap:8px;flex-wrap:wrap}
-.isgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:52vh;overflow-y:auto;margin:6px 0}
-.isgrid button{position:relative;border:0;padding:0;background:var(--field);border-radius:10px;aspect-ratio:1;overflow:hidden;cursor:pointer}
-.isgrid img{width:100%;height:100%;object-fit:cover;display:block}
-.isgrid button[aria-pressed=true]{outline:3px solid #2E8B4E;outline-offset:-3px}
+.isgrid{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;max-height:52vh;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:6px 0}
+.isgrid button{position:relative;flex:0 0 calc((100% - 12px) / 3);height:0;padding:0 0 calc((100% - 12px) / 3);border:0;background:var(--field);border-radius:10px;overflow:hidden;cursor:pointer}
+.isgrid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.isgrid button[aria-pressed=true] img{outline:3px solid #2E8B4E;outline-offset:-3px;border-radius:10px}
 .isgrid button[aria-pressed=true]::after{content:"✓";position:absolute;right:5px;top:5px;width:22px;height:22px;border-radius:99px;background:#2E8B4E;color:#fff;font:800 13px/22px var(--font);text-align:center}
 .fgh.todo:first-child{margin-top:0}
 .mvmodes button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -1587,7 +1588,7 @@ a.ab{display:inline-block;text-decoration:none}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.4.2";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.4.4";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -5516,7 +5517,7 @@ function itemHtml(it, n) {
   const has = it.lat != null, open = S.itemOpen.has(it.id);
   const book = lines(it.booking).map(l => { const code = codeOf(l); const label = l.replace(code, "").replace(/\(\s*\)|\[\s*\]/g, "").replace(/[:：]\s*$/, "").trim();
     return `<button type="button" class="chip" data-copy="${esc(code)}">${label ? esc(label) + " " : ""}<b>${esc(code)}</b><small>⧉</small></button>`; }).join("");
-  const line = it.duration ? `<span class="chip">${esc(it.duration)}</span>` : "";   // 접힌 카드엔 소요 시간만
+  const line = it.duration ? `<div class="cdur">소요시간 ${esc(it.duration.replace(/^약\s*/, ""))}</div>` : "";   // 접힌 카드엔 소요 시간만 (글자로)
   const bp = book + plainPay(payChips(it.pay));
   const photos = it.photos || [], th = photos[0];
   const o = { kind: "item", ref: it.id, name: it.place, addr: it.address, lat: it.lat, lng: it.lng, pid: it.pid };
@@ -5538,7 +5539,7 @@ function itemHtml(it, n) {
   return `<article class="item cv${open ? " open" : ""}" data-id="${it.id}" data-n="${n}">
     <div class="cth">${th ? `<img data-pid="${th}" data-photo="${th}" alt="${esc(it.place)} 사진"${S.photos.has(th) ? ` src="${S.photos.get(th)}"` : ""}>` : ICO_PIN}<span class="cn${has ? "" : " off"}">${n}</span></div>
     <div class="cbody"><div class="ctop"><h3 class="place">${it.time ? `<span class="time">${esc(it.time)}</span>` : ""}${esc(it.place)}</h3>${has ? mapBtn(o) : ""}</div>
-      ${line ? `<div class="cline">${line}</div>` : ""}</div>
+      ${line}</div>
     ${more}</article>`;
 }
 function planViewBar() {
