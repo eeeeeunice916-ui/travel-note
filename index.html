@@ -1587,7 +1587,7 @@ a.ab{display:inline-block;text-decoration:none}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.4.1";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.4.2";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2564,8 +2564,10 @@ $("#isGrid").onclick = e => { const b = e.target.closest("[data-isp]"); if (!b) 
   if (IS.pick.has(i)) IS.pick.delete(i); else IS.pick.add(i); b.setAttribute("aria-pressed", String(IS.pick.has(i))); isPickUpd(); };
 $("#isNo").onclick = () => $("#isr").close();
 /* 고른 사진을 받아서 앱 안에 저장 (원래 글이 지워져도 남도록). 큰 사진이 막혀 있으면 미리보기 크기로 */
+/* 대부분 사이트는 사진을 바로 못 가져가게 막아 둬서, 무료 사진 중계(wsrv.nl)를 거쳐서 받음 */
+const viaProxy = u => `https://wsrv.nl/?url=${encodeURIComponent(u)}&w=1600&h=1600&fit=inside&we&output=jpg&q=85`;
 async function isFetch(d) {
-  for (const u of [d.image_url, d.thumbnail_url]) {
+  for (const u of [viaProxy(d.image_url), viaProxy(d.thumbnail_url), d.image_url, d.thumbnail_url].filter(Boolean)) {
     try { const r = await fetch(u, { referrerPolicy: "no-referrer" }); if (!r.ok) continue; const bl = await r.blob(); if (!/^image\//.test(bl.type)) continue; return await photoData(bl); } catch (x) {}
   }
   return null;
@@ -5514,7 +5516,8 @@ function itemHtml(it, n) {
   const has = it.lat != null, open = S.itemOpen.has(it.id);
   const book = lines(it.booking).map(l => { const code = codeOf(l); const label = l.replace(code, "").replace(/\(\s*\)|\[\s*\]/g, "").replace(/[:：]\s*$/, "").trim();
     return `<button type="button" class="chip" data-copy="${esc(code)}">${label ? esc(label) + " " : ""}<b>${esc(code)}</b><small>⧉</small></button>`; }).join("");
-  const line = book + plainPay(payChips(it.pay));
+  const line = it.duration ? `<span class="chip">${esc(it.duration)}</span>` : "";   // 접힌 카드엔 소요 시간만
+  const bp = book + plainPay(payChips(it.pay));
   const photos = it.photos || [], th = photos[0];
   const o = { kind: "item", ref: it.id, name: it.place, addr: it.address, lat: it.lat, lng: it.lng, pid: it.pid };
   let more = "";
@@ -5525,7 +5528,7 @@ function itemHtml(it, n) {
     const thumbs = photos.slice(1).map(id => `<img data-pid="${id}" data-photo="${id}" alt="${esc(it.place)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`).join("");
     const t = trip(S.tripId), many = t && t.items.filter(x => x.date === it.date).length > 1;
     more = `<div class="cmore">
-      ${it.duration ? `<div class="addr">소요 시간 · ${esc(it.duration)}</div>` : ""}
+      ${bp ? `<div class="cline">${bp}</div>` : ""}
       ${it.address ? `<div class="addr">📍 ${esc(it.address)}</div>` : ""}
       ${lk ? `<div class="chips">${lk}</div>` : ""}
       ${memo}
