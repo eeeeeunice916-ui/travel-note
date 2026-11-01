@@ -815,6 +815,7 @@ a.chip{text-decoration:none}
 .acts2{display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap}
 .ab{border:0;border-radius:10px;padding:7px 11px;font:inherit;font-size:13px;font-weight:700;background:var(--field);color:var(--ink);cursor:pointer}
 .ab.p{background:var(--btn,var(--ink));color:#fff}
+a.ab{display:inline-block;text-decoration:none}
 .acts2 .edited{margin-left:auto;font-size:11px;color:var(--muted);opacity:.7}
 .pvrow{display:flex;justify-content:flex-end;margin:4px 0 8px}
 .pvseg{display:inline-flex;background:var(--field);border-radius:11px;padding:3px;gap:3px}
@@ -1533,7 +1534,7 @@ a.chip{text-decoration:none}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.0";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.1";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2360,8 +2361,6 @@ function renderTrip() {
     const ph = e.target.closest("[data-photo]"); if (ph) { if (!ph.getAttribute("src")) return; $("#lbImg").src = ph.src; openDlg($("#lb")); return; }
     const cp = e.target.closest("[data-copy]"); if (cp) { copyText(cp.dataset.copy); return; }
     const ed = e.target.closest("[data-edit]"); if (ed) { openItem(cur, cur.items.find(i => i.id === ed.dataset.edit)); return; }
-    if (e.target.closest("a")) return;
-    const card = e.target.closest(".item"); if (card && S.map && S.markers[card.dataset.id] && !S.mapFold) focusItem(card.dataset.id);
   };
   bindReorder($("#items")); bindCards($("#cardsView")); bindMore($("#moreView")); bindToday($("#todayView")); bindMoney($("#moneyView")); bindPack($("#packView")); bindDiary($("#diaryView"));
   $("#moreBack").onclick = () => { setMode("more"); window.scrollTo(0, 0); };
@@ -2401,9 +2400,11 @@ function renderFood(fit) {
   cb.innerHTML = `<button type="button" class="cat" data-fcat="all" aria-pressed="${S.foodCat === "all"}">전체<small>${everything.length}</small></button>`
     + used.map(c => `<button type="button" class="cat" data-fcat="${esc(c)}" aria-pressed="${S.foodCat === c}">${esc(catLabel(c))}<small>${everything.filter(f => f.cat === c).length}</small></button>`).join("");
   const all = S.foodCat === "all" ? everything : everything.filter(f => f.cat === S.foodCat);
-  const rank = (a, b) => likeCount(b) - likeCount(a) || (a.created || 0) - (b.created || 0);
+  const co = c => { const i = used.indexOf(c || ""); return i < 0 ? used.length : i; };   // 위 종류 버튼 순서대로, 종류 없는 곳은 맨 뒤
+  const rank = (a, b) => co(a.cat) - co(b.cat) || likeCount(b) - likeCount(a) || (a.created || 0) - (b.created || 0);
   const todo = all.filter(x => !x.visited).sort(rank), done = all.filter(x => x.visited).sort(rank);
   const num = new Map(); [...todo, ...done].forEach((f, i) => num.set(f.id, i + 1));
+  const best = todo.reduce((m, f) => likeCount(f) > (m ? likeCount(m) : 0) ? f : m, null), topId = best && best.id;   // 하트 제일 많은 곳에 별
   const card = f => {
     const n = likeCount(f), mine = !!(f.likes || {})[C.uid], has = f.lat != null;
     const who = Object.values(f.likes || {});
@@ -2411,19 +2412,18 @@ function renderFood(fit) {
     const th = (f.photos || [])[0];
     return `<li class="fi${f.visited ? " done" : ""}${open ? "" : " collapsed"}${th ? " hasth" : ""}">
       ${th ? `<img class="fthumb" data-pid="${th}" data-photo="${th}" alt="${esc(f.name)} 사진"${S.photos.has(th) ? ` src="${S.photos.get(th)}"` : ""}>` : ""}
-      <div class="ftop"><span class="fnum${has ? "" : " off"}${!f.visited && num.get(f.id) === 1 && n > 0 ? " top1" : ""}" data-ffocus="${f.id}">${num.get(f.id)}</span><h3 data-ffocus="${f.id}">${f.cat ? `<span class="fcat">${esc(catLabel(f.cat))}</span>` : ""}${esc(f.name)}</h3>
+      <div class="ftop"><span class="fnum${has ? "" : " off"}${!f.visited && f.id === topId ? " top1" : ""}" data-ffocus="${f.id}">${num.get(f.id)}</span><h3 data-ffocus="${f.id}">${esc(f.name)}</h3>
         <button type="button" class="like" data-like="${f.id}" aria-pressed="${mine}" aria-label="가고 싶어요">♥ ${n}</button></div>
       ${foodMeta(f)}
       ${f.address ? `<div class="addr">${linkify(f.address)}</div>` : ""}
       ${f.memo ? `<div class="fm">${linkify(f.memo)}</div>` : ""}
       ${f.link ? `<div class="addr">${linkify(f.link)}</div>` : ""}
-      <button type="button" class="ftog" data-ftog="${f.id}">${open ? "접기 ▲" : `자세히 ▼${(f.menu || []).length ? ` · 메뉴 ${f.menu.length}` : ""}${(f.photos || []).length ? ` · 사진 ${f.photos.length}` : ""}`}</button>
+      <button type="button" class="ftog" data-ftog="${f.id}">${open ? "접기 ▲" : `자세히 ▼${(f.photos || []).length ? ` · 사진 ${f.photos.length}` : ""}`}</button>
       ${(f.photos || []).length ? `<div class="mphotos">${f.photos.map(id => `<img data-pid="${id}" data-photo="${id}" alt="${esc(f.name)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`).join("")}</div>` : ""}
       ${gInfoHtml(f)}
-      ${menuHtml(f)}
       <div class="fw">${who.length ? `♥ ${who.map(esc).join(", ")} · ` : ""}${f.addedBy ? esc(f.addedBy) + " 추가" : ""}</div>
       <div class="acts"><button type="button" data-toplan="${f.id}">일정에 넣기</button><button type="button" data-visit="${f.id}">${f.visited ? "안 갔어요" : "다녀왔어요"}</button><button type="button" data-fpay="${f.id}">💳 예약·비용</button><button type="button" data-fedit="${f.id}">수정</button>
-        ${has ? `<button type="button" data-fnav2="${f.id}">🧭 길찾기</button>` : ""}</div></li>`;
+        ${has ? placeA({ kind: "food", ref: f.id, name: f.name, addr: f.address, lat: f.lat, lng: f.lng, pid: f.pid }) : ""}</div></li>`;
   };
   $("#foodList").innerHTML = todo.length ? todo.map(card).join("") : `<li class="none">${birdSvg(done.length ? "bird-happy" : "bird")}<span>${done.length ? "모두 다녀왔어요!" : S.foodCat !== "all" ? "이 종류의 맛집이 없어요." : "가고 싶은 맛집을 ‘+ 맛집 추가’로 모아 보세요. 같이 가는 사람 모두에게 보여요."}</span></li>`;
   $("#foodDoneBox").hidden = !done.length; $("#foodDoneSum").textContent = `다녀온 곳 ${done.length}개`;
@@ -4000,6 +4000,12 @@ document.addEventListener("click", async e => {
 const naverUrl = (name, lat, lng) => `nmap://route/public?dlat=${lat}&dlng=${lng}&dname=${encodeURIComponent(name || "목적지")}&appname=${encodeURIComponent(location.origin || "https://eeeeeunice916.github.io")}`;
 const naverWeb = name => `https://map.naver.com/p/search/${encodeURIComponent(name || "")}`;
 const naverA = (name, lat, lng, label = "네이버 길찾기") => `<a href="${naverUrl(name, lat, lng)}" data-nmap="${esc(name || "")}|${lat}|${lng}" rel="noopener">${label}</a>`;
+/* 길찾기: 한국이면 네이버 지도, 그 밖은 구글 지도로 바로 엶 */
+const isKR = o => countryOf({ lat: o.lat, lng: o.lng }) === "KR";
+const withCls = (a, cls) => cls ? a.replace("<a ", `<a class="${cls}" `) : a;
+const navA = (o, label, cls) => withCls(isKR(o) ? naverA(o.name, o.lat, o.lng, label) : gA(o, label, true), cls);
+/* 가게 보기(평점·영업시간): 한국이면 네이버 지도, 그 밖은 구글 지도 가게 페이지 */
+const placeA = (o, cls) => withCls(isKR(o) ? `<a href="${naverWeb(o.name)}" target="_blank" rel="noopener">네이버지도</a>` : gA(o, "구글지도"), cls);
 document.addEventListener("click", e => {
   const a = e.target.closest("a[data-nmap]"); if (!a) return;
   e.preventDefault();
@@ -4443,8 +4449,7 @@ async function googleDetails(pid) {
 function gInfoHtml(f) {
   const g = f.g;   // 예전에 불러온 평점이 있으면 그대로 보여 줌 (새로 불러오지는 않음 — 구글 비싼 단계라서)
   const chips = g ? `${g.rating ? `<span>⭐ ${g.rating}</span>` : ""}${g.price ? `<span>💴 ${esc(g.price)}</span>` : ""}` : "";
-  const link = f.lat != null ? gA({ kind: "food", ref: f.id, name: f.name, addr: f.address, lat: f.lat, lng: f.lng, pid: f.pid }, "구글 지도에서 평점·영업시간 보기 ›") : "";
-  return chips || link ? `<div class="gi">${chips}${link ? link.replace("<a ", '<a class="glink" ') : ""}</div>` : "";
+  return chips ? `<div class="gi">${chips}</div>` : "";
 }
 function menuHtml(f) {
   const c = tripC(), t = trip(S.tripId), list = f.menu || [];
@@ -5396,7 +5401,7 @@ function itemHtml(it, n) {
     ${lk ? `<div class="chips">${lk}</div>` : ""}
     ${memo}
     ${thumbs ? `<div class="thumbs">${thumbs}</div>` : ""}
-    <div class="acts2">${has ? `<button type="button" class="ab p" data-inav="${it.id}">🧭 길찾기</button><button type="button" class="ab" data-imap="${it.id}">🗺️ 지도</button>` : `<button type="button" class="ab" data-edit="${it.id}">📍 위치 넣기</button>`}${S.planView !== "full" && S.itemOpen.has(it.id) ? `<button type="button" class="ab" data-iopen="${it.id}">접기 ▲</button>` : ""}${who}</div></div></article>`;
+    <div class="acts2">${has ? `${navA({ kind: "item", ref: it.id, name: it.place, addr: it.address, lat: it.lat, lng: it.lng, pid: it.pid }, "길찾기", "ab p")}<button type="button" class="ab" data-imap="${it.id}">지도</button>` : `<button type="button" class="ab" data-edit="${it.id}">위치 넣기</button>`}${S.planView !== "full" && S.itemOpen.has(it.id) ? `<button type="button" class="ab" data-iopen="${it.id}">접기 ▲</button>` : ""}${who}</div></div></article>`;
 }
 function planViewBar() {
   return `<div class="pvseg" role="group" aria-label="보기 방식"><button type="button" data-pv="simple" aria-pressed="${S.planView === "simple"}">간단히</button><button type="button" data-pv="full" aria-pressed="${S.planView === "full"}">자세히</button></div>`;
@@ -5614,7 +5619,7 @@ function renderToday() {
         ${(next.booking || next.pay) ? `<div class="chips">${lines(next.booking).map(l => { const c = codeOf(l); return `<button type="button" class="chip" data-copy="${esc(c)}">${esc(l.replace(c, "").replace(/\(\s*\)/g, "").trim())} <b>${esc(c)}</b></button>`; }).join("")}${payChips(next.pay)}</div>` : ""}
         ${prevIdx >= 0 ? `<div class="mvlab">이전 일정에서</div>` + moveHtml(list[prevIdx], next) : ""}
         ${next.lat != null ? (S.myPos && Date.now() - S.myPos.at < 10 * 60e3 ? `<div class="mvlab">지금 내 위치에서</div>` + (moveHtml(S.myPos, next) || '<div class="move"><span>📍 거의 다 왔어요!</span></div>') : `<button type="button" class="btn sm mybtn" data-fromme>📍 내 위치에서 걸리는 시간 보기</button>`) : ""}
-        <div class="acts2">${next.lat != null ? `<button type="button" class="ab p" data-tnav="${next.id}">🧭 길찾기</button>` : ""}<button type="button" class="ab" data-goplan>오늘 일정 전체</button></div></section>`
+        <div class="acts2">${next.lat != null ? navA({ kind: "item", ref: next.id, name: next.place, addr: next.address, lat: next.lat, lng: next.lng, pid: next.pid }, "길찾기", "ab p") : ""}<button type="button" class="ab" data-goplan>오늘 일정 전체</button></div></section>`
         : `<section class="tnext"><p class="k">다음 일정</p><p class="none plain">${list.length ? "오늘 일정을 다 마쳤어요. 수고했어요!" : "오늘 일정이 비어 있어요."}</p></section>`}
       ${list.length ? `<ul class="tlist">${list.map(i => `<li class="${i === next ? "on" : i.time && i.time < now ? "past" : ""}"><span class="time">${esc(i.time || "·")}</span>${esc(i.place)}</li>`).join("")}</ul>` : ""}
       ${todayCards.length ? `<h3 class="sech">오늘의 항공·숙소</h3><div class="bkstrip">${todayCards.map(cardHtml).join("")}</div>` : ""}
