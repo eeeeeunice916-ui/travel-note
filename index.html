@@ -890,6 +890,13 @@ a.chip{text-decoration:none}
 /* 오프라인 */
 .offbar{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);border-radius:12px;padding:9px 12px;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.2)}
 .tcard .shopi{border:0;box-shadow:none;background:none;padding:8px 0;border-radius:0;border-top:1px dashed var(--line)}.tcard .shop{gap:0}.tcard .shop .shopi:first-child{border-top:0}
+.citem .ctop{display:flex;gap:12px;align-items:center;cursor:pointer}
+.citem .cthumb{width:64px;height:64px;flex:none;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:var(--field)}
+.citem .cmain{flex:1;min-width:0}.citem .cmain .head{margin:0;display:flex;flex-wrap:nowrap;align-items:baseline;gap:6px}.citem .cmain .head{padding-right:0}.citem .cmain .place{flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.citem.open .cmain .place{display:block}
+.citem .cone{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.citem .cdur{font-size:12.5px;color:var(--muted);margin-top:3px}
+.citem .carr{color:var(--muted);font-size:16px;flex:none;align-self:center}
+.citem.open .ctop{margin-bottom:6px}
 .tlist li.done::after{content:"✓";margin-left:auto;color:var(--c-green-i);text-decoration:none}
 .tlist li.skip::after{content:"건너뜀";margin-left:auto;font-size:11px}
 .tlist li[data-iundo]{cursor:pointer}
@@ -1541,7 +1548,7 @@ a.chip{text-decoration:none}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.4";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.5";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -5297,6 +5304,27 @@ $("#pyForm").onsubmit = e => {
 
 $("#fPay").onclick = () => { if (E && E.it) openPay("item", E.it.id); };
 
+/* ---------- 일정 카드: 접힌 모양 (사진 왼쪽 + 일정 옆, 누르면 펼침) ---------- */
+S.cardStyle = "compact";
+function itemHtmlCompact(it, n) {
+  const open = S.itemOpen.has(it.id), ph = it.photos || [], has = it.lat != null;
+  const pimg = id => `<img class="cthumb" data-pid="${id}" alt="${esc(it.place)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`;
+  const top = `<div class="ctop">${ph.length ? pimg(ph[0]) : ""}<div class="cmain">
+      <div class="head">${it.time ? `<span class="time">${esc(it.time)}</span>` : ""}<h3 class="place">${esc(it.place)}</h3></div>
+      ${it.address ? `<div class="addr cone">📍 ${esc(it.address)}</div>` : ""}
+      ${it.duration ? `<div class="cdur">⏱ ${esc(it.duration)}</div>` : ""}</div><span class="carr">${open ? "⌃" : "⌄"}</span></div>`;
+  if (!open) return `<article class="item citem" data-id="${it.id}" data-ctog="${it.id}"><div class="num${has ? "" : " off"}">${n}</div><div class="body">${top}</div></article>`;
+  const full = itemHtmlFull(it, n);
+  const inner = full.slice(full.indexOf('<div class="body">') + 18).replace(/<div class="head">[\s\S]*?<\/div>\s*(<div class="addr">[\s\S]*?<\/div>)?/, "");
+  return `<article class="item citem open" data-id="${it.id}"><div class="num${has ? "" : " off"}">${n}</div><div class="body"><div data-ctog="${it.id}">${top}</div>${inner}`;
+}
+document.addEventListener("click", e => {
+  const c = e.target.closest("#items [data-ctog]"); if (!c || S.cardStyle !== "compact") return;
+  if (e.target.closest("a, button, .chip, .thumbs img") ) return;
+  const id = c.dataset.ctog; if (S.itemOpen.has(id)) S.itemOpen.delete(id); else S.itemOpen.add(id);
+  e.stopImmediatePropagation(); updateTrip(false);
+}, true);
+
 /* ---------- 길찾기 고르기 ---------- */
 function openNavSheet(o) {
   const kr = countryOf({ lat: o.lat, lng: o.lng }) === "KR";
@@ -5340,7 +5368,8 @@ $("#imDel").onclick = async () => {
 $("#imNo").onclick = () => $("#im").close();
 
 /* ---------- 일정 카드 ---------- */
-function itemHtml(it, n) {
+function itemHtml(it, n) { return S.cardStyle === "compact" && !S.reorder ? itemHtmlCompact(it, n) : itemHtmlFull(it, n); }
+function itemHtmlFull(it, n) {
   const has = it.lat != null;
   const thumbs = (it.photos || []).map(id => `<img data-pid="${id}" data-photo="${id}" alt="${esc(it.place)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`).join("");
   const chips = lines(it.booking).map(l => { const code = codeOf(l); const label = l.replace(code, "").replace(/\(\s*\)|\[\s*\]/g, "").trim();
