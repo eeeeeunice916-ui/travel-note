@@ -890,13 +890,26 @@ a.chip{text-decoration:none}
 /* 오프라인 */
 .offbar{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);border-radius:12px;padding:9px 12px;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.2)}
 .tcard .shopi{border:0;box-shadow:none;background:none;padding:8px 0;border-radius:0;border-top:1px dashed var(--line)}.tcard .shop{gap:0}.tcard .shop .shopi:first-child{border-top:0}
-.citem .ctop{display:flex;gap:12px;align-items:center;cursor:pointer}
-.citem .cthumb{width:64px;height:64px;flex:none;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:var(--field)}
-.citem .cmain{flex:1;min-width:0}.citem .cmain .head{margin:0;display:flex;flex-wrap:nowrap;align-items:baseline;gap:6px}.citem .cmain .head{padding-right:0}.citem .cmain .place{flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.citem.open .cmain .place{display:block}
-.citem .cone{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.citem .cdur{font-size:12.5px;color:var(--muted);margin-top:3px}
-.citem .carr{color:var(--muted);font-size:16px;flex:none;align-self:center}
-.citem.open .ctop{margin-bottom:6px}
+.item.citem{display:block;padding:14px 14px 14px 18px}
+.citem .ctop{display:flex;gap:14px;align-items:center;cursor:pointer}
+.citem .cph{position:relative;flex:none;width:68px;height:68px}
+.citem .cthumb{width:68px;height:68px;object-fit:cover;border-radius:14px;background:var(--field);display:grid;place-items:center}
+.citem .cnoph svg{width:26px;height:26px;fill:none;stroke:var(--muted);stroke-width:1.6;opacity:.6}
+.citem .cnum{position:absolute;left:-8px;top:-8px;min-width:26px;height:26px;padding:0 6px;border-radius:13px;background:var(--dc,var(--sky));color:#fff;font-size:12.5px;font-weight:800;display:grid;place-items:center;border:2.5px solid var(--surface)}
+.citem .cmain{flex:1;min-width:0}
+.citem .ctm{font-size:14px}.citem .ctm .time{font-weight:800}.citem .cdur{color:var(--muted);font-weight:600}
+.citem .place{font-size:17px;font-weight:800;margin:3px 0 0;line-height:1.3;word-break:keep-all}
+.citem .cmap{flex:none;width:44px;height:40px;border-radius:12px;border:0;background:var(--c-green);display:grid;place-items:center;cursor:pointer}
+.citem .cmap svg{width:21px;height:21px;fill:none;stroke:var(--c-green-i);stroke-width:1.8;stroke-linejoin:round}
+.citem .cbody{margin:10px 0 0 82px}
+.ddate{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;color:var(--muted);margin:0 2px 2px}
+.ddate i{width:9px;height:9px;border-radius:50%;background:var(--dc,var(--sky))}
+.ddate .dwx{margin-left:auto;font-weight:500}
+.dayh2 h3::before{display:none!important}
+.dayh2 h3{font-size:27px!important;font-weight:900;letter-spacing:-.02em}
+.dayh2 h3 span{font-size:17px!important;font-weight:600;color:var(--muted);margin-left:8px}
+.dayh2 .dbtns .link{font-size:15px;font-weight:700}
+.dsub{color:var(--muted);font-size:14px;margin:4px 2px 12px}
 .tlist li.done::after{content:"✓";margin-left:auto;color:var(--c-green-i);text-decoration:none}
 .tlist li.skip::after{content:"건너뜀";margin-left:auto;font-size:11px}
 .tlist li[data-iundo]{cursor:pointer}
@@ -1548,7 +1561,7 @@ a.chip{text-decoration:none}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.5";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.6";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2589,10 +2602,10 @@ function updateTrip(fit) {
   const groups = (S.day === "all" ? days : [S.day]).map(d => ({ d, idx: days.indexOf(d), items: sortDay(t.items.filter(i => i.date === d), (t.days[dk(d)] || {}).order) }));
   const dayHtml = g => {
     const info = t.days[dk(g.d)] || {};
-    return `<section class="day" style="--dc:${dayColor(g.idx)}"><div class="dayh"><h3>${g.idx + 1}일차${info.title ? ` [${esc(info.title)}]` : ""}<span>${dlabel(g.d)}</span></h3>
-      <span class="dwx" data-dwx="${g.d}"></span><span class="dbtns">${g.items.length > 1 ? `<button type="button" class="link" data-reorder="${g.d}">${S.reorder === g.d ? "순서 완료" : "순서"}</button>` : ""}<button type="button" class="link" data-dayedit="${g.d}">${info.title || info.todo ? "제목 수정" : "+ 제목"}</button></span></div>
+    return `<section class="day" style="--dc:${dayColor(g.idx)}"><div class="ddate"><i></i>${dlabel(g.d)}<span class="dwx" data-dwx="${g.d}"></span></div><div class="dayh dayh2"><h3>${g.idx + 1}일차${info.title ? `<span>${esc(info.title)}</span>` : ""}</h3>
+      <span class="dbtns">${g.items.length > 1 ? `<button type="button" class="link" data-reorder="${g.d}">${S.reorder === g.d ? "순서 완료" : "순서"}</button>` : ""}<button type="button" class="link" data-dayedit="${g.d}">${info.title || info.todo ? "제목" : "+ 제목"}</button></span></div>
       ${S.day !== "all" ? `<div class="hwx" data-hwx="${g.d}"></div>` : ""}
-      ${info.todo ? `<div class="todo">What to do</div><div class="todo-pill">${esc(info.todo)}</div>` : '<div style="height:10px"></div>'}
+      ${info.todo ? `<p class="dsub">${esc(info.todo)}</p>` : '<div style="height:12px"></div>'}
       ${g.items.length ? (S.reorder === g.d ? reorderHtml(g) : `<div class="list">${g.items.map((it, i) => (i ? moveHtml(g.items[i - 1], it) : "") + itemHtml(it, S.day === "all" ? `${g.idx + 1}-${i + 1}` : i + 1)).join("")}</div>`)
         : `<div class="none">${birdSvg("bird-sleep")}<span>아직 일정이 없어요. 아래 ‘일정 추가’를 눌러 보세요.</span></div>`}</section>`;
   };
@@ -2600,7 +2613,7 @@ function updateTrip(fit) {
   $("#items").innerHTML = groups.map(dayHtml).join("");
   fillWx(); recordPastWx(t);
   if (onId) { const c = document.querySelector(`.item[data-id="${onId}"]`); if (c) c.classList.add("on"); }
-  hydrate($("#items"), t.id);
+  hydrate($("#items"), t.id); navTodayLabel();
   if (fit) { const sel = $(".tab[aria-selected=true]"); if (sel) sel.scrollIntoView({ inline: "center", block: "nearest" }); }
   drawMarkers(groups, fit);
 }
@@ -5304,21 +5317,26 @@ $("#pyForm").onsubmit = e => {
 
 $("#fPay").onclick = () => { if (E && E.it) openPay("item", E.it.id); };
 
+function navTodayLabel() {
+  const b = document.querySelector('.bnav [data-mode="today"] span'), t = trip(S.tripId); if (!b || !t) return;
+  const st = tripState(t); b.textContent = st === "before" ? `D-${Math.round((pd(t.start) - pd(fd(new Date()))) / 864e5)}` : st === "during" ? `${tripDays(t).indexOf(fd(new Date())) + 1}일차` : "오늘";
+}
 /* ---------- 일정 카드: 접힌 모양 (사진 왼쪽 + 일정 옆, 누르면 펼침) ---------- */
 S.cardStyle = "compact";
 function itemHtmlCompact(it, n) {
   const open = S.itemOpen.has(it.id), ph = it.photos || [], has = it.lat != null;
-  const pimg = id => `<img class="cthumb" data-pid="${id}" alt="${esc(it.place)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`;
-  const top = `<div class="ctop">${ph.length ? pimg(ph[0]) : ""}<div class="cmain">
-      <div class="head">${it.time ? `<span class="time">${esc(it.time)}</span>` : ""}<h3 class="place">${esc(it.place)}</h3></div>
-      ${it.address ? `<div class="addr cone">📍 ${esc(it.address)}</div>` : ""}
-      ${it.duration ? `<div class="cdur">⏱ ${esc(it.duration)}</div>` : ""}</div><span class="carr">${open ? "⌃" : "⌄"}</span></div>`;
-  if (!open) return `<article class="item citem" data-id="${it.id}" data-ctog="${it.id}"><div class="num${has ? "" : " off"}">${n}</div><div class="body">${top}</div></article>`;
+  const pic = ph.length ? `<img class="cthumb" data-pid="${ph[0]}" alt="${esc(it.place)} 사진"${S.photos.has(ph[0]) ? ` src="${S.photos.get(ph[0])}"` : ""}>`
+    : `<span class="cthumb cnoph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10" r="2.4"/></svg></span>`;
+  const top = `<div class="ctop" data-ctog="${it.id}"><div class="cph">${pic}<span class="cnum">${n}</span></div>
+    <div class="cmain"><div class="ctm">${it.time ? `<span class="time">${esc(it.time)}</span>` : ""}${it.duration ? `<span class="cdur">${it.time ? " · " : ""}${esc(it.duration)}</span>` : ""}</div><h3 class="place">${esc(it.place)}</h3></div>
+    ${has ? `<button type="button" class="cmap" data-cmap="${it.id}" aria-label="${esc(it.place)} 지도에서 보기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4zM9 4v14M15 6v14"/></svg></button>` : ""}</div>`;
+  if (!open) return `<article class="item citem" data-id="${it.id}">${top}</article>`;
   const full = itemHtmlFull(it, n);
-  const inner = full.slice(full.indexOf('<div class="body">') + 18).replace(/<div class="head">[\s\S]*?<\/div>\s*(<div class="addr">[\s\S]*?<\/div>)?/, "");
-  return `<article class="item citem open" data-id="${it.id}"><div class="num${has ? "" : " off"}">${n}</div><div class="body"><div data-ctog="${it.id}">${top}</div>${inner}`;
+  const inner = full.slice(full.indexOf('<div class="body">') + 18).replace(/<div class="head">[\s\S]*?<\/div>/, "");
+  return `<article class="item citem open" data-id="${it.id}">${top}<div class="body cbody">${inner}</article>`;
 }
 document.addEventListener("click", e => {
+  const mp = e.target.closest("#items [data-cmap]"); if (mp) { e.stopImmediatePropagation(); showOnMap(mp.dataset.cmap); return; }
   const c = e.target.closest("#items [data-ctog]"); if (!c || S.cardStyle !== "compact") return;
   if (e.target.closest("a, button, .chip, .thumbs img") ) return;
   const id = c.dataset.ctog; if (S.itemOpen.has(id)) S.itemOpen.delete(id); else S.itemOpen.add(id);
