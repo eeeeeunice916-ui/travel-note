@@ -910,6 +910,8 @@ a.chip{text-decoration:none}
 .dayh2 h3 span{font-size:17px!important;font-weight:600;color:var(--muted);margin-left:8px}
 .dayh2 .dbtns .link{font-size:15px;font-weight:700}
 .dsub{color:var(--muted);font-size:14px;margin:4px 2px 12px}
+.fdiv{list-style:none;display:flex;align-items:center;gap:10px;margin:8px 4px 0;color:var(--muted);font-size:13px;font-weight:700}
+.fdiv:first-child{margin-top:0}.fdiv::after{content:"";flex:1;height:1px;background:var(--line)}
 .tlist li.done::after{content:"✓";margin-left:auto;color:var(--c-green-i);text-decoration:none}
 .tlist li.skip::after{content:"건너뜀";margin-left:auto;font-size:11px}
 .tlist li[data-iundo]{cursor:pointer}
@@ -1561,7 +1563,7 @@ a.chip{text-decoration:none}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.6";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.8";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2427,7 +2429,11 @@ function renderFood(fit) {
     + used.map(c => `<button type="button" class="cat" data-fcat="${esc(c)}" aria-pressed="${S.foodCat === c}">${esc(catLabel(c))}<small>${everything.filter(f => f.cat === c).length}</small></button>`).join("");
   const all = S.foodCat === "all" ? everything : everything.filter(f => f.cat === S.foodCat);
   const rank = (a, b) => likeCount(b) - likeCount(a) || (a.created || 0) - (b.created || 0);
-  const todo = all.filter(x => !x.visited).sort(rank), done = all.filter(x => x.visited).sort(rank);
+  /* '전체'일 때는 종류별로 모아서 구분선으로 나눔 */
+  const grouped = S.foodCat === "all" && used.length > 0, cOrd = c => c ? used.indexOf(c) : used.length;
+  const rank2 = (a, b) => grouped ? cOrd(a.cat || "") - cOrd(b.cat || "") || rank(a, b) : rank(a, b);
+  const todo = all.filter(x => !x.visited).sort(rank2), done = all.filter(x => x.visited).sort(rank2);
+  const withDiv = list => list.map((f, i) => (grouped && (i === 0 || (list[i - 1].cat || "") !== (f.cat || "")) ? `<li class="fdiv"><span>${esc(f.cat ? catLabel(f.cat) : "기타")}</span></li>` : "") + card(f)).join("");
   const num = new Map(); [...todo, ...done].forEach((f, i) => num.set(f.id, i + 1));
   const card = f => {
     const n = likeCount(f), mine = !!(f.likes || {})[C.uid], has = f.lat != null;
@@ -2436,7 +2442,7 @@ function renderFood(fit) {
     const th = (f.photos || [])[0];
     return `<li class="fi${f.visited ? " done" : ""}${open ? "" : " collapsed"}${th ? " hasth" : ""}">
       ${th ? `<img class="fthumb" data-pid="${th}" data-photo="${th}" alt="${esc(f.name)} 사진"${S.photos.has(th) ? ` src="${S.photos.get(th)}"` : ""}>` : ""}
-      <div class="ftop"><span class="fnum${has ? "" : " off"}${!f.visited && num.get(f.id) === 1 && n > 0 ? " top1" : ""}" data-ffocus="${f.id}">${num.get(f.id)}</span><h3 data-ffocus="${f.id}">${f.cat ? `<span class="fcat">${esc(catLabel(f.cat))}</span>` : ""}${esc(f.name)}</h3>
+      <div class="ftop"><span class="fnum${has ? "" : " off"}${!f.visited && num.get(f.id) === 1 && n > 0 ? " top1" : ""}" data-ffocus="${f.id}">${num.get(f.id)}</span><h3 data-ffocus="${f.id}">${esc(f.name)}</h3>
         <button type="button" class="like" data-like="${f.id}" aria-pressed="${mine}" aria-label="가고 싶어요">♥ ${n}</button></div>
       ${foodMeta(f)}
       ${f.address ? `<div class="addr">${linkify(f.address)}</div>` : ""}
@@ -2450,9 +2456,9 @@ function renderFood(fit) {
       <div class="acts"><button type="button" data-toplan="${f.id}">일정에 넣기</button><button type="button" data-visit="${f.id}">${f.visited ? "안 갔어요" : "다녀왔어요"}</button><button type="button" data-fpay="${f.id}">💳 예약·비용</button><button type="button" data-fedit="${f.id}">수정</button>
         ${has ? `<button type="button" data-fnav2="${f.id}">🧭 길찾기</button>` : ""}</div></li>`;
   };
-  $("#foodList").innerHTML = todo.length ? todo.map(card).join("") : `<li class="none">${birdSvg(done.length ? "bird-happy" : "bird")}<span>${done.length ? "모두 다녀왔어요!" : S.foodCat !== "all" ? "이 종류의 맛집이 없어요." : "가고 싶은 맛집을 ‘+ 맛집 추가’로 모아 보세요. 같이 가는 사람 모두에게 보여요."}</span></li>`;
+  $("#foodList").innerHTML = todo.length ? withDiv(todo) : `<li class="none">${birdSvg(done.length ? "bird-happy" : "bird")}<span>${done.length ? "모두 다녀왔어요!" : S.foodCat !== "all" ? "이 종류의 맛집이 없어요." : "가고 싶은 맛집을 ‘+ 맛집 추가’로 모아 보세요. 같이 가는 사람 모두에게 보여요."}</span></li>`;
   $("#foodDoneBox").hidden = !done.length; $("#foodDoneSum").textContent = `다녀온 곳 ${done.length}개`;
-  $("#foodDone").innerHTML = done.map(card).join("");
+  $("#foodDone").innerHTML = withDiv(done);
   const cnt = $("#foodCnt"); if (cnt) { cnt.hidden = !everything.length; cnt.textContent = everything.length; }
   hydrate($("#foodView"), S.tripId);
   S.fmarkers = {};
