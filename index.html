@@ -874,7 +874,7 @@ a.chip{text-decoration:none}
 .mlist.plan{margin-bottom:14px}.mlist.plan .mx{opacity:.85}.ptag{font-size:10.5px;font-weight:800;background:var(--c-yel);color:var(--c-yel-i);border-radius:6px;padding:2px 6px;flex:none}
 .mlist.plan .ma .link{display:block;font-size:12px;margin-left:auto}
 /* 맛집 */
-.fi.hasth{position:relative;padding-right:100px}
+.fi.hasth{position:relative;padding-right:100px;min-height:104px}
 .fthumb{position:absolute;right:12px;top:12px;width:78px;height:78px;border-radius:12px;object-fit:cover;background:var(--field);cursor:pointer}
 .fmeta{display:flex;align-items:center;gap:10px;margin-top:4px;font-size:13px}
 .fmeta .cost{font-weight:700}.fmeta small{color:var(--muted);font-weight:500}.nos{font-size:11.5px;color:var(--muted);opacity:.7}
@@ -912,6 +912,10 @@ a.chip{text-decoration:none}
 .dsub{color:var(--muted);font-size:14px;margin:4px 2px 12px}
 .fdiv{list-style:none;display:flex;align-items:center;gap:10px;margin:8px 4px 0;color:var(--muted);font-size:13px;font-weight:700}
 .fdiv:first-child{margin-top:0}.fdiv::after{content:"";flex:1;height:1px;background:var(--line)}
+.fi[data-fcard]{cursor:pointer}
+.fi .gi span{background:none;padding:0;font-size:13px;font-weight:700}
+.fi.collapsed .gi .glink{display:none}
+.fi .fmeta:empty{display:none}
 .tlist li.done::after{content:"✓";margin-left:auto;color:var(--c-green-i);text-decoration:none}
 .tlist li.skip::after{content:"건너뜀";margin-left:auto;font-size:11px}
 .tlist li[data-iundo]{cursor:pointer}
@@ -1563,7 +1567,7 @@ a.chip{text-decoration:none}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.8";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.9";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -2440,7 +2444,7 @@ function renderFood(fit) {
     const who = Object.values(f.likes || {});
     const open = S.foodOpen && S.foodOpen.has(f.id);
     const th = (f.photos || [])[0];
-    return `<li class="fi${f.visited ? " done" : ""}${open ? "" : " collapsed"}${th ? " hasth" : ""}">
+    return `<li class="fi${f.visited ? " done" : ""}${open ? "" : " collapsed"}${th ? " hasth" : ""}" data-fcard="${f.id}">
       ${th ? `<img class="fthumb" data-pid="${th}" data-photo="${th}" alt="${esc(f.name)} 사진"${S.photos.has(th) ? ` src="${S.photos.get(th)}"` : ""}>` : ""}
       <div class="ftop"><span class="fnum${has ? "" : " off"}${!f.visited && num.get(f.id) === 1 && n > 0 ? " top1" : ""}" data-ffocus="${f.id}">${num.get(f.id)}</span><h3 data-ffocus="${f.id}">${esc(f.name)}</h3>
         <button type="button" class="like" data-like="${f.id}" aria-pressed="${mine}" aria-label="가고 싶어요">♥ ${n}</button></div>
@@ -2448,7 +2452,6 @@ function renderFood(fit) {
       ${f.address ? `<div class="addr">${linkify(f.address)}</div>` : ""}
       ${f.memo ? `<div class="fm">${linkify(f.memo)}</div>` : ""}
       ${f.link ? `<div class="addr">${linkify(f.link)}</div>` : ""}
-      <button type="button" class="ftog" data-ftog="${f.id}">${open ? "접기 ▲" : `자세히 ▼${(f.menu || []).length ? ` · 메뉴 ${f.menu.length}` : ""}${(f.photos || []).length ? ` · 사진 ${f.photos.length}` : ""}`}</button>
       ${(f.photos || []).length ? `<div class="mphotos">${f.photos.map(id => `<img data-pid="${id}" data-photo="${id}" alt="${esc(f.name)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`).join("")}</div>` : ""}
       ${gInfoHtml(f)}
       ${menuHtml(f)}
@@ -5327,6 +5330,13 @@ function navTodayLabel() {
   const b = document.querySelector('.bnav [data-mode="today"] span'), t = trip(S.tripId); if (!b || !t) return;
   const st = tripState(t); b.textContent = st === "before" ? `D-${Math.round((pd(t.start) - pd(fd(new Date()))) / 864e5)}` : st === "during" ? `${tripDays(t).indexOf(fd(new Date())) + 1}일차` : "오늘";
 }
+/* 맛집 카드: 아무 데나 누르면 펼치고 접기 (버튼·링크·사진·별점·메뉴는 제외) */
+document.addEventListener("click", e => {
+  const li = e.target.closest("#foodView li[data-fcard]"); if (!li) return;
+  if (e.target.closest("a, button, input, select, textarea, label, .fthumb, .mphotos, .menu, [data-rate]")) return;
+  e.stopImmediatePropagation(); S.foodOpen = S.foodOpen || new Set();
+  const id = li.dataset.fcard; if (S.foodOpen.has(id)) S.foodOpen.delete(id); else S.foodOpen.add(id); renderFood(false);
+}, true);
 /* ---------- 일정 카드: 접힌 모양 (사진 왼쪽 + 일정 옆, 누르면 펼침) ---------- */
 S.cardStyle = "compact";
 function itemHtmlCompact(it, n) {
@@ -5720,7 +5730,7 @@ const starHtml = (n, id) => `<span class="stars"${id ? ` data-rate="${id}"` : ""
 function foodMeta(f) {
   const c = f.costCur || "KRW", t = trip(S.tripId), k = f.cost ? toKRW({ amt: f.cost, cur: c }, t) : null;
   const res = subList("todo").find(x => x.ref && x.ref.id === f.id);
-  return `<div class="fmeta">${f.rating ? starHtml(f.rating) : `<span class="nos">${f.visited ? "별점 없음" : "안 가 봄"}</span>`}${f.cost ? `<span class="cost">1인 ${payAmt(f.cost, c)}${c !== "KRW" && k ? ` <small>≈ ${won(k)}</small>` : ""}</span>` : ""}</div>
+  return `<div class="fmeta">${f.rating ? starHtml(f.rating) : ""}${f.cost ? `<span class="cost">1인 ${payAmt(f.cost, c)}${c !== "KRW" && k ? ` <small>≈ ${won(k)}</small>` : ""}</span>` : ""}</div>
     ${(f.pay && f.pay.mode) || res ? `<div class="chips">${payChips(f.pay)}${res ? `<span class="chip${res.done ? " pay" : " pay2"}">🎫 ${res.done ? "예약 완료" : "예약 필요 · " + dLabel(todoDue(t, res) || today())}</span>` : ""}</div>` : ""}`;
 }
 document.addEventListener("click", e => {
