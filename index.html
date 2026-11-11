@@ -810,11 +810,11 @@ dialog .dfoot{position:sticky;bottom:0;margin:0 -20px -20px;padding:12px 20px ca
 .item .addr{font-size:12.5px}
 .chip.mm{background:var(--field);color:var(--muted);font-weight:600}
 a.chip{text-decoration:none}
-.chip.lk{background:#E6F0FB;color:#3B6EA8}.chip.tel{background:#E4F2E0;color:#3F7A3B}
-.chip.pay{background:#FFF3D0;color:#8A6400}.chip.pay2{background:#FFE6E0;color:#B5482A}
+.chip.lk{background:var(--c-blue);color:var(--c-blue-i)}.chip.tel{background:var(--c-green);color:var(--c-green-i)}
+.chip.pay{background:var(--c-yel);color:var(--c-yel-i)}.chip.pay2{background:var(--c-coral);color:var(--c-coral-i)}
 .acts2{display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap}
 .ab{border:0;border-radius:10px;padding:7px 11px;font:inherit;font-size:13px;font-weight:700;background:var(--field);color:var(--ink);cursor:pointer}
-.ab.p{background:var(--btn,var(--ink));color:#fff}
+.ab.p{background:var(--btn);color:var(--btn-ink)}
 .acts2 .edited{margin-left:auto;font-size:11px;color:var(--muted);opacity:.7}
 .pvrow{display:flex;justify-content:flex-end;margin:4px 0 8px}
 .pvseg{display:inline-flex;background:var(--field);border-radius:11px;padding:3px;gap:3px}
@@ -823,31 +823,31 @@ a.chip{text-decoration:none}
 .pvseg.big{display:flex;margin:0 0 14px}.pvseg.big button{flex:1;font-size:14px;padding:9px}
 .vh{font-size:19px;margin:2px 2px 12px}
 /* 준비 · 할 일 */
-.sech.red{color:var(--danger,#D2453A)}
+.sech.red{color:var(--danger)}
 .ttag{display:inline-block;font-size:10.5px;font-weight:800;padding:1px 6px;border-radius:6px;margin-right:4px;background:var(--field)}
-.t-book{background:#E6F0FB;color:#3B6EA8}.t-doc{background:#EEE6FA;color:#6B4BA0}.t-money{background:#E4F2E0;color:#3F7A3B}.t-tel{background:#FFF3D0;color:#8A6400}.t-home{background:#FFE6E0;color:#B5482A}
-.due{font-size:11.5px;font-weight:800;color:var(--muted);white-space:nowrap;margin-left:6px}.due.red{color:var(--danger,#D2453A)}
-.av{width:24px;height:24px;border-radius:50%;background:var(--main,var(--accent));color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;flex:none;margin-left:6px}
+.t-book{background:var(--c-blue);color:var(--c-blue-i)}.t-doc{background:var(--c-pur);color:var(--c-pur-i)}.t-money{background:var(--c-green);color:var(--c-green-i)}.t-tel{background:var(--c-yel);color:var(--c-yel-i)}.t-home{background:var(--c-coral);color:var(--c-coral-i)}
+.due{font-size:11.5px;font-weight:800;color:var(--muted);white-space:nowrap;margin-left:6px}.due.red{color:var(--danger)}
+.tdo .av{width:24px;height:24px;border-radius:50%;background:var(--sky);color:var(--accent-ink);font-size:11px;font-weight:800;display:grid;place-items:center;flex:none;margin-left:6px}
 .sugbox{background:var(--surface);border:1.5px dashed var(--accent);border-radius:16px;padding:12px 14px;margin:12px 0}
 .sugbox summary{font-weight:800;cursor:pointer}
 .sugchips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
 .sugchips button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 11px;font:inherit;font-size:13px;color:var(--ink);cursor:pointer}
 /* 알림·오늘 */
-.alert2{background:#FFF0E8;border-left:4px solid var(--accent);border-radius:12px;padding:8px 12px;margin:0 0 12px;font-size:13.5px;line-height:1.6}
-.alert2 p{margin:2px 0}.alert2 b{color:var(--accent-d,var(--accent))}.alert2 [data-goprep]{cursor:pointer}
+.alert2{background:var(--warm);border-left:4px solid var(--accent);border-radius:12px;padding:8px 12px;margin:0 0 12px;font-size:13.5px;line-height:1.6}
+.alert2 p{margin:2px 0}.alert2 b{color:var(--accent)}.alert2 [data-goprep]{cursor:pointer}
 .tcard{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin:0 0 12px}
 .tch{display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:var(--muted);margin:0 0 6px}
 .tch span{font-weight:700}.tch [data-tgo]{color:var(--accent);cursor:pointer}
 .trow2{display:flex;align-items:center;gap:9px;width:100%;border:0;border-top:1px dashed var(--line);background:none;padding:9px 0;font:inherit;font-size:14px;color:var(--ink);text-align:left;cursor:pointer}
 .trow2:first-of-type{border-top:0}.trow2 .s{flex:1}.trow2 .go{font-size:12px;color:var(--muted)}
 .dot2{width:21px;height:21px;border-radius:50%;display:grid;place-items:center;font-size:11px;flex:none;font-weight:800}
-.dot2.x{background:var(--tint,#FFEBDD);color:var(--accent)}.dot2.o{background:#E4F2E0;color:#5FA35A}
+.dot2.x{background:var(--soft);color:var(--accent)}.dot2.o{background:var(--c-green);color:var(--c-green-i)}
 .tcard .bar2{margin-top:8px}
 .tpair{display:flex;gap:8px}.tpair button{flex:1;border:0;background:var(--field);border-radius:12px;padding:9px 10px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;display:grid;gap:2px}
 .tpair b{font-size:13.5px}.tpair small{color:var(--muted);font-size:11.5px}
-.tpay{background:#FFF6F0;border:2px solid var(--accent);border-radius:18px;padding:12px 14px;margin:0 0 12px}
+.tpay{background:var(--warm);border:2px solid var(--accent);border-radius:18px;padding:12px 14px;margin:0 0 12px}
 .tpay .k{font-size:12px;font-weight:800;color:var(--accent);margin:0 0 4px}
-.prow{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px dashed #F5D5C5}.prow:first-of-type{border-top:0}
+.prow{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px dashed var(--warm-line)}.prow:first-of-type{border-top:0}
 .prow .s{flex:1;font-size:14px}.prow small{display:block;color:var(--muted);font-size:11.5px}
 .qbtns{display:flex;gap:8px;margin:0 0 12px}.qbtns button{flex:1;border:1.5px dashed var(--accent);background:var(--surface);color:var(--accent);border-radius:12px;padding:10px;font:inherit;font-weight:800;cursor:pointer}
 .sum4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 12px;text-align:center}
@@ -862,16 +862,16 @@ a.chip{text-decoration:none}
 .mlist3 button{display:flex;align-items:center;gap:10px;width:100%;border:0;border-top:1px solid var(--line);background:none;padding:13px 14px;font:inherit;font-size:15px;color:var(--ink);text-align:left;cursor:pointer}
 .mlist3 button:first-child{border-top:0}.mlist3 .s{flex:1;font-weight:600}.mlist3 small{color:var(--muted);font-size:12.5px}
 .mlist3 .ar{color:var(--muted);opacity:.5}
-.bd{font-style:normal;background:var(--tint,#FFEBDD);color:var(--chip-ink,#A04A24);font-size:11.5px;font-weight:800;padding:2px 9px;border-radius:99px}.bd.red{background:var(--accent);color:#fff}
+.bd{font-style:normal;background:var(--star-l);color:var(--chip-ink);font-size:11.5px;font-weight:800;padding:2px 9px;border-radius:99px}.bd.red{background:var(--accent);color:var(--accent-ink)}
 .bklist{display:grid;gap:10px;margin:0 0 14px}.bkwrap .bkc{width:auto}.bkwrap .chips{margin-top:6px}
 .trow .tic{font-size:20px;width:30px;text-align:center;flex:none}
 /* 경비 예산 */
-.budget{background:var(--dd,linear-gradient(135deg,#FFE4D6,#FFF3D9));border-radius:18px;padding:14px;margin:0 0 12px}
-.budget .bt{font-size:12px;color:var(--muted);font-weight:700}.bbig{font-size:25px;font-weight:900;margin:2px 0 10px}.bbig.over{color:var(--danger,#D2453A)}
-.stk{display:flex;height:12px;border-radius:7px;overflow:hidden;background:rgba(255,255,255,.8)}.stk i{display:block;background:var(--accent)}
-.stk i.pl{background:repeating-linear-gradient(45deg,var(--accent) 0 4px,transparent 4px 8px);opacity:.45}
+.budget{background:var(--dd);border-radius:18px;padding:14px;margin:0 0 12px}
+.budget .bt{font-size:12px;color:var(--muted);font-weight:700}.bbig{font-size:25px;font-weight:900;margin:2px 0 10px}.bbig.over{color:var(--danger)}
+.bstk{display:flex;height:12px;border-radius:7px;overflow:hidden;background:var(--surface)}.bstk i{display:block;background:var(--accent)}
+.bstk i.pl{background:repeating-linear-gradient(45deg,var(--accent) 0 4px,transparent 4px 8px);opacity:.45}
 .blg{display:flex;justify-content:space-between;align-items:flex-end;font-size:11.5px;margin-top:8px;color:var(--muted)}.blg b{display:block;font-size:14px;color:var(--ink)}
-.mlist.plan{margin-bottom:14px}.mlist.plan .mx{opacity:.85}.ptag{font-size:10.5px;font-weight:800;background:#FFF3D0;color:#8A6400;border-radius:6px;padding:2px 6px;flex:none}
+.mlist.plan{margin-bottom:14px}.mlist.plan .mx{opacity:.85}.ptag{font-size:10.5px;font-weight:800;background:var(--c-yel);color:var(--c-yel-i);border-radius:6px;padding:2px 6px;flex:none}
 .mlist.plan .ma .link{display:block;font-size:12px;margin-left:auto}
 /* 맛집 */
 .fi.hasth{position:relative;padding-right:100px}
@@ -886,9 +886,17 @@ a.chip{text-decoration:none}
 .steps3{display:flex;gap:6px;font-size:12px}.steps3 div{flex:1;background:var(--field);border-radius:10px;padding:8px 6px;text-align:center;line-height:1.4}.steps3 b{display:block;color:var(--accent);font-size:14px}
 .fir{display:flex!important;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);color:var(--ink)!important;font-size:14px!important}
 .fir input{width:20px!important;min-height:0!important;height:20px}.fir .s{flex:1;display:grid}.fir small{color:var(--muted);font-weight:500}
-.fir.dup{opacity:.5}.src{font-style:normal;font-size:10.5px;font-weight:800;border-radius:5px;padding:2px 6px}.src.nv{background:#E3F6E8;color:#1E9E4A}.src.gg{background:#E6F0FB;color:#3B6EA8}
+.fir.dup{opacity:.5}.fir .src{font-style:normal;font-size:10.5px;font-weight:800;border-radius:5px;padding:2px 6px}.fir .src.nv{background:var(--c-green);color:var(--c-green-i)}.fir .src.gg{background:var(--c-blue);color:var(--c-blue-i)}
 /* 오프라인 */
-.offbar{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:50;background:#3E2C27;color:#fff;border-radius:12px;padding:9px 12px;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.offbar{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);border-radius:12px;padding:9px 12px;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.tcard .shopi{border:0;box-shadow:none;background:none;padding:8px 0;border-radius:0;border-top:1px dashed var(--line)}.tcard .shop{gap:0}.tcard .shop .shopi:first-child{border-top:0}
+.tlist li.done::after{content:"✓";margin-left:auto;color:var(--c-green-i);text-decoration:none}
+.tlist li.skip::after{content:"건너뜀";margin-left:auto;font-size:11px}
+.tlist li[data-iundo]{cursor:pointer}
+.gonebox{margin:14px 0 0;border:1px dashed var(--line);border-radius:16px;padding:10px 14px}
+.gonebox summary{font-weight:700;color:var(--muted);cursor:pointer;font-size:14px}
+.gonerow{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line);margin-top:8px}
+.gonerow .s{flex:1;min-width:0}.gonerow b{display:block;font-size:14.5px}.gonerow small{color:var(--muted);font-size:12px}
 </style>
 </head>
 <body>
@@ -1054,7 +1062,7 @@ a.chip{text-decoration:none}
       <label class="btn ghost" for="fFile">사진 추가<input type="file" id="fFile" accept="image/*" multiple hidden></label>
     </div>
     <div class="dfoot">
-      <button type="button" class="btn danger" id="fDel">삭제</button>
+      <button type="button" class="btn danger" id="fDel">삭제</button><button type="button" class="btn" id="fPay">💳 예약·비용</button>
       <span class="sp"></span>
       <button type="button" class="btn" id="fCancel">취소</button>
       <button type="submit" class="btn primary">저장</button>
@@ -1533,7 +1541,7 @@ a.chip{text-decoration:none}
    - 여행 하나 = Firebase의 "방" 하나. 방 코드(8자리)를 아는 사람이 닉네임을 정하고 들어와 함께 수정
    - 일정은 방 아래 items, 사진은 photos에 따로 저장 (실시간 동기화)
    ========================================================= */
-const APP_VERSION = "1.0";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
+const APP_VERSION = "1.2";   // 앱을 고칠 때마다 올림 (새 버전 알림에 사용)
 /* 구글 장소 검색 키: 구글 클라우드에서 https://eeeeeunice916.github.io/* 에서만 쓰도록 잠가 둠 */
 const GOOGLE_KEY = "AIzaSyDJV-jyWxQ2H2gXlxtxtDWzooj_JXlDd68";
 const FIREBASE_CONFIG = {
@@ -1931,7 +1939,7 @@ async function joinRoom(raw, nick) {
 }
 async function deleteRoom(code) {
   const ref = roomRef(code);
-  for (const sub of ["items", "photos", "shop", "food", "money", "pack", "diary"]) {
+  for (const sub of ["items", "photos", "shop", "food", "money", "pack", "diary", "todo", "trash"]) {
     const qs = await ref.collection(sub).get();
     await Promise.all(qs.docs.map(d => ref.collection(sub).doc(d.id).delete()));
   }
@@ -1947,6 +1955,7 @@ let refreshTimer = null;
 function refresh(kind, code) {
   if (!S.ready) return;
   if (kind === "gone" && S.tripId === code) { toast("이 여행이 삭제되었거나 방에서 나갔어요."); goList(); return; }
+  if (S.tripId && S.tripId === code && (S.rooms.get(code) || {}).deletedAt) { toast("이 여행은 삭제되었어요. 목록 아래 ‘최근 삭제한 여행’에서 되살릴 수 있어요.", 4500); goList(); return; }
   if (S.pendingTrip && S.rooms.has(S.pendingTrip)) { const id = S.pendingTrip; S.pendingTrip = null; openTripView(id, true); return; }
   clearTimeout(refreshTimer);
   refreshTimer = setTimeout(() => { if (S.tripId) { if (S.tripId === code || !code) updateTrip(false); } else renderList(); }, 30);
@@ -2052,6 +2061,12 @@ function applySettings() {
     "--lime": P.prog, "--lime-l": P.progL, "--lime-d": P.progD, "--pink": P.pink, "--pink-l": P.heartL, "--heart": P.heart, "--rose": P.pink,
     "--star": P.star, "--star-l": P.chip, "--chip-ink": P.chipInk, "--fab-star": ov.tab ? onColor(btn) === "#FFFFFF" ? "#FFCF33" : "#1C2547" : (P.fabStar || P.star),
     "--dd": P.dd, "--mark": P.memo, "--mark-ink": P.ink, "--route": main, "--wing": ov.accent || P.wing || P.main, "--bird": P.bird || P.ink, "--bird-fill": P.birdFill || "#FFFFFF",
+    "--c-blue": mix(P.surface, "#3F86E0", dark ? .3 : .13), "--c-blue-i": dark ? "#A9CBF7" : "#34639B",
+    "--c-green": mix(P.surface, "#4FA34A", dark ? .3 : .15), "--c-green-i": dark ? "#AEDCA8" : "#3A7436",
+    "--c-yel": mix(P.surface, "#F0B21E", dark ? .28 : .2), "--c-yel-i": dark ? "#F3D584" : "#7E5C00",
+    "--c-coral": mix(P.surface, "#EE6A45", dark ? .3 : .16), "--c-coral-i": dark ? "#F6AD96" : "#AC4226",
+    "--c-pur": mix(P.surface, "#8A66D0", dark ? .3 : .14), "--c-pur-i": dark ? "#CDB9F3" : "#65479A",
+    "--warm": mix(P.surface, main, dark ? .16 : .08), "--warm-line": mix(P.surface, main, dark ? .45 : .32),
     "--danger": dark ? "#F07A63" : "#C2453A", "--shadow": dark ? "none" : "0 1px 2px rgba(28,37,71,.04),0 6px 18px rgba(28,37,71,.05)"
   };
   S.dayColors = P.days;
@@ -2234,7 +2249,10 @@ function hideSplash() {
 function renderList() {
   if (S.map) { S.map.remove(); S.map = null; }
   if (S.fmap) { S.fmap.remove(); S.fmap = null; S.flayer = null; }
-  const loaded = S.codes.filter(c => S.rooms.has(c)).map(trip).sort((a, b) => b.start.localeCompare(a.start));
+  const allTrips = S.codes.filter(c => S.rooms.has(c)).map(trip).sort((a, b) => b.start.localeCompare(a.start));
+  const loaded = allTrips.filter(t => !t.deletedAt), goneTrips = allTrips.filter(t => t.deletedAt);
+  goneTrips.filter(t => Date.now() - t.deletedAt > 30 * 864e5 && isOwner(t)).forEach(t => deleteRoom(t.id).catch(() => {}));   // 30일 지나면 정리
+  const goneHtml = goneTrips.length ? `<details class="gonebox"><summary>🗑️ 최근 삭제한 여행 ${goneTrips.length}개</summary>${goneTrips.map(t => `<div class="gonerow"><span class="s"><b>${esc(t.title)}</b><small>${esc(t.deletedBy || "")}이 ${ago(t.deletedAt)} 지움 · ${Math.max(0, 30 - Math.floor((Date.now() - t.deletedAt) / 864e5))}일 남음</small></span><button type="button" class="btn sm primary" data-tripback="${t.id}">되살리기</button>${isOwner(t) || S.admin ? `<button type="button" class="btn sm" data-tripkill="${t.id}">완전히 삭제</button>` : ""}</div>`).join("")}</details>` : "";
   const waiting = S.codes.filter(c => !S.rooms.has(c));
   const card = t => {
     const firstPhoto = t.items.flatMap(i => i.photos || [])[0];
@@ -2256,7 +2274,12 @@ function renderList() {
     ${loaded.length && !ls.get("tn-vault", "") && !ls.get("tn-vault-later", 0) ? `<div class="banner vban"><p>🔑 <b>복구 코드</b>를 만들어 두면 앱을 다시 깔거나 기기를 바꿔도 여행을 한 번에 되살릴 수 있어요.</p><div class="row"><button class="btn primary sm" id="vbMake">지금 만들기</button><button class="btn sm" id="vbLater">나중에</button></div></div>` : ""}
     ${ddayCard(loaded)}<section class="trips">${loaded.map(card).join("")}${waiting.map(wait).join("")}${loaded.length || waiting.length ? "" : `<div class="empty">${birdSvg("bird-sleep")}<div>아직 여행이 없어요.<br>‘새 여행’을 만들거나, 친구에게 받은 코드로 입장하세요.</div><button type="button" class="btn sm" id="vaultRestoreList">🔑 예전 여행 복구 코드로 되살리기</button></div>`}</section>
     ${loaded.length ? '<p class="lphint">여행을 3초 동안 누르고 있으면 삭제하거나 방에서 나갈 수 있어요.</p>' : ""}
+    ${goneHtml}
     <p class="lphint">앱 버전 ${APP_VERSION}</p>`;
+  document.querySelectorAll("[data-tripback]").forEach(b => b.onclick = async () => { try { await updateRoom(b.dataset.tripback, { deletedAt: 0, deletedBy: "" }); toast("여행을 되살렸어요."); } catch (e) { toast(errMsg(e), 4500); } renderList(); });
+  document.querySelectorAll("[data-tripkill]").forEach(b => b.onclick = async () => { const t = trip(b.dataset.tripkill);
+    if (!t || !(await askConfirm(`‘${t.title}’을(를) 완전히 삭제할까요? 일정과 사진이 모두 사라지고 되돌릴 수 없어요.`, "완전히 삭제"))) return;
+    try { await deleteRoom(t.id); toast("완전히 삭제했어요."); } catch (e) { toast(errMsg(e), 4500); } renderList(); });
   $("#newTrip").onclick = () => openTrip(null);
   $("#openSet").onclick = () => openSettings();
   $("#joinBtn").onclick = () => openJoin("");
@@ -2269,23 +2292,6 @@ function renderList() {
 }
 
 /* ---------- 여행 상세 ---------- */
-function itemHtml(it, n) {
-  const has = it.lat != null;
-  const thumbs = (it.photos || []).map(id => `<img data-pid="${id}" data-photo="${id}" alt="${esc(it.place)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`).join("");
-  const chips = lines(it.booking).map(l => { const code = codeOf(l); const label = l.replace(code, "").trim();
-    return `<button type="button" class="chip" data-copy="${esc(code)}">${label ? esc(label) + " " : ""}<b>${esc(code)}</b><small>복사</small></button>`; }).join("");
-  const memo = it.memoHtml ? "" : lines(it.memo).map(l => /^(→|->|=>)/.test(l) ? `<li class="arrow">${linkify(l.replace(/^(->|=>)/, "→"))}</li>` : `<li>${linkify(l)}</li>`).join("");
-  const nav = has ? `${naverA(it.place, it.lat, it.lng)}
-    ${gA({ kind: "item", ref: it.id, name: it.place, addr: it.address, lat: it.lat, lng: it.lng, pid: it.pid }, "구글 길찾기", true)}` : "";
-  const edited = it.updatedBy ? `<span class="edited">${esc(it.updatedBy)} · ${ago(it.updatedAt)}</span>` : "";
-  return `<article class="item" data-id="${it.id}"><div class="num${has ? "" : " off"}">${n}</div><div class="body">
-    <div class="head">${it.time ? `<span class="time">${esc(it.time)}</span>` : ""}<h3 class="place">${esc(it.place)}</h3>${it.duration ? `<span class="dur">${esc(it.duration)}</span>` : ""}</div>
-    ${it.address ? `<div class="addr">${linkify(it.address)}</div>` : ""}
-    ${chips ? `<div class="chips">${chips}</div>` : ""}
-    ${it.memoHtml ? `<div class="memo-rich rich">${richHtml(it.memoHtml)}</div>` : memo ? `<ul class="sub">${memo}</ul>` : ""}
-    ${thumbs ? `<div class="thumbs">${thumbs}</div>` : ""}
-    <div class="acts"><button type="button" data-edit="${it.id}">수정</button>${nav}${has ? "" : '<span class="none plain" style="padding:0">지도 위치 없음</span>'}${edited}</div></div></article>`;
-}
 function renderTrip() {
   const t = trip(S.tripId); if (!t) { showList(); return; }
   if (S.map) { S.map.remove(); S.map = null; }
@@ -2310,7 +2316,6 @@ function renderTrip() {
       <div class="maptool"><button type="button" class="link" data-mapfold>지도 접기 ▲</button></div>
       <div id="map" class="map"></div>
       <p class="hint" id="mapHint" hidden style="margin:8px 2px 0"></p>
-      <div class="pvrow">${planViewBar()}</div>
       <div id="items"></div>
       <button class="fab" id="add"><span class="st"></span>일정 추가</button>
     </div>
@@ -2374,11 +2379,11 @@ function renderTrip() {
 /* ---------- 쇼핑리스트 ---------- */
 function setMode(m) {
   S.mode = m;
-  const navM = ["money", "pack", "diary"].includes(m) ? "more" : m;
+  const subMode = ["money", "pack", "diary", "cards", "trash"].includes(m), navM = subMode ? "more" : m;
   document.querySelectorAll(".bnav button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === navM)));
-  ["plan", "shop", "food", "today", "money", "pack", "diary", "more"].forEach(v => { const el = $("#" + v + "View"); if (el) el.hidden = m !== v; });
-  const mb = $("#moreBack"); if (mb) mb.hidden = !["money", "pack", "diary"].includes(m);
-  if (m === "more") renderMore();
+  ["plan", "shop", "food", "today", "money", "pack", "diary", "more", "cards", "trash"].forEach(v => { const el = $("#" + v + "View"); if (el) el.hidden = m !== v; });
+  const mb = $("#moreBack"); if (mb) mb.hidden = !subMode;
+  if (m === "more") renderMore(); if (m === "cards") renderCardsView(); if (m === "trash") renderTrash();
   if (m === "today") renderToday(); if (m === "money") renderMoney(); if (m === "pack") renderPack(); if (m === "diary") renderDiary();
   if (m === "plan" && S.map) setTimeout(() => S.map && S.map.refresh(), 50);
   if (m === "food") { if (!S.fmap) initFoodMap(); else setTimeout(() => S.fmap && S.fmap.refresh(), 50); renderFood(true); }
@@ -2544,13 +2549,16 @@ $("#fdAddr").addEventListener("keydown", e => { if (e.key === "Enter") { e.preve
 $("#fdCancel").onclick = () => $("#fd").close();
 $("#fdForm").onsubmit = e => {
   e.preventDefault(); const name = $("#fdName").value.trim(); if (!name) { $("#fdName").focus(); return; }
-  const data = { name, cat: FE.cat || "", memo: $("#fdMemo").value.trim(), link: $("#fdLink").value.trim(), address: $("#fdAddr").value.trim(), lat: FE.lat, lng: FE.lng };
+  const data = { name, cat: FE.cat || "", memo: $("#fdMemo").value.trim(), link: $("#fdLink").value.trim(), address: $("#fdAddr").value.trim(), lat: FE.lat, lng: FE.lng,
+    rating: FE.rating || 0, cost: parseFloat($("#fdCost").value) || 0, costCur: $("#fdCostCur").value };
   for (const id of FP.photos) if (FP.pend.has(id)) putPhoto(S.tripId, id, FP.pend.get(id));
   for (const id of ((FE.f && FE.f.photos) || [])) if (!FP.photos.includes(id)) delPhoto(S.tripId, id);
   data.photos = FP.photos;
   if (FE.g) data.g = FE.g;
   if (FE.pid != null) data.pid = FE.pid;
-  setFood(S.tripId, FE.f ? Object.assign({}, FE.f, data) : Object.assign({ id: uid(), created: Date.now(), addedBy: S.nick, likes: { [C.uid]: S.nick }, visited: false }, data));
+  const saved = FE.f ? Object.assign({}, FE.f, data) : Object.assign({ id: uid(), created: Date.now(), addedBy: S.nick, likes: { [C.uid]: S.nick }, visited: false }, data);
+  setFood(S.tripId, saved);
+  if ($("#fdRes").checked && !$("#fdRes").disabled && !subList("todo").some(x => x.ref && x.ref.id === saved.id)) addTodo({ title: `${saved.name} 예약`, cat: "book", off: 7, ref: { kind: "food", id: saved.id } });
   $("#fd").close(); renderFood(!FE.f); toast("저장했어요.");
 };
 $("#fdDel").onclick = async () => {
@@ -3170,8 +3178,8 @@ $("#lpDel").onclick = async () => {
   if (isOwner(t) || S.admin) {
     $("#pw")._pushed = pushed;
     const others = memberList(t).filter(m => !m.me).length;
-    if (!(await checkPassword(`‘${t.title}’ 여행과 모든 일정, 사진이 삭제돼요.${others ? ` 함께하는 ${others}명에게서도 사라져요.` : ""} 삭제하면 되돌릴 수 없어요.`))) return;
-    try { await deleteRoom(t.id); toast("여행을 삭제했어요."); renderList(); } catch (e) { toast(errMsg(e), 4500); }
+    if (!(await checkPassword(`‘${t.title}’ 여행과 모든 일정, 사진이 삭제돼요.${others ? ` 함께하는 ${others}명에게서도 사라져요.` : ""} 30일 동안은 목록 아래 ‘최근 삭제한 여행’에서 되살릴 수 있어요.`))) return;
+    try { await updateRoom(t.id, { deletedAt: Date.now(), deletedBy: S.nick || "" }); toast("여행을 지웠어요. 30일 안에 되살릴 수 있어요.", 4000); renderList(); } catch (e) { toast(errMsg(e), 4500); }
   } else {
     $("#cf")._pushed = pushed;
     if (!(await askConfirm(`‘${t.title}’ 방에서 나갈까요? 다시 들어오려면 방 코드가 필요해요.`, "나가기"))) return;
@@ -3534,44 +3542,6 @@ function weatherStrip(t) {
 }
 
 /* ---------- 오늘 ---------- */
-function renderToday() {
-  const box = $("#todayView"); const t = trip(S.tripId); if (!box || !t) return;
-  const st = tripState(t), td = fd(new Date()), days = tripDays(t);
-  const packs = subList("pack");
-  const packDone = packs.filter(packMine).length;
-  const money = subList("money"), spent = money.reduce((s, x) => s + (toKRW(x, t) || 0), 0);
-  const shopLeft = (S.shop.get(t.id) || []).filter(x => !x.done).length, foodN = (S.food.get(t.id) || []).length;
-  let head = "";
-  if (st === "during") {
-    const di = days.indexOf(td), info = t.days[dk(td)] || {};
-    const list = sortDay(t.items.filter(i => i.date === td), info.order);
-    const now = nowHM(), next = list.find(i => i.time && i.time >= now) || list.find(i => !i.time);
-    const prevIdx = next ? list.indexOf(next) - 1 : -1;
-    head = `<section class="thero" style="--dc:${dayColor(di)}"><p class="k">오늘 · ${di + 1}일차${info.title ? ` [${esc(info.title)}]` : ""}</p><h2>${mdl(td)}</h2>${birdSvg("bird-happy")}</section>
-      ${weatherStrip(t)}
-      ${next ? `<section class="tnext"><p class="k">다음 일정</p><div class="tn-main"><span class="time">${esc(next.time || "")}</span><h3>${esc(next.place)}</h3></div>
-        ${next.address ? `<div class="addr">${linkify(next.address)}</div>` : ""}
-        ${prevIdx >= 0 ? `<div class="mvlab">이전 일정에서</div>` + moveHtml(list[prevIdx], next) : ""}
-        ${next.lat != null ? (S.myPos && Date.now() - S.myPos.at < 10 * 60e3 ? `<div class="mvlab">지금 내 위치에서</div>` + (moveHtml(S.myPos, next) || '<div class="move"><span>📍 거의 다 왔어요!</span></div>') : `<button type="button" class="btn sm mybtn" data-fromme>📍 내 위치에서 걸리는 시간 보기</button>`) : ""}
-        <div class="acts">${next.lat != null ? `${gA({ kind: "item", ref: next.id, name: next.place, addr: next.address, lat: next.lat, lng: next.lng, pid: next.pid }, "구글 길찾기", true)}${naverA(next.place, next.lat, next.lng, "네이버 지도")}` : ""}<button type="button" data-goplan>오늘 일정 전체</button></div></section>`
-        : `<section class="tnext"><p class="k">다음 일정</p><p class="none plain">${list.length ? "오늘 일정을 다 마쳤어요. 수고했어요!" : "오늘 일정이 비어 있어요."}</p></section>`}
-      ${list.length ? `<ul class="tlist">${list.map((i, k) => `<li class="${i === next ? "on" : i.time && i.time < now ? "past" : ""}"><span class="time">${esc(i.time || "·")}</span>${esc(i.place)}</li>`).join("")}</ul>` : ""}`;
-  } else if (st === "before") {
-    const dn = Math.round((pd(t.start) - pd(td)) / 864e5), empty = days.filter(d => !t.items.some(i => i.date === d)).length;
-    head = `<section class="thero"><p class="k">${esc(t.title)} · ${mdl(t.start)} 출발</p><h2>D-${dn}</h2><p class="m">${empty ? `아직 일정이 빈 날이 ${empty}일 있어요` : "일정 준비 완료!"}</p>${birdSvg("bird")}</section>
-      ${weatherStrip(t) || (dn > 15 ? '<p class="hint tw">출발 2주 전부터 여행지 날씨가 여기 보여요.</p>' : "")}`;
-  } else {
-    head = `<section class="thero"><p class="k">${esc(t.title)}</p><h2>여행 끝!</h2><p class="m">수고했어요. 다이어리로 추억을 남겨 보세요.</p>${birdSvg("bird-sleep")}</section>`;
-  }
-  const tiles = `<div class="tiles">
-    <button type="button" class="tile" data-gomode="pack"><small>짐 챙기기</small><b>${packs.length ? `${packDone}/${packs.length}` : "목록 만들기"}</b>${packs.length ? `<span class="bar2"><i style="width:${Math.round(packDone / packs.length * 100)}%"></i></span>` : ""}</button>
-    <button type="button" class="tile" data-gomode="money"><small>지금까지 쓴 돈</small><b>${won(spent)}</b><span class="sub">${money.length ? `${money.length}건` : "기록 시작하기"}</span></button>
-    <button type="button" class="tile" data-gomode="shop"><small>쇼핑</small><b>${shopLeft ? `${shopLeft}개 남음` : "다 샀어요"}</b></button>
-    <button type="button" class="tile" data-gomode="food"><small>맛집</small><b>${foodN}곳</b></button>
-  </div>`;
-  box.innerHTML = head + `<h3 class="sech">항공·숙소</h3>` + cardsStrip(t, true) + tiles +
-    `<button type="button" class="btn diarybtn" data-godiary>📔 여행 다이어리 ${st === "before" ? "보기" : "쓰기"}</button>`;
-}
 function bindToday(root) {
   bindCards(root);
   root.addEventListener("click", e => {
@@ -3688,14 +3658,14 @@ $("#mxForm").onsubmit = e => {
   if (cur !== "KRW" && !rateOf(trip(S.tripId), cur)) fetchRates(true);
 };
 $("#mxDel").onclick = async () => { if (!(await askConfirm("이 지출을 지울까요?"))) return; { const x = subList("money").find(y => y.id === MX.id); if (x) trashPut("money", x); } delSub("money", S.tripId, MX.id); $("#mx").close(); renderMoney(); };
-async function fetchRates(save) {
+async function fetchRates(save, quiet) {
   try {
     const r = await fetch("https://open.er-api.com/v6/latest/KRW"); const j = await r.json();
     if (!j || !j.rates) throw new Error();
     const out = {}; CURS.forEach(([c]) => { if (c !== "KRW" && j.rates[c]) out[c] = Math.round(1 / j.rates[c] * 10000) / 10000; });
-    if (save) { const t = trip(S.tripId); updateRoom(S.tripId, { rates: Object.assign({}, t.rates || {}, out), ratesAt: Date.now() }); updateTrip(false); toast("오늘 환율을 불러왔어요."); }
+    if (save) { const t = trip(S.tripId); updateRoom(S.tripId, { rates: Object.assign({}, t.rates || {}, out), ratesAt: Date.now() }); updateTrip(false); if (!quiet) toast("오늘 환율을 불러왔어요."); }
     return out;
-  } catch (e) { toast("환율을 불러오지 못했어요. ‘환율’에서 직접 적어 주세요.", 4000); return null; }
+  } catch (e) { if (!quiet) toast("환율을 불러오지 못했어요. ‘환율’에서 직접 적어 주세요.", 4000); return null; }
 }
 function openRates() {
   const t = trip(S.tripId);
@@ -4755,24 +4725,6 @@ document.addEventListener("click", async e => {
 });
 
 /* ---------- 더보기 ---------- */
-function renderMore() {
-  const box = $("#moreView"), t = trip(S.tripId); if (!box || !t) return;
-  const money = subList("money"), spent = money.reduce((a, x) => a + (toKRW(x, t) || 0), 0);
-  const packs = subList("pack"), pd2 = packs.filter(packMine).length, dy = subList("diary").filter(x => x.text || (x.photos || []).length).length;
-  box.innerHTML = `<h3 class="sech" style="margin-top:4px">항공·숙소</h3>${cardsStrip(t, true)}
-    <div class="mgrid">
-      <button type="button" class="mtile" data-gomode="money"><span class="ic">💰</span><b>경비·정산</b><small>${money.length ? `${won(spent)} · ${money.length}건` : "기록 시작하기"}</small></button>
-      <button type="button" class="mtile" data-gomode="pack"><span class="ic">🧳</span><b>짐 챙기기</b><small>${packs.length ? `${pd2}/${packs.length} 챙김` : "목록 만들기"}</small></button>
-      <button type="button" class="mtile" data-gomode="diary"><span class="ic">📔</span><b>여행 다이어리</b><small>${dy ? `${dy}일 기록` : "날마다 한 줄"}</small></button>
-      <button type="button" class="mtile" data-act="invite"><span class="ic">👥</span><b>함께·초대</b><small>${memberList(t).map(m => esc(m.nick)).join(", ")}</small></button>
-    </div>
-    <div class="mlist2">
-      <button type="button" data-act="notes"><span>📝</span>여행 준비 메모</button>
-      <button type="button" data-act="edit"><span>✏️</span>여행 이름·날짜·나라 수정</button>
-      <button type="button" data-act="import"><span>📋</span>메모장에서 가져오기</button>
-      <button type="button" data-act="set"><span>⚙️</span>설정</button>
-    </div>`;
-}
 function bindMore(root) {
   bindCards(root);
   root.addEventListener("click", e => {
@@ -4859,7 +4811,7 @@ function openItem(t, it, pre) {
   setRich($("#fMemoRich"), it ? (it.memoHtml || plainToHtml(it.memo || "")) : plainToHtml(pre ? pre.memo || "" : ""));
   $("#fResults").hidden = true; $("#fResults").innerHTML = "";
   if (pre && pre.copy) { $("#fTime").value = pre.time || ""; $("#fDur").value = pre.duration || ""; $("#fBook").value = pre.booking || ""; setRich($("#fMemoRich"), pre.memoHtml || plainToHtml(pre.memo || "")); $("#edTitle").textContent = "일정 복사 (날짜를 골라 저장)"; }
-  $("#fDel").hidden = !it;
+  $("#fDel").hidden = !it; $("#fPay").hidden = !it;
   renderEdPhotos();
   openDlg($("#ed"));
   setupMiniMap();
@@ -5277,16 +5229,22 @@ function plannedPays(t) {
     if (p.extra && +p.extra.amt && !p.xpaid) out.push({ kind, id: o.id, part: "x", name: nm, label: p.extra.note || "현장 추가 요금", amt: +p.extra.amt, cur: p.extra.cur || c, date: d });
   };
   t.items.forEach(o => add("item", o)); (S.food.get(t.id) || []).forEach(o => add("food", o)); cardsOf(t).forEach(o => add("card", o));
+  /* 일정에 넣은 맛집의 예상 비용(1인 × 인원)도 낼 예정에 */
+  const ppl = Math.max(1, memberList(t).length);
+  (S.food.get(t.id) || []).forEach(f => { if (!+f.cost || f.visited || (f.pay && f.pay.mode)) return;
+    const it = t.items.find(i => i.place === f.name); if (!it) return;
+    out.push({ kind: "food", id: f.id, part: "e", name: f.name, label: `예상 · ${ppl}명`, amt: f.cost * ppl, cur: f.costCur || "KRW", date: it.date }); });
   return out.sort((a, b) => (a.date || "9").localeCompare(b.date || "9"));
 }
 async function payNow(kind, id, part) {
-  const o = refGet(kind, id); if (!o || !o.pay) return;
-  const p = Object.assign({}, o.pay), c = part === "x" ? (p.extra.cur || p.cur) : p.cur;
+  const o = refGet(kind, id); if (!o || (!o.pay && part !== "e")) return;
+  const est = part === "e", ppl = Math.max(1, memberList(trip(S.tripId)).length);
+  const p = est ? { mode: "site", amt: o.cost * ppl, cur: o.costCur || "KRW", payer: nickOf() } : Object.assign({}, o.pay), c = part === "x" ? (p.extra.cur || p.cur) : p.cur;
   const plan = part === "x" ? +p.extra.amt : p.mode === "dep" ? (+p.amt || 0) - (+p.dep || 0) : +p.amt;
   const v = await askText(`실제로 낸 금액 (${curName(c || "KRW")})`, "", String(plan || ""), "number"); if (v == null) return;
   const amt = parseFloat(String(v).replace(/[^\d.]/g, "")) || 0;
   const t = trip(S.tripId), d = tripState(t) === "during" ? today() : refDate(kind, o);
-  setSub("money", S.tripId, moneyFor(kind, o, part, amt, c, d, part === "x" ? (p.extra.note || "현장 추가") : p.mode === "dep" ? "잔금" : "현장 결제"));
+  setSub("money", S.tripId, moneyFor(kind, o, est ? "s" : part, amt, c, d, part === "x" ? (p.extra.note || "현장 추가") : p.mode === "dep" ? "잔금" : "현장 결제"));
   if (part === "x") p.xpaid = true; else { p.paid = true; p.paidAmt = amt; }
   refSave(kind, Object.assign({}, o, { pay: p }));
   toast("지출에 넣었어요."); setTimeout(() => { if (S.mode === "today") renderToday(); if (S.mode === "money") renderMoney(); }, 50);
@@ -5330,9 +5288,14 @@ $("#pyForm").onsubmit = e => {
   if (p) Object.keys(p).forEach(k => p[k] == null && delete p[k]);
   const n = Object.assign({}, o, { pay: p || null });
   refSave(PY.kind, n); syncPayMoney(PY.kind, n);
+  /* 수정 창을 연 채로 넣었으면, 그 창이 들고 있는 예전 내용에도 반영 (저장할 때 지워지지 않게) */
+  if (PY.kind === "item" && E && E.it && E.it.id === n.id) E.it = Object.assign({}, E.it, { pay: n.pay });
+  if (PY.kind === "food" && FE && FE.f && FE.f.id === n.id) FE.f = Object.assign({}, FE.f, { pay: n.pay });
   if ($("#pyTodo").checked && !$("#pyTodo").disabled) addTodo({ title: `${refName(PY.kind, n)} 예약`, cat: "book", off: 7, ref: { kind: PY.kind, id: n.id } });
   $("#py").close(); toast("저장했어요."); setTimeout(() => { updateTrip(false); }, 30);
 };
+
+$("#fPay").onclick = () => { if (E && E.it) openPay("item", E.it.id); };
 
 /* ---------- 길찾기 고르기 ---------- */
 function openNavSheet(o) {
@@ -5378,25 +5341,21 @@ $("#imNo").onclick = () => $("#im").close();
 
 /* ---------- 일정 카드 ---------- */
 function itemHtml(it, n) {
-  const has = it.lat != null, full = S.planView === "full" || S.itemOpen.has(it.id);
-  const book = lines(it.booking).map(l => { const code = codeOf(l); const label = l.replace(code, "").replace(/\(\s*\)|\[\s*\]/g, "").replace(/[:：]\s*$/, "").trim();
-    return `<button type="button" class="chip" data-copy="${esc(code)}">${label ? esc(label) + " " : ""}<b>${esc(code)}</b><small>⧉</small></button>`; }).join("");
-  const mt = memoText(it).trim(), photos = it.photos || [];
-  const memoChip = !full && (mt || photos.length) ? `<button type="button" class="chip mm" data-iopen="${it.id}">${mt ? "📝 메모" : ""}${mt && photos.length ? " · " : ""}${photos.length ? "📷 " + photos.length : ""}</button>` : "";
-  const chips = book + payChips(it.pay) + memoChip;
-  const lk = full ? linkChips(mt) : "";
-  const memo = !full ? "" : it.memoHtml ? `<div class="memo-rich rich">${richHtml(it.memoHtml)}</div>`
-    : (l => l ? `<ul class="sub">${l}</ul>` : "")(lines(it.memo).map(l => /^(→|->|=>)/.test(l) ? `<li class="arrow">${linkify(l.replace(/^(->|=>)/, "→"))}</li>` : `<li>${linkify(l)}</li>`).join(""));
-  const thumbs = full ? photos.map(id => `<img data-pid="${id}" data-photo="${id}" alt="${esc(it.place)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`).join("") : "";
-  const who = it.updatedBy ? `<span class="edited">${esc(it.updatedBy)}${full ? " · " + ago(it.updatedAt) : ""}</span>` : "";
+  const has = it.lat != null;
+  const thumbs = (it.photos || []).map(id => `<img data-pid="${id}" data-photo="${id}" alt="${esc(it.place)} 사진"${S.photos.has(id) ? ` src="${S.photos.get(id)}"` : ""}>`).join("");
+  const chips = lines(it.booking).map(l => { const code = codeOf(l); const label = l.replace(code, "").replace(/\(\s*\)|\[\s*\]/g, "").trim();
+    return `<button type="button" class="chip" data-copy="${esc(code)}">${label ? esc(label) + " " : ""}<b>${esc(code)}</b><small>복사</small></button>`; }).join("");
+  const memo = it.memoHtml ? "" : lines(it.memo).map(l => /^(→|->|=>)/.test(l) ? `<li class="arrow">${linkify(l.replace(/^(->|=>)/, "→"))}</li>` : `<li>${linkify(l)}</li>`).join("");
+  const nav = has ? `${naverA(it.place, it.lat, it.lng)}
+    ${gA({ kind: "item", ref: it.id, name: it.place, addr: it.address, lat: it.lat, lng: it.lng, pid: it.pid }, "구글 길찾기", true)}` : "";
+  const edited = it.updatedBy ? `<span class="edited">${esc(it.updatedBy)} · ${ago(it.updatedAt)}</span>` : "";
   return `<article class="item" data-id="${it.id}"><div class="num${has ? "" : " off"}">${n}</div><div class="body">
-    <div class="head">${it.time ? `<span class="time">${esc(it.time)}</span>` : ""}<h3 class="place">${esc(it.place)}</h3>${it.duration ? `<span class="dur">${esc(it.duration)}</span>` : ""}<button type="button" class="imore" data-imore="${it.id}" aria-label="${esc(it.place)} 메뉴">⋯</button></div>
-    ${it.address ? `<div class="addr">📍 ${esc(it.address)}</div>` : ""}
+    <div class="head">${it.time ? `<span class="time">${esc(it.time)}</span>` : ""}<h3 class="place">${esc(it.place)}</h3>${it.duration ? `<span class="dur">${esc(it.duration)}</span>` : ""}</div>
+    ${it.address ? `<div class="addr">${linkify(it.address)}</div>` : ""}
     ${chips ? `<div class="chips">${chips}</div>` : ""}
-    ${lk ? `<div class="chips">${lk}</div>` : ""}
-    ${memo}
+    ${it.memoHtml ? `<div class="memo-rich rich">${richHtml(it.memoHtml)}</div>` : memo ? `<ul class="sub">${memo}</ul>` : ""}
     ${thumbs ? `<div class="thumbs">${thumbs}</div>` : ""}
-    <div class="acts2">${has ? `<button type="button" class="ab p" data-inav="${it.id}">🧭 길찾기</button><button type="button" class="ab" data-imap="${it.id}">🗺️ 지도</button>` : `<button type="button" class="ab" data-edit="${it.id}">📍 위치 넣기</button>`}${S.planView !== "full" && S.itemOpen.has(it.id) ? `<button type="button" class="ab" data-iopen="${it.id}">접기 ▲</button>` : ""}${who}</div></div></article>`;
+    <div class="acts"><button type="button" data-edit="${it.id}">수정</button>${nav}${has ? "" : '<span class="none plain" style="padding:0">지도 위치 없음</span>'}${edited}</div></div></article>`;
 }
 function planViewBar() {
   return `<div class="pvseg" role="group" aria-label="보기 방식"><button type="button" data-pv="simple" aria-pressed="${S.planView === "simple"}">간단히</button><button type="button" data-pv="full" aria-pressed="${S.planView === "full"}">자세히</button></div>`;
@@ -5550,6 +5509,17 @@ document.addEventListener("submit", e => {
   renderPack(); const i = $("#tdoIn"); if (i) i.focus();
 });
 
+/* ---------- 환율: 필요한데 없으면 알아서 한 번 불러옴 ---------- */
+S.rateTried = new Set();
+function ensureRates(t) {
+  if (!t || S.rateTried.has(t.id) || !navigator.onLine) return;
+  const need = new Set(subList("money").map(x => x.cur));
+  if (tripCountry(t) !== "XX") need.add(tripC().cur);
+  plannedPays(t).forEach(p => need.add(p.cur)); (S.food.get(t.id) || []).forEach(f => { if (f.cost) need.add(f.costCur); });
+  if (![...need].some(c => c && c !== "KRW" && !rateOf(t, c))) return;
+  S.rateTried.add(t.id); fetchRates(true, true);
+}
+
 /* ---------- 앱 안 알림 ---------- */
 function alertsOf(t) {
   const out = [], td = today();
@@ -5566,74 +5536,47 @@ const alertBox = t => { const a = alertsOf(t); return a.length ? `<div class="al
 function myTodos(t) { return subList("todo").filter(x => !x.done && (x.who === nickOf() || x.who === "all")).sort((a, b) => (todoDue(t, a) || "9").localeCompare(todoDue(t, b) || "9")); }
 function renderToday() {
   const box = $("#todayView"); const t = trip(S.tripId); if (!box || !t) return;
-  const st = tripState(t), td = today(), days = tripDays(t);
-  const packs = subList("pack"), packDone = packs.filter(packMine).length, todos = subList("todo"), tdDone = todos.filter(x => x.done).length;
+  ensureRates(t);
+  const st = tripState(t), td = fd(new Date()), days = tripDays(t);
+  const pays = st === "during" ? plannedPays(t).filter(p => p.date === td) : [];
+  const payBox = pays.length ? `<section class="tpay"><p class="k">💴 오늘 현장에서 낼 돈</p>${pays.map(p => `<div class="prow"><span class="s">${esc(p.name)} <small>${esc(p.label)} · ${payAmt(p.amt, p.cur)}</small></span><button type="button" class="btn sm primary" data-paynow="${p.kind}|${p.id}|${p.part}">냈어요</button></div>`).join("")}</section>` : "";
+  const packs = subList("pack");
+  const packDone = packs.filter(packMine).length, todos = subList("todo");
+  const prepAll = packs.length + todos.length, prepDone = packDone + todos.filter(x => x.done).length;
   const money = subList("money"), spent = money.reduce((s, x) => s + (toKRW(x, t) || 0), 0);
-  const food = S.food.get(t.id) || [], shop = S.shop.get(t.id) || [];
-  let h = "";
-  if (st === "before") {
-    const dn = dLeft(t.start), empty = days.filter(d => !t.items.some(i => i.date === d));
-    const cur = tripCountry(t) !== "XX" ? tripC().cur : "KRW", urgentN = todos.filter(x => !x.done && todoDue(t, x) && dLeft(todoDue(t, x)) <= 3).length;
-    const chk = [
-      [todos.length && tdDone === todos.length, todos.length ? `할 일 ${tdDone}/${todos.length}` : "할 일 목록 만들기", urgentN ? `급한 것 ${urgentN} ›` : "할 일 ›", "prep:todo"],
-      [packs.length && packDone === packs.length, packs.length ? `짐 ${packDone}/${packs.length}` : "짐 목록 만들기", "짐 ›", "prep:pack"],
-      [!empty.length, empty.length ? `${empty.map(d => days.indexOf(d) + 1).slice(0, 3).join(", ")}${empty.length > 3 ? "…" : ""}일차 일정이 비어 있어요` : "일정 다 채움", "채우기 ›", "plan"],
-      [cardsOf(t).length > 0, cardsOf(t).length ? `항공·숙소 ${cardsOf(t).length}개 등록` : "항공·숙소를 아직 안 넣었어요", "넣기 ›", "cards"],
-      ...(cur !== "KRW" ? [[!!rateOf(t, cur), rateOf(t, cur) ? rateText(t, cur) : "환율을 아직 안 불러왔어요", "환율 ›", "rate"]] : []),
-      [!!ls.get("tn-vault", ""), ls.get("tn-vault", "") ? "복구 코드 저장" : "복구 코드를 아직 안 만들었어요", "만들기 ›", "vault"]
-    ];
-    const ok = chk.filter(c => c[0]).length;
-    const mine = myTodos(t).slice(0, 3);
-    const liked = food.filter(f => likeCount(f) > 0), notPlanned = liked.filter(f => !t.items.some(i => i.place === f.name)).length;
-    const stores = [...new Set(shop.filter(x => !x.done).map(storeOf))];
-    h = `<section class="thero"><p class="k">${esc(t.title)} · ${mdl(t.start)} 출발</p><h2>D-${dn}</h2><p class="m">${rangeText(t).split(" · ").slice(0, 2).join(" · ")}</p>${birdSvg("bird")}</section>
-      ${alertBox(t)}
-      ${weatherStrip(t) || (dn > 15 ? '<p class="hint tw">출발 2주 전부터 여행지 날씨가 여기 보여요.</p>' : "")}
-      <section class="tcard"><p class="tch">준비 체크 <span>${ok} / ${chk.length} 완료</span></p>
-        ${chk.map(([o, txt, go, to]) => `<button type="button" class="trow2" data-tgo="${to}"><span class="dot2 ${o ? "o" : "x"}">${o ? "✓" : "!"}</span><span class="s">${esc(txt)}</span>${o ? "" : `<span class="go">${go}</span>`}</button>`).join("")}
-        <span class="bar2"><i style="width:${Math.round(ok / chk.length * 100)}%"></i></span></section>
-      ${mine.length ? `<section class="tcard"><p class="tch">내가 맡은 할 일 <span>${myTodos(t).length}개</span></p><ul class="shop">${mine.map(x => todoRow(t, x)).join("")}</ul></section>` : ""}
-      <section class="tcard"><p class="tch">찜해 둔 것</p><div class="tpair">
-        <button type="button" data-tgo="food"><b>♥ 맛집 ${liked.length}곳</b><small>${notPlanned ? `아직 일정에 안 넣음 ${notPlanned}` : food.length ? `전체 ${food.length}곳` : "맛집 모으기"}</small></button>
-        <button type="button" data-tgo="shop"><b>🛍️ 쇼핑 ${shop.filter(x => !x.done).length}개</b><small>${stores.length ? stores.slice(0, 2).map(esc).join(" · ") : "살 것 적기"}</small></button></div></section>`;
-  } else if (st === "during") {
+  const shopLeft = (S.shop.get(t.id) || []).filter(x => !x.done).length, foodN = (S.food.get(t.id) || []).length;
+  let head = "";
+  if (st === "during") {
     const di = days.indexOf(td), info = t.days[dk(td)] || {};
     const list = sortDay(t.items.filter(i => i.date === td), info.order);
     const now = nowHM(), next = list.find(i => i.time && i.time >= now) || list.find(i => !i.time);
     const prevIdx = next ? list.indexOf(next) - 1 : -1;
-    const pays = plannedPays(t).filter(p => p.date === td);
-    const todayCards = cardsOf(t).filter(c => c.date === td || c.inDate === td || c.outDate === td);
-    const anchor = next && next.lat != null ? next : list.find(i => i.lat != null);
-    const near = anchor ? food.filter(f => f.lat != null && !f.visited).map(f => [f, distKm(anchor, f)]).filter(x => x[1] < 2.5).sort((a, b) => likeCount(b[0]) - likeCount(a[0]) || a[1] - b[1]).slice(0, 3) : [];
-    h = `<section class="thero" style="--dc:${dayColor(di)}"><p class="k">오늘 · ${di + 1}일차${info.title ? ` [${esc(info.title)}]` : ""}</p><h2>${mdl(td)}</h2>${birdSvg("bird-happy")}</section>
-      ${alertBox(t)}
-      <div class="hwx" data-hwx="${td}"></div>
-      ${pays.length ? `<section class="tpay"><p class="k">💴 오늘 현장에서 낼 돈</p>${pays.map(p => `<div class="prow"><span class="s">${esc(p.name)} <small>${esc(p.label)} · ${payAmt(p.amt, p.cur)}</small></span><button type="button" class="btn sm primary" data-paynow="${p.kind}|${p.id}|${p.part}">냈어요</button></div>`).join("")}</section>` : ""}
-      ${next ? `<section class="tnext"><p class="k">다음 일정${next.time ? " · " + esc(next.time) : ""}</p><div class="tn-main"><h3>${esc(next.place)}</h3></div>
-        ${next.address ? `<div class="addr">📍 ${esc(next.address)}</div>` : ""}
-        ${(next.booking || next.pay) ? `<div class="chips">${lines(next.booking).map(l => { const c = codeOf(l); return `<button type="button" class="chip" data-copy="${esc(c)}">${esc(l.replace(c, "").replace(/\(\s*\)/g, "").trim())} <b>${esc(c)}</b></button>`; }).join("")}${payChips(next.pay)}</div>` : ""}
+    head = `<section class="thero" style="--dc:${dayColor(di)}"><p class="k">오늘 · ${di + 1}일차${info.title ? ` [${esc(info.title)}]` : ""}</p><h2>${mdl(td)}</h2>${birdSvg("bird-happy")}</section>
+      ${alertBox(t)}${payBox}
+      ${weatherStrip(t)}
+      ${next ? `<section class="tnext"><p class="k">다음 일정</p><div class="tn-main"><span class="time">${esc(next.time || "")}</span><h3>${esc(next.place)}</h3></div>
+        ${next.address ? `<div class="addr">${linkify(next.address)}</div>` : ""}
         ${prevIdx >= 0 ? `<div class="mvlab">이전 일정에서</div>` + moveHtml(list[prevIdx], next) : ""}
         ${next.lat != null ? (S.myPos && Date.now() - S.myPos.at < 10 * 60e3 ? `<div class="mvlab">지금 내 위치에서</div>` + (moveHtml(S.myPos, next) || '<div class="move"><span>📍 거의 다 왔어요!</span></div>') : `<button type="button" class="btn sm mybtn" data-fromme>📍 내 위치에서 걸리는 시간 보기</button>`) : ""}
-        <div class="acts2">${next.lat != null ? `<button type="button" class="ab p" data-tnav="${next.id}">🧭 길찾기</button>` : ""}<button type="button" class="ab" data-goplan>오늘 일정 전체</button></div></section>`
+        <div class="acts">${next.lat != null ? `${gA({ kind: "item", ref: next.id, name: next.place, addr: next.address, lat: next.lat, lng: next.lng, pid: next.pid }, "구글 길찾기", true)}${naverA(next.place, next.lat, next.lng, "네이버 지도")}` : ""}<button type="button" data-goplan>오늘 일정 전체</button></div></section>`
         : `<section class="tnext"><p class="k">다음 일정</p><p class="none plain">${list.length ? "오늘 일정을 다 마쳤어요. 수고했어요!" : "오늘 일정이 비어 있어요."}</p></section>`}
-      ${list.length ? `<ul class="tlist">${list.map(i => `<li class="${i === next ? "on" : i.time && i.time < now ? "past" : ""}"><span class="time">${esc(i.time || "·")}</span>${esc(i.place)}</li>`).join("")}</ul>` : ""}
-      ${todayCards.length ? `<h3 class="sech">오늘의 항공·숙소</h3><div class="bkstrip">${todayCards.map(cardHtml).join("")}</div>` : ""}
-      ${near.length ? `<section class="tcard"><p class="tch">근처 ♥ 맛집 <span data-tgo="food">맛집 ›</span></p><div class="tpair">${near.map(([f, km]) => `<button type="button" data-fnav="${f.id}"><b>${esc(f.name)}</b><small>${km < 1 ? Math.round(km * 1000) + "m" : km.toFixed(1) + "km"}${f.cat ? " · " + esc(f.cat) : ""}</small></button>`).join("")}</div></section>` : ""}
-      <div class="qbtns"><button type="button" data-qadd="money">＋ 지출</button><button type="button" data-qadd="diary">＋ 일기</button><button type="button" data-tgo="shop">🛍️ 쇼핑 ${shop.filter(x => !x.done).length}</button></div>`;
+      ${list.length ? `<ul class="tlist">${list.map((i, k) => `<li class="${i === next ? "on" : i.time && i.time < now ? "past" : ""}"><span class="time">${esc(i.time || "·")}</span>${esc(i.place)}</li>`).join("")}</ul>` : ""}`;
+  } else if (st === "before") {
+    const dn = Math.round((pd(t.start) - pd(td)) / 864e5), empty = days.filter(d => !t.items.some(i => i.date === d)).length;
+    head = `<section class="thero"><p class="k">${esc(t.title)} · ${mdl(t.start)} 출발</p><h2>D-${dn}</h2><p class="m">${empty ? `아직 일정이 빈 날이 ${empty}일 있어요` : "일정 준비 완료!"}</p>${birdSvg("bird")}</section>
+      ${alertBox(t)}
+      ${weatherStrip(t) || (dn > 15 ? '<p class="hint tw">출발 2주 전부터 여행지 날씨가 여기 보여요.</p>' : "")}`;
   } else {
-    const { out } = settle(t), photoN = t.items.reduce((n, i) => n + (i.photos || []).length, 0) + food.reduce((n, f) => n + (f.photos || []).length, 0);
-    const dy = new Map(subList("diary").map(x => [x.date || x.id, x])), wx = t.wx || {};
-    const ago2 = dLeft(t.end) * -1;
-    h = `<section class="thero"><p class="k">${esc(t.title)}</p><h2>수고했어요!</h2><p class="m">${ago2 <= 1 ? "어제" : ago2 + "일 전에"} 돌아왔어요 · ${days.length - 1}박 ${days.length}일</p>${birdSvg("bird-sleep")}</section>
-      <div class="sum4"><div><b>${t.items.length}</b>일정</div><div><b>${food.filter(f => f.visited).length || food.length}</b>맛집</div><div><b>${photoN}</b>사진</div><div><b>${spent >= 1e4 ? Math.round(spent / 1e4) + "만" : won(spent)}</b>지출</div></div>
-      <section class="tcard"><p class="tch">정산 결과 <span data-tgo="money">자세히 ›</span></p>
-        ${out.length ? out.map(([a, b, v]) => `<div class="st2"><span>${esc(a)} → ${esc(b)}</span><b>${won(v)}</b></div>`).join("") + `<button type="button" class="btn primary wide sm" data-settlecopy>정산 내용 복사해서 보내기</button>` : `<p class="none plain">${money.length ? "주고받을 돈이 없어요." : "기록한 지출이 없어요."}</p>`}</section>
-      <section class="tcard"><p class="tch">다이어리 <span>${days.filter(d => { const x = dy.get(d); return x && (x.text || (x.photos || []).length); }).length} / ${days.length}일 씀</span></p>
-        <div class="dchips">${days.map((d, i) => { const x = dy.get(d), w = x && (x.text || (x.photos || []).length); return `<button type="button" class="${w ? "w" : ""}" data-dyopen="${d}">${i + 1}일 ${w ? "✓" : "+"}</button>`; }).join("")}</div></section>
-      ${Object.keys(wx).length ? `<section class="tcard"><p class="tch">날씨 기록</p><div class="wxrow">${days.map((d, i) => { const w = wx[dk(d)]; return `<div>${i + 1}일<b>${w ? wxIcon(w.c) : "–"}</b>${w ? w.hi + "°" : ""}</div>`; }).join("")}</div></section>` : ""}`;
+    head = `<section class="thero"><p class="k">${esc(t.title)}</p><h2>여행 끝!</h2><p class="m">수고했어요. 다이어리로 추억을 남겨 보세요.</p>${birdSvg("bird-sleep")}</section>`;
   }
-  box.innerHTML = h;
-  fillWx(); hydrate(box, t.id);
+  const tiles = `<div class="tiles">
+    <button type="button" class="tile" data-gomode="pack"><small>준비 (할 일 · 짐)</small><b>${prepAll ? `${prepDone}/${prepAll}` : "목록 만들기"}</b>${prepAll ? `<span class="bar2"><i style="width:${Math.round(prepDone / prepAll * 100)}%"></i></span>` : ""}</button>
+    <button type="button" class="tile" data-gomode="money"><small>지금까지 쓴 돈</small><b>${won(spent)}</b><span class="sub">${money.length ? `${money.length}건` : "기록 시작하기"}</span></button>
+    <button type="button" class="tile" data-gomode="shop"><small>쇼핑</small><b>${shopLeft ? `${shopLeft}개 남음` : "다 샀어요"}</b></button>
+    <button type="button" class="tile" data-gomode="food"><small>맛집</small><b>${foodN}곳</b></button>
+  </div>`;
+  box.innerHTML = head + `<h3 class="sech">항공·숙소</h3>` + cardsStrip(t, true) + tiles +
+    `<button type="button" class="btn diarybtn" data-godiary>📔 여행 다이어리 ${st === "before" ? "보기" : "쓰기"}</button>`;
 }
 function settleText(t) {
   const { out } = settle(t), total = subList("money").reduce((s, x) => s + (toKRW(x, t) || 0), 0);
@@ -5653,6 +5596,9 @@ bindToday = function (root) {
       window.scrollTo(0, 0); return; }
     const gp = e.target.closest("[data-goprep]"); if (gp) { S.prepTab = gp.dataset.goprep === "pack" ? "pack" : "todo"; setMode("pack"); window.scrollTo(0, 0); return; }
     const pn = e.target.closest("[data-paynow]"); if (pn) { const [k, id, part] = pn.dataset.paynow.split("|"); payNow(k, id, part); return; }
+    const ist = e.target.closest("[data-ist]"), iun = e.target.closest("[data-iundo]");
+    if (ist || iun) { const t = trip(S.tripId), [st, id] = ist ? ist.dataset.ist.split("|") : ["", iun.dataset.iundo], it = t.items.find(x => x.id === id);
+      if (it) { setItem(t.id, Object.assign({}, it, { st })); setTimeout(renderToday, 40); } return; }
     const tn = e.target.closest("[data-tnav]"); if (tn) { const it = trip(S.tripId).items.find(x => x.id === tn.dataset.tnav); if (it) itemNav(it); return; }
     const fn = e.target.closest("[data-fnav]"); if (fn) { const f = (S.food.get(S.tripId) || []).find(x => x.id === fn.dataset.fnav); if (f) openNavSheet({ kind: "food", ref: f.id, name: f.name, addr: f.address, lat: f.lat, lng: f.lng, pid: f.pid }); return; }
     const q = e.target.closest("[data-qadd]"); if (q) { if (q.dataset.qadd === "money") openMoney(null); else openDiary(today()); return; }
@@ -5692,30 +5638,21 @@ function renderCardsView() {
 }
 document.addEventListener("click", e => { const b = e.target.closest("[data-cpay]"); if (b) openPay("card", b.dataset.cpay); });
 
-/* 모드 추가: 항공·숙소, 최근 삭제 */
-const setModeOld = setMode;
-setMode = function (m) {
-  setModeOld(m);
-  ["cards", "trash"].forEach(v => { const el = $("#" + v + "View"); if (el) el.hidden = m !== v; });
-  const sub = ["money", "pack", "diary", "cards", "trash"].includes(m);
-  const mb = $("#moreBack"); if (mb) mb.hidden = !sub;
-  if (sub) document.querySelectorAll(".bnav button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === "more")));
-  if (m === "cards") renderCardsView(); if (m === "trash") renderTrash();
-};
 
 /* ---------- 경비: 예산 / 낸 돈 / 낼 예정 ---------- */
 const renderMoneyOld = renderMoney;
 renderMoney = function () {
   renderMoneyOld();
   const box = $("#moneyView"), t = trip(S.tripId); if (!box || !t) return;
+  ensureRates(t);
   const spent = subList("money").reduce((s, x) => s + (toKRW(x, t) || 0), 0);
   const plan = plannedPays(t), planK = plan.reduce((s, p) => s + (toKRW(p, t) || 0), 0), bud = +t.budget || 0;
   const left = bud - spent - planK, pc = v => bud ? Math.max(0, Math.min(100, v / bud * 100)) : 0;
   const head = `<section class="budget">${bud ? `<div class="bt">예산 ${won(bud)} 중 남은 돈</div><div class="bbig${left < 0 ? " over" : ""}">${left < 0 ? "−" + won(-left) : won(left)}</div>
-      <div class="stk"><i style="width:${pc(spent)}%"></i><i class="pl" style="width:${pc(planK)}%"></i></div>` : `<div class="bt">이미 낸 돈 + 낼 예정</div><div class="bbig">${won(spent + planK)}</div>`}
+      <div class="bstk"><i style="width:${pc(spent)}%"></i><i class="pl" style="width:${pc(planK)}%"></i></div>` : `<div class="bt">이미 낸 돈 + 낼 예정</div><div class="bbig">${won(spent + planK)}</div>`}
       <div class="blg"><div>이미 낸 돈<b>${won(spent)}</b></div><div>낼 예정<b>${won(planK)}</b></div><div><button type="button" class="link" id="budBtn">${bud ? "예산 바꾸기" : "예산 정하기"}</button></div></div></section>
     ${plan.length ? `<h3 class="sech">현장에서 낼 예정 <small>${plan.length}개</small></h3><ul class="mlist plan">${plan.map(p => { const di = dayIdx(t, p.date);
-      return `<li class="mx"><span class="ptag">${esc(p.label.length > 4 ? "예정" : p.label)}</span><div class="mb"><div class="mn">${esc(p.name)}</div><div class="sm">${di >= 0 ? `${di + 1}일차 · ` : ""}${esc(p.label)}</div></div><div class="ma"><b>${payAmt(p.amt, p.cur)}</b><button type="button" class="link" data-paynow="${p.kind}|${p.id}|${p.part}">냈어요</button></div></li>`; }).join("")}</ul>` : ""}`;
+      return `<li class="mx"><span class="ptag">${esc(p.part === "e" ? "예상" : p.label.length > 4 ? "예정" : p.label)}</span><div class="mb"><div class="mn">${esc(p.name)}</div><div class="sm">${di >= 0 ? `${di + 1}일차 · ` : ""}${esc(p.label)}</div></div><div class="ma"><b>${payAmt(p.amt, p.cur)}</b><button type="button" class="link" data-paynow="${p.kind}|${p.id}|${p.part}">냈어요</button></div></li>`; }).join("")}</ul>` : ""}`;
   box.insertAdjacentHTML("afterbegin", head);
 };
 document.addEventListener("click", async e => {
@@ -5760,19 +5697,6 @@ openFood = function (f) {
   setTimeout(() => { const d = $("#fd"); if (d.open) d._snap = dlgSnap(d); }, 200);
 };
 $("#fdPayBtn").onclick = () => { if (FE && FE.f) openPay("food", FE.f.id, null); };
-/* 저장할 때 별점·비용·예약도 같이 */
-{
-  const sub0 = $("#fdForm").onsubmit;
-  $("#fdForm").onsubmit = e => {
-    const extra = { rating: FE.rating || 0, cost: parseFloat($("#fdCost").value) || 0, costCur: $("#fdCostCur").value, res: $("#fdRes").checked && !$("#fdRes").disabled };
-    const before = new Set((S.food.get(S.tripId) || []).map(x => x.id));
-    const origSet = setFood;
-    setFood = (code, it) => { const n = Object.assign({}, it, { rating: extra.rating, cost: extra.cost, costCur: extra.costCur }); setFood = origSet; return origSet(code, n); };
-    try { sub0(e); } finally { setFood = origSet; }
-    if (extra.res) { const f = (S.food.get(S.tripId) || []).find(x => x.name === $("#fdName").value.trim() && (FE.f ? x.id === FE.f.id : !before.has(x.id)));
-      if (f && !subList("todo").some(x => x.ref && x.ref.id === f.id)) addTodo({ title: `${f.name} 예약`, cat: "book", off: 7, ref: { kind: "food", id: f.id } }); }
-  };
-}
 
 /* ---------- 지도 앱에서 여러 곳 불러오기 ---------- */
 function parseShares(text) {
